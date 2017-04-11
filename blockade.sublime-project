@@ -1,0 +1,59 @@
+// See the updated gist at https://gist.github.com/hickscorp/08b0c945e7d3a5879a6b7924c6a44628
+// Make sure you install the ANSIEscape package if you want color support.
+//
+// Just drop this file in your elixir project root folder, and rename it to
+// match it, eg `whatever.sublime-project`.
+// Then open sublime like so: `subl whatever.sublime-project`
+// The build command will become available by pressing `Ctrl+Shift+B`.
+//
+// It's also recommended to install those two packages:
+// - Elixir for syntax coloring: https://packagecontrol.io/packages/Elixir
+// - ElixirSublime for completion and linting: https://packagecontrol.io/packages/ElixirSublime
+// Don't forget to star and fork me ;)
+{
+  "folders": [{
+    "path": ".",
+    "folder_exclude_patterns": ["_build", "cover", "deps", "doc"]
+  }],
+
+  "build_systems": [{
+    "name": "Compile",
+    "shell_cmd": "mix compile",
+    "working_dir": "${project_path}",
+    "file_regex": "^\\*\\* \\(.+\\) (.+):([0-9]+)([0-9]*?): (.+)$",
+    "target": "ansi_color_build",
+    "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+  }, {
+    "name": "Test",
+    "shell_cmd": "mix test --color",
+    "working_dir": "${project_path}",
+    "file_regex": "^     ([^\\s].+):([0-9]+)([0..9]*?)$",
+    "target": "ansi_color_build",
+    "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+  }, {
+    "name": "Dialyzer",
+    "shell_cmd": "mix dialyzer",
+    "working_dir": "${project_path}",
+    "file_regex": "^(.+):([0-9]+)(.*?): (+*)$",
+    "target": "ansi_color_build",
+    "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+  }, {
+    "name": "Credo",
+    "shell_cmd": "mix credo list --all --format=oneline",
+    "working_dir": "${project_path}",
+    "file_regex": "^\\[.\\] .? (.+):([0-9]+):([0-9]+?) (.+)$",
+    "target": "ansi_color_build",
+    "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+  }, {
+    "name": "Dogma",
+    "shell_cmd": "mix dogma --format=flycheck",
+    "working_dir": "${project_path}",
+    "file_regex": "^(.+):([0-9]+):([0-9]+): (.+)$",
+    "target": "ansi_color_build",
+    "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+  }],
+
+  "SublimeLinter": {
+     "linters": {"elixirc": {"mix_project": true, "chdir": "${project_path}"}}
+  }
+}

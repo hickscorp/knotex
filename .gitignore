@@ -1,0 +1,16 @@
+/_build
+/cover
+/deps
+/doc
+/db
+
+/.deliver/releases/
+/rel/*/**
+config/prod.exs
+
+*.ez
+.fetch
+*.ez
+*.beam
+*.dump
+*.sublime-workspace
