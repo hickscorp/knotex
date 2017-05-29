@@ -1,4 +1,4 @@
-defmodule SofoSupervisorTest do
+defmodule Knot.SofoSupervisorTest do
   use ExUnit.Case
-  doctest SofoSupervisor
+  doctest Knot.SofoSupervisor
 end

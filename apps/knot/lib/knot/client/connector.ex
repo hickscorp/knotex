@@ -8,6 +8,7 @@ defmodule Knot.Client.Connector do
   use GenServer
   require Logger
   alias __MODULE__, as: Connector
+  alias Knot.{Via, Logic}
 
   # Public API.
 
@@ -39,9 +40,7 @@ defmodule Knot.Client.Connector do
 
   @spec handle_cast(:connect, State.t) :: {:stop, :normal, State.t}
   def handle_cast(:connect, {uri, handler} = state) do
-    with host <- String.to_charlist(uri.host),
-         args <- [:binary, active: false],
-         {:ok, socket} <- :gen_tcp.connect(host, uri.port, args),
+    with {:ok, socket} <- gen_tcp_connect(uri),
          reason <- transfer_socket_notify(socket, handler) do
       {:stop, reason, state}
     else
@@ -59,12 +58,16 @@ defmodule Knot.Client.Connector do
     end
   end
 
+  @spec gen_tcp_connect(URI.t) :: {:ok, Knot.socket} | {:error, any}
+  defp gen_tcp_connect(%{host: host, port: port}) do
+    :gen_tcp.connect to_charlist(host), port, [:binary, active: false]
+  end
+
   @spec transfer_socket_notify(Knot.socket, Via.t) :: :normal | :error
   defp transfer_socket_notify(socket, handler) do
     with  handler_pid <- GenServer.call(handler, :pid),
           :ok <- :gen_tcp.controlling_process(socket, handler_pid),
-          opts <- {:on_client_socket, socket, :outbound},
-          :ok <- GenServer.cast(handler, opts) do
+          :ok <- Logic.on_client_socket(handler, socket, :outbound) do
           :normal
     else
         _ ->

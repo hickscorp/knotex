@@ -1,11 +1,13 @@
 use Mix.Config
 
-config :block,
+config :knot,
   # A genesis block which content was "Unspendable block."
   genesis: %{
     timestamp:  1490926154,
     nonce:      3492211,
-    parent_hash: :binary.copy(<<0x00>>, 32),
+    parent_hash: Base.decode16!(
+      "0000000000000000000000000000000000000000000000000000000000000000"
+    ),
     content_hash: Base.decode16!(
       "1CB4F6428A67E932852B9DDF1B71F6668487B62D5E7A1F808A9173726EDCB5F3"
     ),

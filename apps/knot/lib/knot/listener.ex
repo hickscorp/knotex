@@ -5,6 +5,7 @@ defmodule Knot.Listener do
   use GenServer
   require Logger
   alias __MODULE__, as: Listener
+  alias Knot.Via
 
   # Public API.
 
@@ -39,7 +40,7 @@ defmodule Knot.Listener do
   defp listen(uri, handler, socket) do
     case :gen_tcp.accept socket do
       {:ok, cli_socket} ->
-        GenServer.cast handler, {:on_client_socket, cli_socket, :inbound}
+        Knot.Logic.on_client_socket handler, cli_socket, :inbound
         listen uri, handler, socket
       {:error, :closed} ->
         Logger.info fn ->
@@ -54,11 +55,12 @@ defmodule Knot.Listener do
     end
   end
 
-  def terminate(reason, {uri, handler, socket}) do
+  @spec terminate(any, {URI.t, Logic.t, Knot.socket}) :: :ok
+  def terminate(reason, {uri, logic, socket}) do
     Logger.info fn ->
       "[#{Via.readable uri}] Terminating listener: #{inspect reason}."
     end
-    GenServer.call handler, {:on_listener_terminating, reason}
+    Knot.Logic.on_listener_terminating logic, reason
     :gen_tcp.close socket
   end
 end

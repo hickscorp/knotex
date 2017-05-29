@@ -1,25 +1,34 @@
 defmodule Knot.Mixfile do
   use Mix.Project
 
+  @name     :knot
+  @version  "0.1.0"
+
   def project do
-    [app: :knot,
-     version: "0.1.0",
-     elixir: "~> 1.4",
-     build_path: "../../_build",
-     config_path: "../../config/config.exs",
-     deps_path: "../../deps",
-     lockfile: "../../mix.lock",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps(Mix.env),
-     test_coverage: [tool: ExCoveralls],
-     dialyzer: [plt_add_deps: :apps_direct, plt_add_apps: [:mix]]]
+    [
+      app:              @name,
+      version:          @version,
+      elixir:           "~> 1.4",
+      build_path:       "../../_build",
+      config_path:      "../../config/config.exs",
+      deps_path:        "../../deps",
+      lockfile:         "../../mix.lock",
+      build_embedded:   Mix.env == :prod,
+      start_permanent:  Mix.env == :prod,
+      elixirc_paths:    elixirc_paths(Mix.env),
+      deps:             deps(Mix.env)
+    ]
   end
 
   def application do
-    [extra_applications: [:logger, :block],
-     mod: {Knot.Application, []}]
+    [
+      mod: {Knot.Application, []},
+      extra_applications: [:logger]
+    ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_),     do: ["lib"]
 
   defp deps(:test) do
     [] ++ deps(:prod)
@@ -28,8 +37,8 @@ defmodule Knot.Mixfile do
     [] ++ deps(:prod)
   end
   defp deps(:prod) do
-    [{:block, in_umbrella: true},
-     {:bertex, "~> 1.2.0"},
-     {:socket, "~> 0.3.11"}]
+    [
+      {:bertex,   "~> 1.2"}
+    ]
   end
 end

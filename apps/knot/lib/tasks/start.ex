@@ -1,10 +1,10 @@
 defmodule Mix.Tasks.Knot.Start do
   @moduledoc false
   use Mix.Task
-  require Logger
 
   @shortdoc "Starts a node given a binding URI and an optional peer list."
 
+  @spec run(list(String.t)) :: :ok
   def run(args) do
     Application.ensure_all_started :knot
 
@@ -14,6 +14,8 @@ defmodule Mix.Tasks.Knot.Start do
 
     %{logic: logic} = Knot.start bind
     Enum.each peers, &Knot.Client.Connector.start(&1, logic)
+
+    :ok
   end
 
   defp parse_options({args, _, _}) do

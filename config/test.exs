@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :block,
+config :knot,
   # A genesis block which content was "Unspendable block."
   genesis: %{
     timestamp:  1490926154,

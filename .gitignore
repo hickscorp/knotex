@@ -15,6 +15,7 @@ config/*.secret.exs
 *.fetch
 *.log
 *.sublime-workspace
+block_store
 
-assets/node_modules
-priv/static
+apps/explorer/assets/node_modules
+apps/explorer/priv/static

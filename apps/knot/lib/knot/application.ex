@@ -1,13 +1,15 @@
 defmodule Knot.Application do
   @moduledoc false
-
   use Application
-  import Supervisor.Spec
-  import SofoSupervisor.Spec
 
+  @spec start(any, any) :: {:ok, pid}
   def start(_type, _args) do
+    import Supervisor.Spec
+    import Knot.SofoSupervisor.Spec
+
     children = [
-      worker(Registry, [:unique, Via.registry()]),
+      worker(Registry, [:unique, Knot.Via.registry()]),
+      worker(Knot.Block.Store, []),
       sofo(Knot.Knots, Knot),
       sofo(Knot.Clients, Knot.Client),
       sofo(Knot.Connectors, Knot.Client.Connector)

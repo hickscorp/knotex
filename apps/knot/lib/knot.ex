@@ -9,14 +9,15 @@ defmodule Knot do
   - A supervisor in charge of the client processes (See `Knot.Client`).
   """
   use Supervisor
-  require Logger
   alias __MODULE__, as: Knot
+  alias Knot.Via
 
   @type      t :: Via.t
   @type socket :: :gen_tcp.socket
 
   defmodule Handle do
     @moduledoc false
+
     @type t :: %Handle{
            uri: URI.t,
           node: Knot.t,
@@ -77,6 +78,7 @@ defmodule Knot do
 
   # Implementation.
 
+  @spec make_handle(URI.t) :: Handle.t
   defp make_handle(uri) do
     %Handle{uri: uri,
            node: Via.node(uri),

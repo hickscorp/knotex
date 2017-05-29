@@ -1,4 +1,4 @@
-# Blockade
+# Knotex
 
 ## Tooling
 
@@ -9,31 +9,24 @@ Sanity tools:
 
 - To run the tests, issue `mix test`.
 - Dialyzer for static analysis: `mix dialyzer`.
-- Credo and Dogma for style: `mix credo` and `mix dogma`.
+- Credo for style: `mix credo`.
 
 To generate the documentation, simply run `mix docs` and `open doc/index.html`.
 
 ## Blocks
 
-Blockchains are built around the concept of blocks. In Blockade, the
-[`Block`](apps/block) micro-application models this concept of block.
-
 ## Nodes
 
 ### Overview
 
-Blockade uses the concept of nodes to establish its mesh network and propagate
+Knotex uses the concept of nodes to establish its mesh network and propagate
 blocks across it. Because Elixir already has a module named `Node` defining
-a VM instance, we decided to name Blockade's nodes a `Knot`. All node-related
+a VM instance, we decided to name Knotex's nodes a `Knot`. All node-related
 code and behavior is therefore located within the [`Knot`](apps/knot) application.
-
-The [`Knot`](apps/knot) extensively uses blocks under the hood, so it is linked to
-the [`Block`](apps/block) through dependency in its [`mix`](apps/knot/mix.exs)
-file.
 
 ### Quick Setup
 
-If you want to play with Blockade and need to understand its basic principles, here
+If you want to play with Knot and need to understand its basic principles, here
 is how to get started.
 
 First you'll need to start at least two nodes. A node is started using the
@@ -112,29 +105,29 @@ to process queries.
 Issuing a `:ping` to a node should yield a `:pong` message in return. This sanity
 check process is also useful to ensure that a client doesn't timeout.
 
-### Block Queries
+### Queries
 
-Nodes answer to block queries. Within a block query, providing a block hash
-identifier is compulsory, except for the `:genesis` and `:highest` variations.
+Nodes answer to queries. Within a query, providing a block hash
+identifier is compulsory, except for the `:genesis` and `:head` variations.
 
-A block query is always issued using a `{:block_query, query}` tuple. A block
-query when successful would yield an answer with content usually equal to
-`{:block_answer, {query_atom, query_answer}}`.
+A query is always issued using a `{:query, query}` tuple. A block
+query when successful would yield a response with content usually equal to
+`{:response, {query_atom, response_data}}`.
 
 #### Genesis
 
-- Example: `{:block_query, :genesis}`
-- Success: `{:block_answer, {:genesis, %Block{}}}`
+- Example: `{:query, :genesis}`
+- Success: `{:response, {:genesis, %Block{}}}`
 
-The `:genesis` block query returns the genesis block header used by the node to
+The `:genesis` query returns the genesis block header used by the node to
 which the client is connected.
 
 #### Highest
 
-- Example: `{:block_query, :highest}`
-- Success: `{:block_answer, {:highest, %Block{}}}`
+- Example: `{:query, :head}`
+- Success: `{:response, {:head, %Block{}}}`
 
-The `:highest` block query returns the highest block known to the node to which
+The `:head` query returns the highest block known to the node to which
 the client is connected. In most cases, it's the latest mined block, unless it has
 not been propagated to the network yet.
 
@@ -147,8 +140,8 @@ paragraph.
 
 #### Merkle Root
 
-- Example: `{:block_query, {:merkle_root, block_hash}}`
-- Success: `{:block_answer, {:merkle_root, ^block_hash, %MerkleRoot{}}}`
+- Example: `{:query, {:merkle_root, block_hash}}`
+- Success: `{:response, {:merkle_root, ^block_hash, %MerkleRoot{}}}`
 
 This query allows to retrieve the full Merkle chain for any given block using its
 hash. When the highest block from two nodes differ, the one with the lowest one
@@ -157,12 +150,48 @@ allowing correction.
 
 #### Ancestry up to Genesis
 
-- Example: `{:block_query, {:ancestry, block_hash}}`
-- Success: `{:block_answer, {:ancestry, ^block_hash, blocks}}`
+- Example: `{:query, {:ancestry, block_hash}}`
+- Success: `{:response, {:ancestry, ^block_hash, blocks}}`
 
 Allows to retrieve the full ancestry to a given block, all the way to the genesis
 block.
 
-In the answer, the `blocks` variable is a list of `%Block{}`, with its first element
-being the closest ancestor to the `block_hash` and its last element being the
-first child of the genesis block.
+In the response, the `blocks` variable is a list of `%Block{}`, with its first
+element being the closest ancestor to the `block_hash` and its last element being
+the first child of the genesis block.
+
+## JSON API
+
+Several endpoints are available if you decide to run the phoenix app.
+To do so, issue the command `iex -S mix phx.server`. Once your server is up and
+running, you can seed your node with simple mining data by issuing:
+
+```
+Knot.Logic.seed Knot.start("tcp://127.0.0.1:4001").logic
+```
+
+
+## GraphQL API
+
+A GraphQL is available and the Graphiql tool can
+be [accessed here](http://localhost:4000/graphiql).
+
+You can then issue GraphQL queries, for example:
+
+Query:
+
+```graphql
+query Block($id: String!, $top: Int) {
+  block(id: $id) {
+    ...blockFields
+    ancestry(top: $top) {...blockFields}
+  }
+}
+fragment blockFields on Block {hash, height}
+```
+
+Variables:
+
+```json
+{"id": "a", "top": 3}
+```

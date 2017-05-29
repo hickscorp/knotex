@@ -68,7 +68,7 @@ defmodule Knot.Client do
     me = self()
     spawn_link fn -> recv me, socket end
 
-    GenServer.cast handler, {:on_client_ready, me}
+    Knot.Logic.on_client_ready handler, me
     state = %State{handler: handler, socket: socket}
       |> mark_active
     {:ok, state}
@@ -88,14 +88,14 @@ defmodule Knot.Client do
 
   @spec handle_cast({:on_data, binary}, State.t) :: {:noreply, State.t}
   def handle_cast({:on_data, data}, %{handler: handler} = state) do
-    GenServer.cast handler, {:on_client_data, self(), data}
+    Knot.Logic.on_client_data handler, self(), data
     {:noreply, mark_active(state)}
   end
 
   @spec handle_cast(:on_close, State.t) :: {:noreply, State.t}
   def handle_cast(:on_close, %{handler: handler} = state) do
     me = self()
-    GenServer.cast handler, {:on_client_closed, me}
+    Knot.Logic.on_client_closed handler, me
     {:stop, :normal, state}
   end
 
