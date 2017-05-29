@@ -1,38 +1,42 @@
-require Logger
-
 defmodule Block.Store do
   @moduledoc """
   Keeps an in-memory database of all block headers, allowing fast lookup of
   ancestry and hashes.
   """
   use GenServer
+  require Logger
   alias __MODULE__, as: Store
 
   # Public API.
 
-  @type         state :: any
-  @type finder_result :: {:ok, Block.t} | {:error, :not_found | :badarg}
+  @typep         state :: any
+  @typep finder_result :: {:ok, Block.t} | {:error, :not_found | :badarg}
 
+  @doc "Starts the block store."
   @spec start_link :: {:ok, pid}
   def start_link do
     GenServer.start_link Store, :ok, name: Store
   end
 
+  @doc "Counts the blocks in the store."
   @spec count :: non_neg_integer
   def count do
     GenServer.call Store, :count
   end
 
+  @doc "Adds a block to the store."
   @spec store(Block.t) :: Block.t
   def store(block) do
     GenServer.cast Store, {:store, block}
     block
   end
 
+  @doc "Finds a block by its hash."
   @spec find_by_hash(Hash.t) :: finder_result
   def find_by_hash(nil), do: {:error, :badarg}
   def find_by_hash(hash), do: GenServer.call Store, {:find_by_hash, hash}
 
+  @doc "Finds a block by its height and hash."
   @spec find_by_height_and_hash(Block.height, Hash.t) :: finder_result
   def find_by_height_and_hash(nil, _), do: {:error, :badarg}
   def find_by_height_and_hash(_, nil), do: {:error, :badarg}
@@ -40,11 +44,13 @@ defmodule Block.Store do
     GenServer.call Store, {:find_by_height_and_hash, height, hash}
   end
 
-  @spec remove(Block.t | Hash.t) :: :ok
-  def remove(block) do
+  @doc "Removes a block from the store."
+  @spec remove(Block.t) :: :ok
+  def remove(%Block{} = block) do
     GenServer.cast Store, {:remove, block}
   end
 
+  @doc "Clears the store completely."
   @spec clear :: :ok
   def clear do
     GenServer.cast Store, :clear
@@ -86,7 +92,7 @@ defmodule Block.Store do
 
   @spec handle_cast({:remove, Block.t}, state) :: {:noreply, state}
   def handle_cast({:remove, b}, table) do
-    # TODO: Fix.
+    # TODO: Fix this, it's not deleting anything right now.
     :ets.delete table, {b.height, b.hash, b.parent_hash, b}
     {:noreply, table}
   end

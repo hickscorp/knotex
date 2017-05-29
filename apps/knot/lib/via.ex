@@ -5,15 +5,22 @@ defmodule Via do
   alias __MODULE__, as: Via
   alias Knot.{Logic, Listener}
 
+  @registry Knot.Registry
+
   @type id :: {String.t, pos_integer, String.t}
-  @type  t :: {:via, Registry, {Registry.Knot, Via.id}}
+  @type  t :: {:via, Registry, {Knot.Registry, Via.id}}
+
+  def registry do
+    @registry
+  end
 
   @doc """
   Transforms a URI into a displayable string.
 
   ## Examples
 
-      iex> URI.parse("tcp://localhost:4001")
+      iex> "tcp://localhost:4001"
+      iex>   |> URI.parse
       iex>   |> Via.readable
       "localhost:4001"
   """
@@ -21,37 +28,40 @@ defmodule Via do
   def readable(uri), do: "#{uri.host}:#{inspect uri.port}"
 
   @doc """
-  Builds a via-typle for a node given an URI.
+  Builds a via-tuple for a node given an URI.
 
   ## Examples
 
-      iex> URI.parse("tcp://localhost:4001")
+      iex> "tcp://localhost:4001"
+      iex>   |> URI.parse
       iex>   |> Via.node
-      {:via, Registry, {Registry.Knot, {"localhost", 4001, "node"}}}
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, "node"}}}
   """
   @spec node(URI.t) :: Knot.t
   def node(uri), do: make uri, "node"
 
   @doc """
-  Builds a via-typle for a node logic given an URI.
+  Builds a via-tuple for a node logic given an URI.
 
   ## Examples
 
-      iex> URI.parse("tcp://localhost:4001")
+      iex> "tcp://localhost:4001"
+      iex>   |> URI.parse
       iex>   |> Via.logic
-      {:via, Registry, {Registry.Knot, {"localhost", 4001, "logic"}}}
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, "logic"}}}
   """
   @spec logic(URI.t) :: Logic.t
   def logic(uri), do: make uri, "logic"
 
   @doc """
-  Builds a via-typle for a node listener given an URI.
+  Builds a via-tuple for a node listener given an URI.
 
   ## Examples
 
-      iex> URI.parse("tcp://localhost:4001")
+      iex> "tcp://localhost:4001"
+      iex>   |> URI.parse
       iex>   |> Via.listener
-      {:via, Registry, {Registry.Knot, {"localhost", 4001, "listener"}}}
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, "listener"}}}
   """
   @spec listener(URI.t) :: Listener.t
   def listener(uri), do: make uri, "listener"
@@ -62,18 +72,29 @@ defmodule Via do
 
   ## Examples
 
-      iex> URI.parse("tcp://localhost:4001")
+      iex> "tcp://localhost:4001"
+      iex>   |> URI.parse
       iex>   |> Via.make("sup")
-      {:via, Registry, {Registry.Knot, {"localhost", 4001, "sup"}}}
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, "sup"}}}
   """
   @spec make(URI.t, String.t) :: Via.t
   def make(uri, suffix) do
     uuid = id uri, suffix
-    {:via, Registry, {Registry.Knot, uuid}}
+    {:via, Registry, {@registry, uuid}}
   end
 
+  @doc """
+  Generates a per-uri unique ID that is suitable for via-tuple generation.
+
+  ## Examples
+
+      iex> "tcp://localhost:4001"
+      iex>   |> URI.parse
+      iex>   |> Via.id("node")
+      {"localhost", 4001, "node"}
+  """
   @spec id(URI.t, String.t) :: id
-  defp id(uri, suffix) do
+  def id(uri, suffix) do
     {uri.host, uri.port, suffix}
   end
 end

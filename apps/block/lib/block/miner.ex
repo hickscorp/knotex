@@ -11,8 +11,7 @@ defmodule Block.Miner do
 
   ## Examples
 
-      iex> b = %Block{}
-      iex>  |> Miner.mine
+      iex> b = Miner.mine %Block{}
       iex> [b.height, b.nonce, Hash.readable_short(b.hash)]
       [0, 224, "00551db3"]
   """

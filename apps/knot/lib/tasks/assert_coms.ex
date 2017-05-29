@@ -1,7 +1,5 @@
 defmodule Mix.Tasks.Knot.AssertComs do
-  @moduledoc """
-  Provides an easy way to start a node.
-  """
+  @moduledoc false
   use Mix.Task
   require Logger
 

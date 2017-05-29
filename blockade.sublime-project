@@ -20,37 +20,31 @@
     "name": "Compile",
     "shell_cmd": "mix compile",
     "working_dir": "${project_path}",
-    "file_regex": "^\\*\\* \\(.+\\) (.+):([0-9]+)([0-9]*?): (.+)$",
-    "target": "ansi_color_build",
-    "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+    "file_regex": "^\\*\\* \\(.+\\) (.+):([0-9]+)([0-9]*?): (.+)$"
   }, {
     "name": "Test",
     "shell_cmd": "mix test --color",
     "working_dir": "${project_path}",
-    "file_regex": "^     ([^\\s].+):([0-9]+)([0..9]*?)$",
+    "file_regex": "^     ([^\\s].+):([0-9]+)([0-9]*?)$",
     "target": "ansi_color_build",
     "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
   }, {
     "name": "Dialyzer",
     "shell_cmd": "mix dialyzer",
     "working_dir": "${project_path}",
-    "file_regex": "^(.+):([0-9]+)(.*?): (+*)$",
+    "file_regex": "^(.+):([0-9]+): ()(.+)$",
     "target": "ansi_color_build",
     "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
   }, {
     "name": "Credo",
     "shell_cmd": "mix credo list --all --format=oneline",
     "working_dir": "${project_path}",
-    "file_regex": "^\\[.\\] .? (.+):([0-9]+):([0-9]+?) (.+)$",
-    "target": "ansi_color_build",
-    "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+    "file_regex": "^\\[.\\] .? (.+):([0-9]+) ()(.+)$"
   }, {
     "name": "Dogma",
     "shell_cmd": "mix dogma --format=flycheck",
     "working_dir": "${project_path}",
-    "file_regex": "^(.+):([0-9]+):([0-9]+): (.+)$",
-    "target": "ansi_color_build",
-    "syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+    "file_regex": "^(.+):([0-9]+):([0-9]+): (.+)$"
   }],
 
   "SublimeLinter": {

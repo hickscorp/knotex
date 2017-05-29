@@ -1,8 +1,12 @@
 defmodule Blockade.Mixfile do
   use Mix.Project
 
+  @app_name :blockade
+  @version "0.1.0"
+
   def project do
     [elixir: "~> 1.4",
+     version: @version,
      package: package(),
      apps_path: "apps",
      build_embedded: Mix.env == :prod,
@@ -29,7 +33,7 @@ defmodule Blockade.Mixfile do
   end
 
   defp package do
-    [name: :blockade,
+    [name: @app_name,
      files: ~w(config lib test mix.exs README*),
      maintainers: ["Pierre Martin>"],
      licenses: ["Apache 2.0"],

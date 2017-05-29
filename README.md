@@ -2,17 +2,16 @@
 
 ## Tooling
 
-A [sublime project](blockade.sublime-project) is provided with proper exclusions
-and tooling, including:
+- To fetch the project dependencies, run `mix deps.get`.
+- To compile, run `mix compile`.
 
-- Compile (Pretty much just runs `mix compile`),
-- Test (Runs the `ExUnit` suite),
-- Dializer (Static code analysis),
-- Credo (Lints and reports style issues),
-- Dogma (Even stricter linting).
+Sanity tools:
 
-Those tools have correct regex extraction defined and will highlight the problematic
-bits of code when you run them.
+- To run the tests, issue `mix test`.
+- Dialyzer for static analysis: `mix dialyzer`.
+- Credo and Dogma for style: `mix credo` and `mix dogma`.
+
+To generate the documentation, simply run `mix docs` and `open doc/index.html`.
 
 ## Blocks
 
@@ -51,17 +50,18 @@ instance to be used to handle messages.
 
 To summarize:
 
-      # Starts a node listening on local addresses, port 4001:
-      pierre = Knot.start "tcp://0.0.0.0:4001"
-      # Starts a node listening on local addresses, port 4002:
-      gina = Knot.start "tcp://0.0.0.0:4002"
-      # Connect Gina's node to Pierre's:
-      Knot.Client.Connector.start pierre.uri, gina.logic
+```elixir
+pierre = Knot.start "tcp://0.0.0.0:4001"
+gina = Knot.start "tcp://0.0.0.0:4002"
+Knot.Client.Connector.start pierre.uri, gina.logic
+```
 
 A `mix` task has been put together within the `Knot` application, and will do
 exactly that. You can run it by issuing the following command:
 
-      iex -S mix knot.assert_coms
+```elixir
+iex -S mix knot.assert_coms
+```
 
 You should start seeing messages in the `iex` console indicating that Gina's node
 is issuing `:ping` messages, and Pierre's node is responding with `:pong` messages:
@@ -85,3 +85,19 @@ Interactive Elixir (1.4.4) - press Ctrl+C to exit (type h() ENTER for help)
 
 When you're done testing, you can issue `:init.stop()` so all process exit cleanly
 and no port is left open on a deadlock by the BEAM VM.
+You should obtain the following output:
+
+```
+16:47:13.427 [info]  [0.0.0.0:4002] Terminating listener: :shutdown.
+16:47:13.427 [info]  [0.0.0.0:4001] Terminating listener: :shutdown.
+16:47:13.427 [info]  [0.0.0.0:4002] Logic is terminating: shutdown. Notifying 1 client(s)...
+16:47:13.427 [info]  [0.0.0.0:4001] Logic is terminating: shutdown. Notifying 1 client(s)...
+```
+
+Also see the mix task `knot.start` allowing a  more granular setup, eg:
+
+```
+iex -S mix knot.start --bind tcp://0.0.0.0:4001 \
+                      --connect tcp://0.0.0.0:4002 \
+                      --connect tcp://0.0.0.0:4003
+```

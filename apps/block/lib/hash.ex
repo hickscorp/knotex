@@ -104,9 +104,7 @@ defmodule Hash do
   end
 
   @doc """
-  Transforms a string into a hash.
-
-  Case doesn't matter.
+  Transforms a string into a hash by first downcasing it.
 
   ## Examples
 
@@ -127,13 +125,11 @@ defmodule Hash do
   ## Examples
 
       # A difficulty of 1 requires at least 1 leading zero.
-      iex> <<0x01, 0x01>>
-      iex>   |> Hash.ensure_hardness(1)
+      iex> Hash.ensure_hardness <<0x01, 0x01>>, 1
       {:error, :unmet_difficulty}
 
       # A difficulty of 1 requires at least 1 leading zero.
-      iex> <<0x00, 0x01>>
-      iex>   |> Hash.ensure_hardness(1)
+      iex> Hash.ensure_hardness <<0x00, 0x01>>, 1
       :ok
   """
   @spec ensure_hardness(t, Block.difficulty)

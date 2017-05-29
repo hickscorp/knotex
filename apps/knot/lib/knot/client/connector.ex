@@ -13,7 +13,7 @@ defmodule Knot.Client.Connector do
 
   @type t :: Via.t | pid
 
-  @spec start(URI.t, Via.t) :: Connector.t
+  @spec start(URI.t | String.t, Via.t) :: Connector.t
   def start(%URI{} = uri, handler) do
     {:ok, pid} = Supervisor.start_child Knot.Connectors, [uri, handler]
     pid
@@ -49,9 +49,9 @@ defmodule Knot.Client.Connector do
   @spec transfer_socket_notify({:ok, Knot.socket}, Via.t) :: :normal | :error
   defp transfer_socket_notify({:ok, socket}, handler) do
     with  handler_pid <- GenServer.call(handler, :pid),
-          :ok <-         :gen_tcp.controlling_process(socket, handler_pid),
-          args <- {:on_client_socket, socket, :outbound},
-          :ok <- GenServer.cast(handler, args) do
+          :ok <- :gen_tcp.controlling_process(socket, handler_pid),
+          opts <- {:on_client_socket, socket, :outbound},
+          :ok <- GenServer.cast(handler, opts) do
           :normal
     else
         _ ->

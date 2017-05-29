@@ -1,5 +1,6 @@
 defmodule Knot.Logic do
   @moduledoc """
+  Models the communication flow between nodes through clients.
   """
   use GenServer
   require Logger
@@ -51,6 +52,17 @@ defmodule Knot.Logic do
     {:reply, self(), state}
   end
 
+  @spec handle_call({:on_listener_terminating, any}, any, State.t)
+                   :: {:reply, :ok, State.t}
+  def handle_call({:on_listener_terminating, reason}, _from, state) do
+    Logger.info fn ->
+      "[#{Via.readable state.uri}] Logic is terminating: #{reason}. " <>
+      "Notifying #{inspect length state.clients} client(s)..."
+    end
+    for client <- state.clients, do: Knot.Client.close client
+    {:reply, :ok, state}
+  end
+
   @spec handle_cast({:on_client_socket, Knot.socket, Client.direction}, State.t)
                    :: {:noreply, State.t}
   def handle_cast({:on_client_socket, cli_socket, direction}, state) do
@@ -79,9 +91,7 @@ defmodule Knot.Logic do
     case decoded do
       {:ok, terms} -> on_client_data state, client, terms
       {:error, e} ->
-        Logger.error fn ->
-          "[#{Via.readable uri}] Cannot decode message: #{inspect e}"
-        end
+        Logger.error "[#{Via.readable uri}] Cannot decode message: #{inspect e}"
     end
 
     {:noreply, state}

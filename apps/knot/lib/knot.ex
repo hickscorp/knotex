@@ -9,9 +9,10 @@ defmodule Knot do
   - A supervisor in charge of the client processes (See `Knot.Client`).
   """
   use Supervisor
+  require Logger
   alias __MODULE__, as: Knot
 
-  @type      t :: Via.t | pid
+  @type      t :: Via.t
   @type socket :: :gen_tcp.socket
 
   defmodule Handle do
@@ -32,17 +33,31 @@ defmodule Knot do
 
   # Public API.
 
-  @spec start(URI.t) :: Handle.t
+  @spec start(URI.t | String.t) :: Handle.t
   def start(%URI{} = uri) do
-    {:ok, _} = Supervisor.start_child Knots, [uri]
-
-    %Handle{uri: uri,
-           node: Via.node(uri),
-          logic: Via.logic(uri),
-       listener: Via.listener(uri)}
+    case Supervisor.start_child(Knot.Knots, [uri]) do
+      {:ok, _} -> make_handle uri
+      {:error, {:already_started, _}} -> make_handle uri
+    end
   end
-  def start(uri) when is_binary uri do
-    start URI.parse uri
+  def start(address) when is_binary address do
+    address
+      |> URI.parse
+      |> start
+  end
+
+  @spec stop(URI.t | String.t) :: :ok
+  def stop(%URI{} = uri) do
+    [{pid, _}] = Registry.lookup(Via.registry(), Via.id(uri, "node"))
+    Supervisor.terminate_child Knot.Knots, pid
+  end
+  def stop(%Handle{uri: uri}) do
+    stop uri
+  end
+  def stop(address) when is_binary address do
+    address
+      |> URI.parse
+      |> stop
   end
 
   @spec start_link(URI.t) :: {:ok, pid}
@@ -60,12 +75,12 @@ defmodule Knot do
     supervise children, strategy: :one_for_one
   end
 
-  def blah do
-    # In terminal 1:
-    h1 = Knot.start URI.parse("tcp://127.0.0.1:4001")
+  # Implementation.
 
-    # In terminal 2:
-    h2 = Knot.start URI.parse("tcp://127.0.0.1:4002")
-    Knot.Client.Connector.start URI.parse("tcp://127.0.0.1:4001"), h2.logic
+  defp make_handle(uri) do
+    %Handle{uri: uri,
+           node: Via.node(uri),
+          logic: Via.logic(uri),
+       listener: Via.listener(uri)}
   end
 end

@@ -1,7 +1,5 @@
 defmodule Mix.Tasks.Block.EnsureSanity do
-  @moduledoc """
-  Provides sanity verifications as a mix task.
-  """
+  @moduledoc false
   use Mix.Task
 
   @shortdoc "Ensures that the app can perform."

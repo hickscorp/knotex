@@ -20,6 +20,7 @@ defmodule Knot.Listener do
 
   @spec init({URI.t, Via.t}) :: {:ok, State.t}
   def init({uri, handler}) do
+    Process.flag :trap_exit, true
     Logger.info fn -> "[#{Via.readable uri}] Starting listener." end
 
     host = String.to_charlist uri.host
@@ -27,8 +28,7 @@ defmodule Knot.Listener do
 
     opts = [:binary, ip: ip, packet: 0, active: false]
     {:ok, socket} = :gen_tcp.listen uri.port, opts
-
-    spawn fn -> listen uri, handler, socket end
+    spawn_link fn -> listen uri, handler, socket end
 
     {:ok, {uri, handler, socket}}
   end
@@ -41,10 +41,24 @@ defmodule Knot.Listener do
       {:ok, cli_socket} ->
         GenServer.cast handler, {:on_client_socket, cli_socket, :inbound}
         listen uri, handler, socket
-      {:error, err} ->
+      {:error, :closed} ->
         Logger.info fn ->
+          "[#{Via.readable uri}] Socket was closed."
+        end
+        :ok
+      {:error, err} ->
+        Logger.warn fn ->
           "[#{Via.readable uri}] Unable to accept: #{inspect err}"
         end
+        {:error, err}
     end
+  end
+
+  def terminate(reason, {uri, handler, socket}) do
+    Logger.info fn ->
+      "[#{Via.readable uri}] Terminating listener: #{inspect reason}."
+    end
+    GenServer.call handler, {:on_listener_terminating, reason}
+    :gen_tcp.close socket
   end
 end

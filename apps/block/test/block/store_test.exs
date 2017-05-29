@@ -60,19 +60,23 @@ defmodule BlockStoreTest do
     setup :store_block
 
     test "finds the block when it exists" do
-        Store.find_by_height_and_hash(@block.height, @block.hash)
+      @block.height
+        |> Store.find_by_height_and_hash(@block.hash)
         |> Kernel.==({:ok, @block})
         |> assert
     end
 
     test "doesn't return a block when none is found for that height" do
-        Store.find_by_height_and_hash(@block.height + 1, @block.hash)
+      @block.height
+        |> Kernel.+(1)
+        |> Store.find_by_height_and_hash(@block.hash)
         |> Kernel.==({:error, :not_found})
         |> assert
     end
 
     test "doesn't return a block when none is found for that hash" do
-        Store.find_by_height_and_hash(@block.height, Hash.zero)
+      @block.height
+        |> Store.find_by_height_and_hash(Hash.zero)
         |> Kernel.==({:error, :not_found})
         |> assert
     end

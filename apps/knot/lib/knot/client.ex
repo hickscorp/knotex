@@ -8,8 +8,10 @@ defmodule Knot.Client do
 
   # Public API.
 
-  @type         t :: Via.t | pid
+  @type         t :: pid
   @type direction :: :inbound | :outbound
+
+  @ping_interval 5_000
 
   defmodule State do
     @moduledoc false
@@ -32,14 +34,19 @@ defmodule Knot.Client do
   end
   def start(socket, handler, :outbound) do
     socket
-     |> connect(handler)
-     |> schedule_tick(500)
+      |> connect(handler)
+      |> schedule_tick(@ping_interval)
   end
 
   @spec connect(Knot.socket, Via.t) :: Client.t
   defp connect(socket, handler) do
     {:ok, pid} = Supervisor.start_child Knot.Clients, [socket, handler]
     pid
+  end
+
+  @spec close(Client.t) :: :ok
+  def close(client) do
+    GenServer.call client, :close
   end
 
   @spec send_data(Client.t, any) :: :ok
@@ -59,12 +66,17 @@ defmodule Knot.Client do
   @spec init({Knot.socket, Via.t}) :: {:ok, State.t}
   def init({socket, handler}) do
     me = self()
-    spawn fn -> recv me, socket end
+    spawn_link fn -> recv me, socket end
 
     GenServer.cast handler, {:on_client_ready, me}
     state = %State{handler: handler, socket: socket}
       |> mark_active
     {:ok, state}
+  end
+
+  def handle_call(:close, _from, %{socket: socket} = state) do
+    :gen_tcp.close socket
+    {:reply, :ok, state}
   end
 
   def handle_cast({:send_data, data}, %{socket: socket} = state) do
@@ -87,7 +99,7 @@ defmodule Knot.Client do
 
   def handle_info(:tick, state) do
     me = self()
-      |> schedule_tick(5_000)
+      |> schedule_tick(@ping_interval)
     :ok = send_data me, {:ping, now()}
     {:noreply, state}
  end
