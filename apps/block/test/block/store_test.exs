@@ -98,7 +98,7 @@ defmodule BlockStoreTest do
       Store.remove @block
       @block.hash
         |> Store.find_by_hash
-        |> Kernel.==({:ok, @block})
+        |> Kernel.==({:error, :not_found})
         |> assert
     end
   end

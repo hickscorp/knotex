@@ -14,6 +14,7 @@ defmodule Block do
 
   @genesis_data Application.get_env :block, :genesis
 
+  # TODO: A block should store a Merkle root of its position within its fork.
   @type   timestamp :: non_neg_integer
   @type      height :: non_neg_integer
   @type  difficulty :: non_neg_integer

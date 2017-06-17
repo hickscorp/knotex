@@ -93,7 +93,8 @@ defmodule Block.Store do
   @spec handle_cast({:remove, Block.t}, state) :: {:noreply, state}
   def handle_cast({:remove, b}, table) do
     # TODO: Fix this, it's not deleting anything right now.
-    :ets.delete table, {b.height, b.hash, b.parent_hash, b}
+    res = :ets.delete table, {:_, b.hash, :_, :_}
+    IO.puts "Response: #{inspect res}"
     {:noreply, table}
   end
 

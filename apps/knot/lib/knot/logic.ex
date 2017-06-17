@@ -79,8 +79,8 @@ defmodule Knot.Logic do
     new_state = state
       |> State.add_client(client)
 
-    Enum.each [:genesis_block, :heighest_block],
-              &Knot.Client.send_data(client, {:query, &1})
+    Enum.each [:genesis, :heighest],
+              &Knot.Client.send_data(client, {:block_query, &1})
 
     {:noreply, new_state}
   end
@@ -124,25 +124,35 @@ defmodule Knot.Logic do
       "[#{Via.readable uri}] Received pong from #{inspect client}."
     end
   end
-  # Received a query.
-  def on_client_data(%{uri: uri}, client, {:query, what}) do
-    res = case what do
-      :genesis_block -> {:answer, {what, Block.genesis()}}
-      :heighest_block -> {:answer, {what, Block.new(<<1>>, 382_921_200)}}
-    end
+  # Received a block query.
+  def on_client_data(%{uri: uri}, client, {:block_query, query}) do
+    res = {
+      :answer,
+      case query do
+        :genesis -> Block.genesis()
+        :heighest -> Block.new <<1>>, 382_921_200
+        otherwise ->
+          Logger.warn fn ->
+            "[#{Via.readable uri}] Client #{inspect client} tried to perform " <>
+            "an unknown block query: #{inspect otherwise}"
+          end
+          {:error, :unknown_block_query}
+      end
+    }
+
     Logger.info fn ->
-      "[#{Via.readable uri}] #{inspect client} is querying #{inspect what}."
+      "[#{Via.readable uri}] Block query from #{inspect client}."
     end
     Knot.Client.send_data client, res
   end
   # Received an answer to a query.
-  def on_client_data(%{uri: uri}, client, {:answer, {what, response}}) do
-    case what do
-      :genesis_block ->
+  def on_client_data(%{uri: uri}, client, {:answer, {query, _}}) do
+    case query do
+      :genesis ->
         Logger.info fn ->
           "[#{Via.readable uri}] #{inspect client} knows the remote genesis."
         end
-      :heighest_block ->
+      :heighest ->
         Logger.info fn ->
           "[#{Via.readable uri}] #{inspect client} knows the remote highest " <>
           "block."
