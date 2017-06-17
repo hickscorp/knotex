@@ -38,16 +38,29 @@ defmodule Knot.Client.Connector do
   end
 
   @spec handle_cast(:connect, State.t) :: {:stop, :normal, State.t}
-  def handle_cast(:connect, {%{host: host, port: port}, handler} = state) do
-    reason = host
-      |> String.to_charlist
-      |> :gen_tcp.connect(port, [:binary, active: false])
-      |> transfer_socket_notify(handler)
-    {:stop, reason, state}
+  def handle_cast(:connect, {uri, handler} = state) do
+    with host <- String.to_charlist(uri.host),
+         args <- [:binary, active: false],
+         {:ok, socket} <- :gen_tcp.connect(host, uri.port, args),
+         reason <- transfer_socket_notify(socket, handler) do
+      {:stop, reason, state}
+    else
+      {:error, :econnrefused} ->
+        Logger.warn fn ->
+          "Cannot connect to #{Via.readable uri}: Connection refused."
+        end
+        {:stop, :normal, state}
+      err ->
+        Logger.error fn ->
+          "An error occured while connecting to #{Via.readable uri}: " <>
+          inspect(err)
+        end
+        {:stop, :error, state}
+    end
   end
 
-  @spec transfer_socket_notify({:ok, Knot.socket}, Via.t) :: :normal | :error
-  defp transfer_socket_notify({:ok, socket}, handler) do
+  @spec transfer_socket_notify(Knot.socket, Via.t) :: :normal | :error
+  defp transfer_socket_notify(socket, handler) do
     with  handler_pid <- GenServer.call(handler, :pid),
           :ok <- :gen_tcp.controlling_process(socket, handler_pid),
           opts <- {:on_client_socket, socket, :outbound},

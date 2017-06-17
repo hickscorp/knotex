@@ -52,8 +52,8 @@ defmodule Block do
 
   ## Examples
 
-      iex> Block.new <<1>>, 382921200
-      %Block{content_hash: <<1>>, timestamp: 382921200}
+      iex> Block.new <<1>>, 382_921_200
+      %Block{content_hash: <<1>>, timestamp: 382_921_200}
 
   """
   @spec new(Hash.t, Block.timestamp) :: Block.t

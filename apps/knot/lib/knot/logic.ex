@@ -78,6 +78,10 @@ defmodule Knot.Logic do
   def handle_cast({:on_client_ready, client}, state) do
     new_state = state
       |> State.add_client(client)
+
+    Enum.each [:genesis_block, :heighest_block],
+              &Knot.Client.send_data(client, {:query, &1})
+
     {:noreply, new_state}
   end
 
@@ -107,20 +111,48 @@ defmodule Knot.Logic do
   # Implementation.
 
   @spec on_client_data(State.t, Knot.socket, any) :: any
+  # Received ping, answer pong.
   def on_client_data(%{uri: uri}, client, {:ping, ts}) do
     Logger.info fn ->
       "[#{Via.readable uri}] Received ping at #{ts} from #{inspect client}."
     end
     Knot.Client.send_data client, :pong
   end
+  # Received pong.
   def on_client_data(%{uri: uri}, client, :pong) do
     Logger.info fn ->
       "[#{Via.readable uri}] Received pong from #{inspect client}."
     end
   end
-  def on_client_data(%{uri: uri}, _, _) do
+  # Received a query.
+  def on_client_data(%{uri: uri}, client, {:query, what}) do
+    res = case what do
+      :genesis_block -> {:answer, {what, Block.genesis()}}
+      :heighest_block -> {:answer, {what, Block.new(<<1>>, 382_921_200)}}
+    end
+    Logger.info fn ->
+      "[#{Via.readable uri}] #{inspect client} is querying #{inspect what}."
+    end
+    Knot.Client.send_data client, res
+  end
+  # Received an answer to a query.
+  def on_client_data(%{uri: uri}, client, {:answer, {what, response}}) do
+    case what do
+      :genesis_block ->
+        Logger.info fn ->
+          "[#{Via.readable uri}] #{inspect client} knows the remote genesis."
+        end
+      :heighest_block ->
+        Logger.info fn ->
+          "[#{Via.readable uri}] #{inspect client} knows the remote highest " <>
+          "block."
+        end
+    end
+  end
+  # Unknown command.
+  def on_client_data(%{uri: uri}, _, cmd) do
     Logger.warn fn ->
-      "[#{Via.readable uri}] Unknown command from client."
+      "[#{Via.readable uri}] Unknown command from client: #{inspect cmd}"
     end
   end
 end

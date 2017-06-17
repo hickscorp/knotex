@@ -17,7 +17,7 @@ defmodule Mix.Tasks.Knot.Start do
   end
 
   defp parse_options({args, _, _}) do
-    pop_options(args, {nil, []})
+    pop_options args, {nil, []}
   end
   defp pop_options([], parsed) do
     parsed
