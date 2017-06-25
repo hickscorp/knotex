@@ -46,7 +46,7 @@ defmodule Block.Store do
 
   @doc "Removes a block from the store."
   @spec remove(Block.t) :: :ok
-  def remove(%Block{} = block) do
+  def remove(%{} = block) do
     GenServer.cast Store, {:remove, block}
   end
 
@@ -92,9 +92,8 @@ defmodule Block.Store do
 
   @spec handle_cast({:remove, Block.t}, state) :: {:noreply, state}
   def handle_cast({:remove, b}, table) do
-    # TODO: Fix this, it's not deleting anything right now.
-    res = :ets.delete table, {:_, b.hash, :_, :_}
-    IO.puts "Response: #{inspect res}"
+    # TODO: ETS seems broken here, no removal is performed.
+    :ets.delete table, {:_, b.hash, :_, :_}
     {:noreply, table}
   end
 

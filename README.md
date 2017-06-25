@@ -135,7 +135,7 @@ which the client is connected.
 - Success: `{:block_answer, {:highest, %Block{}}}`
 
 The `:highest` block query returns the highest block known to the node to which
-the client is connected. In most case, it's the latest mined block, unless it has
+the client is connected. In most cases, it's the latest mined block, unless it has
 not been propagated to the network yet.
 
 When a client queries the highest block from multiple nodes, and if the answers
@@ -147,8 +147,8 @@ paragraph.
 
 #### Merkle Root
 
-- Example: `{:block_query, {:merkle_root, block_id}}`
-- Success: `{:block_answer, {:merkle_root, ^block_id, %MerkleRoot{}}}`
+- Example: `{:block_query, {:merkle_root, block_hash}}`
+- Success: `{:block_answer, {:merkle_root, ^block_hash, %MerkleRoot{}}}`
 
 This query allows to retrieve the full Merkle chain for any given block using its
 hash. When the highest block from two nodes differ, the one with the lowest one
@@ -157,25 +157,12 @@ allowing correction.
 
 #### Ancestry up to Genesis
 
-- Example: `{:block_query, {:ancestry, block_id}}`
-- Success: `{:block_answer, {:ancestry, ^block_id, blocks}}`
+- Example: `{:block_query, {:ancestry, block_hash}}`
+- Success: `{:block_answer, {:ancestry, ^block_hash, blocks}}`
 
 Allows to retrieve the full ancestry to a given block, all the way to the genesis
 block.
 
 In the answer, the `blocks` variable is a list of `%Block{}`, with its first element
-being the closest ancestor to the `block_id` and its last element being the
+being the closest ancestor to the `block_hash` and its last element being the
 first child of the genesis block.
-
-#### Ancestry up to Given Block
-
-- Example: `{:block_query, {:ancestry, block_id, deepest_block_id}}`
-- Success: `{:block_answer, {:ancestry, ^block_id, ^deepest_block_id, blocks}}`
-
-This block query allows to retrieve an ancestry chain up to a given block id.
-If the `deepest_block_id` is not part of the `block_id`'s ancestry, an error is
-returned.
-
-In the answer, the `blocks` variable is a list of `%Block{}`, with its first element
-being the closest ancestor to the `block_id` and the last element being the first
-child of the `deepest_block_id`.

@@ -6,7 +6,8 @@ defmodule BlockStoreTest do
   @block %Block{
     hash:           Hash.perform("a"),
     parent_hash:    Hash.perform("a"),
-    component_hash: Hash.perform("a")
+    component_hash: Hash.perform("a"),
+    timestamp:      1
   }
 
   setup :clear

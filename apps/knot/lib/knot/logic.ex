@@ -27,11 +27,6 @@ defmodule Knot.Logic do
     def new(uri) do
       %State{uri: uri}
     end
-
-    @spec add_client(State.t, Knot.socket) :: State.t
-    def add_client(%{clients: clients} = state, client) do
-      %{state | clients: [client | clients]}
-    end
   end
 
   @spec start_link(URI.t) :: {:ok, Logic.t}
@@ -40,7 +35,6 @@ defmodule Knot.Logic do
   end
 
   # GenServer handlers.
-
   @spec init(URI.t) :: {:ok, State.t}
   def init(uri) do
     Logger.info fn -> "[#{Via.readable uri}] Starting logic." end
@@ -76,8 +70,7 @@ defmodule Knot.Logic do
   @spec handle_cast({:on_client_ready, Client.t}, State.t)
                    :: {:noreply, State.t}
   def handle_cast({:on_client_ready, client}, state) do
-    new_state = state
-      |> State.add_client(client)
+    new_state = %{state | clients: [client | state.clients]}
 
     Enum.each [:genesis, :heighest],
               &Knot.Client.send_data(client, {:block_query, &1})
@@ -86,13 +79,7 @@ defmodule Knot.Logic do
   end
 
   def handle_cast({:on_client_data, client, data}, %{uri: uri} = state) do
-    decoded = try do
-      {:ok, Bertex.safe_decode(data)}
-    rescue
-      e -> {:error, e}
-    end
-
-    case decoded do
+    case deserialize data do
       {:ok, terms} -> on_client_data state, client, terms
       {:error, e} ->
         Logger.error "[#{Via.readable uri}] Cannot decode message: #{inspect e}"
@@ -110,6 +97,14 @@ defmodule Knot.Logic do
 
   # Implementation.
 
+  def deserialize(data) do
+    try do
+      {:ok, Bertex.safe_decode(data)}
+    rescue
+      e -> {:error, e}
+    end
+  end
+
   @spec on_client_data(State.t, Knot.socket, any) :: any
   # Received ping, answer pong.
   def on_client_data(%{uri: uri}, client, {:ping, ts}) do
@@ -126,24 +121,7 @@ defmodule Knot.Logic do
   end
   # Received a block query.
   def on_client_data(%{uri: uri}, client, {:block_query, query}) do
-    res = {
-      :answer,
-      case query do
-        :genesis -> Block.genesis()
-        :heighest -> Block.new <<1>>, 382_921_200
-        otherwise ->
-          Logger.warn fn ->
-            "[#{Via.readable uri}] Client #{inspect client} tried to perform " <>
-            "an unknown block query: #{inspect otherwise}"
-          end
-          {:error, :unknown_block_query}
-      end
-    }
-
-    Logger.info fn ->
-      "[#{Via.readable uri}] Block query from #{inspect client}."
-    end
-    Knot.Client.send_data client, res
+    process_block_query uri, client, query
   end
   # Received an answer to a query.
   def on_client_data(%{uri: uri}, client, {:answer, {query, _}}) do
@@ -164,5 +142,20 @@ defmodule Knot.Logic do
     Logger.warn fn ->
       "[#{Via.readable uri}] Unknown command from client: #{inspect cmd}"
     end
+  end
+
+  def process_block_query(_, _, :genesis) do
+    Block.genesis()
+  end
+  def process_block_query(_, _, :highest) do
+    # TODO: Fetch the highest block from the node state.
+    Block.new <<1>>, 382_921_200
+  end
+  def process_block_query(_, _, {:ancestry, hash}) do
+    # TODO: Get ancestry up to `hash`.
+    :ok
+  end
+  def process_block_query(uri, client, query) do
+    {:error, :invalid_block_query}
   end
 end
