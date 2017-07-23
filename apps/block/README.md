@@ -1,19 +1,3 @@
 # Block
 
-**TODO: Add description**
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `block` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [{:block, "~> 0.1.0"}]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/block](https://hexdocs.pm/block).
-
+The Block app is in charge of handling pure block-related operations.

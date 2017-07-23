@@ -1,19 +1,5 @@
 # Knot
 
-**TODO: Add description**
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `knot` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [{:knot, "~> 0.1.0"}]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/knot](https://hexdocs.pm/knot).
-
+As the `Node` module was already defined as part of the code Elixir modules, we
+decided to name this part of the logic Knot as it handles nodes (knots) of the
+blockchain mesh network.

@@ -4,6 +4,8 @@ defmodule Knot.LogicTest do
   doctest Logic
   require Logger
 
+  @uri          URI.parse "tcp://localhost:4001"
+
   describe "for message handling" do
     setup :logic
 
@@ -36,33 +38,56 @@ defmodule Knot.LogicTest do
 
   describe "#process_block_query" do
     test "handles :genesis query" do
-      res = Logic.process_block_query nil, nil, :genesis
+      res = Logic.process_block_query :genesis, state(), nil
       assert res == Block.genesis()
     end
+
     test "handles :highest query" do
-      res = Logic.process_block_query nil, nil, :highest
-      assert res == Block.new(<<1>>, 382_921_200)
+      res = Logic.process_block_query :highest, state(), nil
+      assert res == hd(state().chain)
     end
+
     test "handles :ancestry query when provided with a valid hash" do
-      res = Logic.process_block_query nil, nil, {:ancestry, "invalid hash"}
-      assert res == :ok
+      query = {:ancestry, Hash.from_string("d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35")}
+      res = Logic.process_block_query query, nil, nil
+      assert res == state().chain
     end
+
     test "handles :ancestry query when provided with an invalid hash" do
-      query = {:ancestry, Block.genesis().hash}
-      res = Logic.process_block_query nil, nil, query
-      assert res == :ok
+      query = {:ancestry, Hash.invalid}
+      res = Logic.process_block_query query, nil, nil
+      assert res == {:error, :unknown_block_hash}
     end
+
     test "returns an error when an invalid query is passed" do
-      res = Logic.process_block_query nil, nil, {:invalid, "query"}
+      res = Logic.process_block_query {:invalid, "query"}, nil, nil
       assert res == {:error, :invalid_block_query}
     end
   end
 
   defp logic(ctx) do
-    Logger.warn "A new logic server is being started."
     uri = URI.parse "tcp://localhost:4001"
     {:ok, logic} = Logic.start_link uri
 
     {:ok, Map.put(ctx, :logic, logic)}
+  end
+
+  defp state do
+    b0 = Block.genesis() |> Block.Store.store
+    b1 = make_parented_block 1, b0
+    b2 = make_parented_block 2, b1
+    b3 = make_parented_block 3, b2
+    %Logic.State{uri: @uri, chain: [b3, b2, b1, b0]}
+  end
+
+  defp make_parented_block(id, parent) do
+    hash = Hash.perform "#{id}"
+    hash
+      |> Block.new(id)
+      |> Map.put(:height, id)
+      |> Map.put(:parent_hash, parent.hash)
+      |> Map.put(:hash, hash)
+      |> Block.seal
+      |> Block.Store.store
   end
 end

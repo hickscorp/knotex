@@ -73,40 +73,30 @@ defmodule BlockTest do
     setup :store_mined_block_and_mine_child
 
     test "errors when the block's parent is unknown", ctx do
-      %{ctx.mined_block | parent_hash: Hash.invalid()}
-        |> Block.ancestry
-        |> Kernel.==({:error, :not_found})
-        |> assert
+      ancestry = Block.ancestry %{ctx.mined_block | parent_hash: Hash.invalid()}
+      assert ancestry == {:error, :not_found}
     end
 
     test "returns an array containing all parents", ctx do
-      ctx.mined_block
-        |> Block.ancestry
-        |> Kernel.==([ctx.genesis_block])
-        |> assert
+      ancestry = Block.ancestry ctx.mined_block
+      assert ancestry == [ctx.genesis_block]
     end
 
     test "returns the parents in the correct order", ctx do
-      ctx.mined_child
-        |> Block.ancestry
-        |> Kernel.==([ctx.genesis_block, ctx.mined_block])
-        |> assert
+      ancestry = Block.ancestry ctx.mined_child
+      assert ancestry == [ctx.genesis_block, ctx.mined_block]
     end
   end
 
   describe "#ensure_known_parent" do
     test "succeeds for a block with a known parent", ctx do
-      ctx.mined_block
-        |> Block.ensure_known_parent
-        |> Kernel.==(:ok)
-        |> assert
+      res = Block.ensure_known_parent ctx.mined_block
+      assert res == :ok
     end
 
     test "fails for a block with an unknown parent", ctx do
-      %{ctx.mined_block | parent_hash: "none"}
-        |> Block.ensure_known_parent
-        |> Kernel.==(:ok)
-        |> refute
+      res = Block.ensure_known_parent %{ctx.mined_block | parent_hash: "none"}
+      assert res == {:error, :unknown_parent}
     end
   end
 
@@ -147,17 +137,15 @@ defmodule BlockTest do
   describe "#difficulty" do
     test "is 1 up to the first tier" do
       for n <- 0..127 do
-        n |> Block.difficulty
-          |> Kernel.==(1)
-          |> assert
+        diff = Block.difficulty n
+        assert diff == 1
       end
     end
 
     test "is 2 up to the first tier" do
       for n <- 128..255 do
-        n |> Block.difficulty
-          |> Kernel.==(2)
-          |> assert
+        diff = Block.difficulty n
+        assert diff == 2
       end
     end
   end

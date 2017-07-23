@@ -43,43 +43,31 @@ defmodule BlockStoreTest do
     setup :store_block
 
     test "finds the block when it exists" do
-      @block.hash
-        |> Store.find_by_hash
-        |> Kernel.==({:ok, @block})
-        |> assert
+        assert Store.find_by_hash(@block.hash) == {:ok, @block}
     end
 
     test "doesn't return a block when none is found" do
-      Hash.zero
-        |> Store.find_by_hash
-        |> Kernel.==({:error, :not_found})
-        |> assert
+        block = Store.find_by_hash(Hash.zero)
+        assert block == {:error, :not_found}
     end
   end
 
-  describe "#find_by_height_and_hash" do
+  describe "#find_by_hash_and_height" do
     setup :store_block
 
     test "finds the block when it exists" do
-      @block.height
-        |> Store.find_by_height_and_hash(@block.hash)
-        |> Kernel.==({:ok, @block})
-        |> assert
+        block = Store.find_by_hash_and_height @block.hash, @block.height
+        assert block == {:ok, @block}
     end
 
     test "doesn't return a block when none is found for that height" do
-      @block.height
-        |> Kernel.+(1)
-        |> Store.find_by_height_and_hash(@block.hash)
-        |> Kernel.==({:error, :not_found})
-        |> assert
+      block = Store.find_by_hash_and_height @block.hash, @block.height + 1
+      assert block == {:error, :not_found}
     end
 
     test "doesn't return a block when none is found for that hash" do
-      @block.height
-        |> Store.find_by_height_and_hash(Hash.zero)
-        |> Kernel.==({:error, :not_found})
-        |> assert
+      block = Store.find_by_hash_and_height Hash.zero, @block.height
+      assert block == {:error, :not_found}
     end
   end
 
@@ -97,10 +85,8 @@ defmodule BlockStoreTest do
 
     test "deletes the block when it exists" do
       Store.remove @block
-      @block.hash
-        |> Store.find_by_hash
-        |> Kernel.==({:error, :not_found})
-        |> assert
+      block = Store.find_by_hash @block.hash
+      assert block == {:error, :not_found}
     end
   end
 

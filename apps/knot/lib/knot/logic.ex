@@ -14,18 +14,24 @@ defmodule Knot.Logic do
     @moduledoc false
     alias __MODULE__, as: State
 
-    @type t :: %State{
-      uri:      URI.t,
-      clients:  list(Knot.socket)
+    @typep t :: %State{
+      uri:            URI.t,
+      clients:        list(Knot.socket),
+      chain:          list(Block.t)
     }
     defstruct [
-      uri:      nil,
-      clients:  []
+      uri:            nil,
+      clients:        [],
+      chain:          []
     ]
 
     @spec new(URI.t) :: t
     def new(uri) do
-      %State{uri: uri}
+      %State{
+        uri: uri,
+        clients: [],
+        chain: [Block.genesis()]
+      }
     end
   end
 
@@ -80,7 +86,7 @@ defmodule Knot.Logic do
 
   def handle_cast({:on_client_data, client, data}, %{uri: uri} = state) do
     case deserialize data do
-      {:ok, terms} -> on_client_data state, client, terms
+      {:ok, terms} -> on_client_data terms, state, client
       {:error, e} ->
         Logger.error "[#{Via.readable uri}] Cannot decode message: #{inspect e}"
     end
@@ -105,26 +111,26 @@ defmodule Knot.Logic do
     end
   end
 
-  @spec on_client_data(State.t, Knot.socket, any) :: any
+  @spec on_client_data(any, State.t, Knot.socket) :: any
   # Received ping, answer pong.
-  def on_client_data(%{uri: uri}, client, {:ping, ts}) do
+  def on_client_data({:ping, ts}, %{uri: uri}, client) do
     Logger.info fn ->
       "[#{Via.readable uri}] Received ping at #{ts} from #{inspect client}."
     end
     Knot.Client.send_data client, :pong
   end
   # Received pong.
-  def on_client_data(%{uri: uri}, client, :pong) do
+  def on_client_data(:pong, %{uri: uri}, client) do
     Logger.info fn ->
       "[#{Via.readable uri}] Received pong from #{inspect client}."
     end
   end
   # Received a block query.
-  def on_client_data(%{uri: uri}, client, {:block_query, query}) do
-    process_block_query uri, client, query
+  def on_client_data({:block_query, query}, state, client) do
+    process_block_query query, state, client
   end
   # Received an answer to a query.
-  def on_client_data(%{uri: uri}, client, {:answer, {query, _}}) do
+  def on_client_data({:answer, {query, _}}, %{uri: uri}, client) do
     case query do
       :genesis ->
         Logger.info fn ->
@@ -138,24 +144,27 @@ defmodule Knot.Logic do
     end
   end
   # Unknown command.
-  def on_client_data(%{uri: uri}, _, cmd) do
+  def on_client_data(cmd, %{uri: uri}, _) do
     Logger.warn fn ->
       "[#{Via.readable uri}] Unknown command from client: #{inspect cmd}"
     end
   end
 
-  def process_block_query(_, _, :genesis) do
+  def process_block_query(:genesis, _, _) do
     Block.genesis()
   end
-  def process_block_query(_, _, :highest) do
-    # TODO: Fetch the highest block from the node state.
-    Block.new <<1>>, 382_921_200
+  def process_block_query(:highest, state, _) do
+    hd state.chain
   end
-  def process_block_query(_, _, {:ancestry, hash}) do
-    # TODO: Get ancestry up to `hash`.
-    :ok
+  def process_block_query({:ancestry, hash}, _, _) do
+    case Block.Store.find_by_hash hash do
+      {:ok, block} ->
+        IO.puts "BLOCK FOUND!!! #{Hash.readable hash}"
+        Block.ancestry block
+      _ -> {:error, :unknown_block_hash}
+    end
   end
-  def process_block_query(uri, client, query) do
+  def process_block_query(_query, _state, _client) do
     {:error, :invalid_block_query}
   end
 end

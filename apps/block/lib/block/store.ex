@@ -37,11 +37,11 @@ defmodule Block.Store do
   def find_by_hash(hash), do: GenServer.call Store, {:find_by_hash, hash}
 
   @doc "Finds a block by its height and hash."
-  @spec find_by_height_and_hash(Block.height, Hash.t) :: finder_result
-  def find_by_height_and_hash(nil, _), do: {:error, :badarg}
-  def find_by_height_and_hash(_, nil), do: {:error, :badarg}
-  def find_by_height_and_hash(height, hash) do
-    GenServer.call Store, {:find_by_height_and_hash, height, hash}
+  @spec find_by_hash_and_height(Hash.t, Block.height) :: finder_result
+  def find_by_hash_and_height(nil, _), do: {:error, :badarg}
+  def find_by_hash_and_height(_, nil), do: {:error, :badarg}
+  def find_by_hash_and_height(hash, height) do
+    GenServer.call Store, {:find_by_hash_and_height, hash, height}
   end
 
   @doc "Removes a block from the store."
@@ -73,27 +73,26 @@ defmodule Block.Store do
   @spec handle_call({:find_by_hash, Hash.t}, any, state)
                    :: {:reply, finder_result, state}
   def handle_call({:find_by_hash, hash}, _from, table) do
-    ret = find_by(table, :_, hash, :_)
+    ret = find_by(table, hash, :_, :_)
     {:reply, ret, table}
   end
 
-  @spec handle_call({:find_by_height_and_hash, Block.height, Hash.t},
+  @spec handle_call({:find_by_hash_and_height, Hash.t, Block.height},
                     any, state) :: {:reply, finder_result, state}
-  def handle_call({:find_by_height_and_hash, height, hash}, _from, table) do
-    ret = find_by(table, height, hash, :_)
+  def handle_call({:find_by_hash_and_height, hash, height}, _from, table) do
+    ret = find_by(table, hash, height, :_)
     {:reply, ret, table}
   end
 
   @spec handle_cast({:store, Block.t}, state) :: {:noreply, state}
   def handle_cast({:store, b}, table) do
-    :ets.insert table, {b.height, b.hash, b.parent_hash, b}
+    :ets.insert table, {b.hash, b.height, b.parent_hash, b}
     {:noreply, table}
   end
 
   @spec handle_cast({:remove, Block.t}, state) :: {:noreply, state}
   def handle_cast({:remove, b}, table) do
-    # TODO: ETS seems broken here, no removal is performed.
-    :ets.delete table, {:_, b.hash, :_, :_}
+    :ets.match_delete table, {b.hash, b.height, b.parent_hash, b}
     {:noreply, table}
   end
 
@@ -105,10 +104,10 @@ defmodule Block.Store do
 
   # Implementation.
 
-  @spec find_by(state, Block.height | :_, Hash.t | :_, Hash.t | :_)
+  @spec find_by(state, Hash.t | :_, Block.height | :_, Hash.t | :_)
                 :: finder_result
-  defp find_by(table, height, hash, p_hash) do
-    case :ets.match table, {height, hash, p_hash, :"$1"} do
+  defp find_by(table, hash, height, p_hash) do
+    case :ets.match table, {hash, height, p_hash, :"$1"} do
       [[block]] -> {:ok, block}
       []        -> {:error, :not_found}
     end

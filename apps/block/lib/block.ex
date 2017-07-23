@@ -180,7 +180,7 @@ defmodule Block do
   @doc "Verifies all of a given `block`'s parents are well known."
   @spec ensure_known_parent(Block.t) :: :ok
   def ensure_known_parent(%{height: height, parent_hash: p_hash}) do
-    case Store.find_by_height_and_hash(height - 1, p_hash) do
+    case Store.find_by_hash_and_height(p_hash, height - 1) do
       {:ok, _} -> :ok
       {:error, _} -> {:error, :unknown_parent}
     end
