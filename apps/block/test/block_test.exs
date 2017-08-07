@@ -84,7 +84,7 @@ defmodule BlockTest do
 
     test "returns the parents in the correct order", ctx do
       ancestry = Block.ancestry ctx.mined_child
-      assert ancestry == [ctx.genesis_block, ctx.mined_block]
+      assert ancestry == [ctx.mined_block, ctx.genesis_block]
     end
   end
 

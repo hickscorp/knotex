@@ -158,9 +158,7 @@ defmodule Knot.Logic do
   end
   def process_block_query({:ancestry, hash}, _, _) do
     case Block.Store.find_by_hash hash do
-      {:ok, block} ->
-        IO.puts "BLOCK FOUND!!! #{Hash.readable hash}"
-        Block.ancestry block
+      {:ok, block} -> Block.ancestry block
       _ -> {:error, :unknown_block_hash}
     end
   end

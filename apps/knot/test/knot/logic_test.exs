@@ -1,5 +1,5 @@
 defmodule Knot.LogicTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   alias Knot.Logic
   doctest Logic
   require Logger
@@ -37,20 +37,23 @@ defmodule Knot.LogicTest do
   end
 
   describe "#process_block_query" do
-    test "handles :genesis query" do
-      res = Logic.process_block_query :genesis, state(), nil
+    setup :state
+
+    test "handles :genesis query", %{state: state} do
+      res = Logic.process_block_query :genesis, state, nil
       assert res == Block.genesis()
     end
 
-    test "handles :highest query" do
-      res = Logic.process_block_query :highest, state(), nil
-      assert res == hd(state().chain)
+    test "handles :highest query", %{state: state} do
+      res = Logic.process_block_query :highest, state, nil
+      assert res == hd(state.chain)
     end
 
-    test "handles :ancestry query when provided with a valid hash" do
-      query = {:ancestry, Hash.from_string("d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35")}
+    test "handles :ancestry query when provided with a valid hash", %{state: state} do
+      [b3, b2, b1, genesis] = state.chain
+      query = {:ancestry, b3.hash}
       res = Logic.process_block_query query, nil, nil
-      assert res == state().chain
+      assert res == [b2, b1, genesis]
     end
 
     test "handles :ancestry query when provided with an invalid hash" do
@@ -72,12 +75,12 @@ defmodule Knot.LogicTest do
     {:ok, Map.put(ctx, :logic, logic)}
   end
 
-  defp state do
-    b0 = Block.genesis() |> Block.Store.store
-    b1 = make_parented_block 1, b0
+  defp state(ctx) do
+    genesis = Block.Store.store Block.genesis()
+    b1 = make_parented_block 1, genesis
     b2 = make_parented_block 2, b1
     b3 = make_parented_block 3, b2
-    %Logic.State{uri: @uri, chain: [b3, b2, b1, b0]}
+    {:ok, Map.put(ctx, :state, %Logic.State{uri: @uri, chain: [b3, b2, b1, genesis]})}
   end
 
   defp make_parented_block(id, parent) do

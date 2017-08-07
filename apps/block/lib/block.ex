@@ -172,7 +172,7 @@ defmodule Block do
   def ancestry(%{parent_hash: @zero_hash}, ancestors), do: ancestors
   def ancestry(%{parent_hash: p_hash}, ancestors) do
     case Store.find_by_hash(p_hash) do
-      {:ok, parent} -> ancestry parent, [parent | ancestors]
+      {:ok, parent} -> ancestry parent, ancestors ++ [parent]
       {:error, _} = err -> err
     end
   end
