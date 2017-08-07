@@ -1,16 +1,20 @@
 /_build
 /cover
+/db
 /deps
 /doc
-/db
 
 /.deliver/releases/
 /rel/*/**
 config/prod.exs
+config/*.secret.exs
 
-*.ez
-.fetch
-*.ez
 *.beam
 *.dump
+*.ez
+*.fetch
+*.log
 *.sublime-workspace
+
+assets/node_modules
+priv/static
