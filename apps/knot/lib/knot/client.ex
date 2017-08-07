@@ -74,11 +74,13 @@ defmodule Knot.Client do
     {:ok, state}
   end
 
+  @spec handle_call(:close, any, State.t) :: {:reply, :ok, State.t}
   def handle_call(:close, _from, %{socket: socket} = state) do
     :gen_tcp.close socket
     {:reply, :ok, state}
   end
 
+  @spec handle_cast({:send_data, any}, State.t) :: {:noreply, State.t}
   def handle_cast({:send_data, data}, %{socket: socket} = state) do
     :ok = :gen_tcp.send socket, Bertex.encode data
     {:noreply, state}
@@ -97,10 +99,11 @@ defmodule Knot.Client do
     {:stop, :normal, state}
   end
 
+  @spec handle_info(:tick, State.t) :: {:noreply, State.t}
   def handle_info(:tick, state) do
-    me = self()
+    :ok = self()
       |> schedule_tick(@ping_interval)
-    :ok = send_data me, {:ping, now()}
+      |> send_data({:ping, now()})
     {:noreply, state}
  end
 
@@ -128,8 +131,7 @@ defmodule Knot.Client do
 
   @spec now :: pos_integer
   defp now do
-    DateTime.utc_now
-      |> DateTime.to_unix
+    DateTime.to_unix DateTime.utc_now()
   end
 
   @spec schedule_tick(Client.t, pos_integer) :: Client.t

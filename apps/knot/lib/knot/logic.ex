@@ -4,36 +4,12 @@ defmodule Knot.Logic do
   """
   use GenServer
   require Logger
+  require Knot.Logic.State, as: State
   alias __MODULE__, as: Logic
 
   # Public API.
 
   @type t :: Via.t | pid
-
-  defmodule State do
-    @moduledoc false
-    alias __MODULE__, as: State
-
-    @typep t :: %State{
-      uri:            URI.t,
-      clients:        list(Knot.socket),
-      chain:          list(Block.t)
-    }
-    defstruct [
-      uri:            nil,
-      clients:        [],
-      chain:          []
-    ]
-
-    @spec new(URI.t) :: t
-    def new(uri) do
-      %State{
-        uri: uri,
-        clients: [],
-        chain: [Block.genesis()]
-      }
-    end
-  end
 
   @spec start_link(URI.t) :: {:ok, Logic.t}
   def start_link(uri) do
@@ -76,12 +52,9 @@ defmodule Knot.Logic do
   @spec handle_cast({:on_client_ready, Client.t}, State.t)
                    :: {:noreply, State.t}
   def handle_cast({:on_client_ready, client}, state) do
-    new_state = %{state | clients: [client | state.clients]}
-
-    Enum.each [:genesis, :heighest],
-              &Knot.Client.send_data(client, {:block_query, &1})
-
-    {:noreply, new_state}
+    [:genesis, :heighest]
+      |> Enum.each(&Knot.Client.send_data(client, {:block_query, &1}))
+    {:noreply, State.add_client(state, client)}
   end
 
   def handle_cast({:on_client_data, client, data}, %{uri: uri} = state) do
@@ -98,7 +71,7 @@ defmodule Knot.Logic do
     Logger.info fn ->
       "[#{Via.readable state.uri}] Removing disconnected client."
     end
-    {:noreply, %{state | clients: Enum.filter(state.clients, &(&1 != client))}}
+    {:noreply, State.remove_client(state, client)}
   end
 
   # Implementation.
@@ -150,19 +123,23 @@ defmodule Knot.Logic do
     end
   end
 
+  # Query the genesis block.
   def process_block_query(:genesis, _, _) do
     Block.genesis()
   end
+  # Query the highest block.
   def process_block_query(:highest, state, _) do
     hd state.chain
   end
+  # Query an ancestry chain.
   def process_block_query({:ancestry, hash}, _, _) do
     case Block.Store.find_by_hash hash do
       {:ok, block} -> Block.ancestry block
       _ -> {:error, :unknown_block_hash}
     end
   end
-  def process_block_query(_query, _state, _client) do
+  # Unknown query.
+  def process_block_query(_, _, _) do
     {:error, :invalid_block_query}
   end
 end
