@@ -18,6 +18,7 @@ defmodule Knot do
   defmodule Handle do
     @moduledoc false
 
+    @typedoc "Represent a running node handle."
     @type t :: %Handle{
            uri: URI.t,
           node: Knot.t,
@@ -34,10 +35,10 @@ defmodule Knot do
 
   # Public API.
 
-  @spec start(URI.t | String.t) :: Handle.t
-  def start(uri_or_address) do
+  @spec start(URI.t | String.t, Block.t) :: Handle.t
+  def start(uri_or_address, block) do
     uri = URI.parse uri_or_address
-    case Supervisor.start_child Knot.Knots, [uri] do
+    case Supervisor.start_child Knot.Knots, [uri, block] do
       {:ok, _}                        -> make_handle uri
       {:error, {:already_started, _}} -> make_handle uri
                             otherwise -> otherwise
@@ -65,9 +66,9 @@ defmodule Knot do
 
   # Supervisor callbacks.
 
-  def init(uri) do
+  def init({uri, genesis}) do
     children = [
-      worker(Knot.Logic, [uri]),
+      worker(Knot.Logic, [uri, genesis]),
       worker(Knot.Listener, [uri, Via.logic(uri)])
     ]
     supervise children, strategy: :one_for_one

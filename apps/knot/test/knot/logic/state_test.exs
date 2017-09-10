@@ -3,7 +3,6 @@ defmodule Knot.Logic.StateTest do
   doctest Knot.Logic.State
   alias Knot.{Block, Hash, Logic.State}
 
-  @genesis  Block.genesis()
   @node_uri "tcp://localhost:4001"
 
   setup_all :state
@@ -12,7 +11,7 @@ defmodule Knot.Logic.StateTest do
     test "correctly answers", %{state: state} do
       {:ok, res} = state
         |> State.find("genesis")
-      assert res == @genesis
+      assert res == state.genesis
     end
   end
 
@@ -49,9 +48,12 @@ defmodule Knot.Logic.StateTest do
   end
 
   defp state(ctx) do
-    Block.Store.store @genesis
+    genesis = :knot
+      |> Application.get_env(:genesis_data)
+      |> Block.genesis
+      |> Block.Store.store
 
-    ancestry = Enum.reduce 1..7, [@genesis], fn (_, [parent | _] = acc) ->
+    ancestry = Enum.reduce 1..7, [genesis], fn (_, [parent | _] = acc) ->
       height = parent.height + 1
       hash = Hash.perform to_string height
       block = hash
@@ -66,7 +68,7 @@ defmodule Knot.Logic.StateTest do
 
     state = @node_uri
       |> URI.parse
-      |> State.new(@genesis)
+      |> State.new(genesis)
       |> Map.put(:head, hd(ancestry))
 
     {:ok, ctx |> Map.put(:state, state)

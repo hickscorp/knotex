@@ -54,7 +54,7 @@ defmodule Knot.Logic.State do
                 :: {:ok, list(Block.t)} | {:error, atom}
   def ancestry(_, hash, top \\ 5) do
     with {:ok, block} <- Store.find_by_hash(hash) do
-         Block.ancestry block, top
+      Block.ancestry block, top
     else
       err -> err
     end

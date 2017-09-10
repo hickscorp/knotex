@@ -9,8 +9,7 @@ defmodule Knot.Block.Store do
 
   alias Knot.{Block, Hash}
 
-  @backend :dets
-  @genesis Block.genesis()
+  @backend Application.get_env :knot, :block_store_backend
 
   # Public API.
 
@@ -66,15 +65,10 @@ defmodule Knot.Block.Store do
   @spec init(:ok) :: {:ok, state}
   def init(:ok) do
     Logger.info fn -> "Starting #{@backend} backed store." end
-
-    {:ok, table} = case @backend do
-       # :ets   -> :ets.new Store, [:set, :private]
-       :dets  -> :dets.open_file :block_store, [type: :set]
+    {:ok, _} = case Atom.to_string @backend do
+       "ets" -> {:ok, :ets.new(Store, [:set, :private])}
+      "dets" -> :dets.open_file :block_store, [type: :set]
     end
-
-    store @genesis
-
-    {:ok, table}
   end
 
   @spec handle_call(:count, any, state) :: {:reply, non_neg_integer, state}
@@ -111,7 +105,7 @@ defmodule Knot.Block.Store do
 
   @spec handle_cast(:clear, state) :: {:noreply, state}
   def handle_cast(:clear, table) do
-    :ok = @backend.delete_all_objects table
+    @backend.delete_all_objects table
     {:noreply, table}
   end
 

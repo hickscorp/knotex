@@ -34,9 +34,13 @@ defmodule Knot.LogicTest do
   end
 
   defp logic(ctx) do
+    genesis = :knot
+      |> Application.get_env(:genesis_data)
+      |> Knot.Block.genesis
+
     {:ok, logic} = "tcp://localhost:4001"
       |> URI.parse
-      |> Logic.start_link
+      |> Logic.start_link(genesis)
     {:ok, Map.put(ctx, :logic, logic)}
   end
 end

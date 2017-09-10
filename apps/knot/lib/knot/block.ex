@@ -8,7 +8,6 @@ defmodule Knot.Block do
   alias Knot.{Hash, Block.Store}
 
   @zero_hash Hash.zero()
-  @genesis_data Application.get_env :knot, :genesis
 
   @typedoc """
   Represents a block identifier.
@@ -96,12 +95,13 @@ defmodule Knot.Block do
 
   ## Example
 
-      iex> g = Knot.Block.genesis()
+      iex> genesis_data = Application.get_env :knot, :genesis_data
+      iex> g = Knot.Block.genesis(genesis_data)
       iex> [g.height, g.nonce, g.timestamp]
       [0, 3492211, 1490926154]
   """
-  @spec genesis :: Block.t
-  def genesis, do: Map.merge %Block{}, @genesis_data
+  @spec genesis(map) :: Block.t
+  def genesis(data), do: Map.merge %Block{}, data
 
   @doc """
   Verifies the validity of a single block by checking that:
@@ -184,14 +184,13 @@ defmodule Knot.Block do
     end
   end
 
-  @doc "Given a `block`, returns its full ancestry chain."
-  @spec ancestry(Block.t, integer)
-                :: {:ok, list(Block.t)} | {:error, atom}
-  def ancestry(block, n \\ -1) do
-    ancestry block, n, []
-  end
+  @doc """
+  Retrieves a block's ancestry.
+
+  """
   @spec ancestry(Block.t, integer, list(Block.t))
                 :: {:ok, list(Block.t)} | {:error, atom}
+  def ancestry(block, n \\ -1, ancestors \\ [])
   def ancestry(%{parent_hash: p_hash}, n, ancestors)
       when n == 0 or p_hash == @zero_hash do
     {:ok, Enum.reverse ancestors}

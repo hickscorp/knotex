@@ -17,7 +17,9 @@ defmodule Knot.Block.Kit do
   def ensure_sanity! do
     Logger.info fn -> "Starting tests." end
 
-    bg = Block.genesis
+    bg = :knot
+      |> Application.get_env(:genesis_data)
+      |> Block.genesis
       |> Store.store
       |> ensure_valid!
 

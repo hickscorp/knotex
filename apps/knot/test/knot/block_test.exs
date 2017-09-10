@@ -3,7 +3,8 @@ defmodule Knot.BlockTest do
   doctest Knot.Block
   alias Knot.{Block, Hash, Block.Store}
 
-  setup ~w(clear_and_store_genesis mined_block)a
+  setup_all :genesis
+  setup ~w(reset_store mined_block)a
 
   @content "Main test block."
 
@@ -32,32 +33,34 @@ defmodule Knot.BlockTest do
   end
 
   describe "#genesis" do
-    setup :genesis_block
+    setup :genesis
 
     test "has its content hash set", ctx do
       hash = Hash.perform "Unspendable block."
-      assert ctx.genesis_block.content_hash == hash
+      assert ctx.genesis.content_hash == hash
     end
 
     test "has a nonce", ctx do
-      assert ctx.genesis_block.nonce == 3_492_211
+      assert ctx.genesis.nonce == 3_492_211
     end
 
     test "has a correct hash et", ctx do
       hash = "0000007b"
-      assert Hash.readable_short(ctx.genesis_block.hash) == hash
+      assert Hash.readable_short(ctx.genesis.hash) == hash
     end
   end
 
   describe "#mined?" do
+    setup :mined_block
+
     test "is true when a block was mined and its parent is known", ctx do
       ctx.mined_block
         |> Block.mined?
         |> assert
     end
 
-    test "is false when the block's parent is unknown", %{mined_block: block} do
-      %{block | parent_hash: nil}
+    test "is false when the block's parent is unknown", ctx do
+      %{ctx.mined_block | parent_hash: nil}
         |> Block.mined?
         |> refute
     end
@@ -70,7 +73,7 @@ defmodule Knot.BlockTest do
   end
 
   describe "#ancestry" do
-    setup :store_mined_block_and_mine_child
+    setup ~w(mined_block store_mined_block_and_mine_child)a
 
     test "errors when the block's parent is unknown", ctx do
       ancestry = Block.ancestry %{ctx.mined_block | parent_hash: Hash.invalid()}
@@ -79,16 +82,18 @@ defmodule Knot.BlockTest do
 
     test "returns an array containing all parents", ctx do
       {:ok, ancestry} = Block.ancestry ctx.mined_block
-      assert ancestry == [ctx.genesis_block]
+      assert ancestry == [ctx.genesis]
     end
 
     test "returns the parents in the correct order", ctx do
       {:ok, ancestry} = Block.ancestry ctx.mined_child
-      assert ancestry == [ctx.mined_block, ctx.genesis_block]
+      assert ancestry == [ctx.mined_block, ctx.genesis]
     end
   end
 
   describe "#ensure_known_parent" do
+    setup ~w(mined_block)a
+
     test "succeeds for a block with a known parent", ctx do
       res = Block.ensure_known_parent ctx.mined_block
       assert res == :ok
@@ -101,35 +106,35 @@ defmodule Knot.BlockTest do
   end
 
   describe "#ancestry_contains?" do
-    setup :store_mined_block_and_mine_child
+    setup ~w(mined_block store_mined_block_and_mine_child)a
 
     test "is false if the hash isn't part of the block's ancestry", ctx do
-      ctx.genesis_block
+      ctx.genesis
         |> Block.ancestry_contains?(ctx.mined_block)
         |> refute
     end
 
     test "is false if the hash isn't even known", ctx do
-      ctx.genesis_block
-        |> Block.ancestry_contains?(ctx.genesis_block.content_hash)
+      ctx.genesis
+        |> Block.ancestry_contains?(ctx.genesis.content_hash)
         |> refute
     end
 
     test "is true if the argument is the block's parent", ctx do
       ctx.mined_block
-        |> Block.ancestry_contains?(ctx.genesis_block)
+        |> Block.ancestry_contains?(ctx.genesis)
         |> assert
     end
 
     test "is true if the argument is the block's grandpa", ctx do
       ctx.mined_child
-        |> Block.ancestry_contains?(ctx.genesis_block)
+        |> Block.ancestry_contains?(ctx.genesis)
         |> assert
     end
 
     test "also works with a hash", ctx do
       ctx.mined_child
-        |> Block.ancestry_contains?(ctx.genesis_block.hash)
+        |> Block.ancestry_contains?(ctx.genesis.hash)
         |> assert
     end
   end
@@ -169,15 +174,17 @@ defmodule Knot.BlockTest do
     {:ok, Map.put(ctx, :child, child)}
   end
 
-  defp genesis_block(ctx) do
-    block = Block.genesis
-    {:ok, Map.put(ctx, :genesis_block, block)}
+  defp genesis(ctx) do
+    block = :knot
+      |> Application.get_env(:genesis_data)
+      |> Block.genesis
+    {:ok, Map.put(ctx, :genesis, block)}
   end
 
-  defp clear_and_store_genesis(ctx) do
+  defp reset_store(%{genesis: genesis} = ctx) do
     Store.clear
-    genesis_block = Store.store Block.genesis()
-    {:ok, Map.put(ctx, :genesis_block, genesis_block)}
+    Store.store genesis
+    {:ok, Map.put(ctx, :genesis, genesis)}
   end
 
   defp mined_block(ctx) do

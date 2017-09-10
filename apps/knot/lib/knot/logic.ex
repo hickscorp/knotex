@@ -13,7 +13,7 @@ defmodule Knot.Logic do
   @type t :: Via.t | pid
 
   @spec start_link(URI.t, Block.t) :: {:ok, Logic.t}
-  def start_link(uri, genesis \\ Block.genesis()) do
+  def start_link(uri, genesis) do
     GenServer.start_link Logic, {uri, genesis}, name: Via.logic(uri)
   end
 
