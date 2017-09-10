@@ -23,7 +23,6 @@ defmodule Knot.SofoSupervisor do
   """
 
   use Supervisor
-  require Logger
   alias __MODULE__, as: SofoSupervisor
 
   @type t :: pid

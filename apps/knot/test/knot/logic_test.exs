@@ -1,7 +1,6 @@
 defmodule Knot.LogicTest do
   use ExUnit.Case, async: false
   doctest Knot.Logic
-  require Logger
   alias Knot.Logic
 
   describe "for message handling" do

@@ -56,6 +56,6 @@ defmodule Explorer do
   When used, dispatch to the appropriate controller/view/etc.
   """
   defmacro __using__(which) when is_atom(which) do
-    apply(__MODULE__, which, [])
+    apply __MODULE__, which, []
   end
 end

@@ -14,10 +14,8 @@ defmodule Explorer.Router do
     plug :accepts, ["json"]
   end
 
-  forward "/graphql",  Absinthe.Plug,
-                       schema: Explorer.Schema
-  forward "/graphiql", Absinthe.Plug.GraphiQL,
-                       schema: Explorer.Schema
+  forward "/graphql",  Absinthe.Plug,          schema: Explorer.Schema
+  forward "/graphiql", Absinthe.Plug.GraphiQL, schema: Explorer.Schema
 
   scope "/api", Explorer do
     pipe_through :api

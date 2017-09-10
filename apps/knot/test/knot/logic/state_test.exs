@@ -1,10 +1,10 @@
 defmodule Knot.Logic.StateTest do
-  use ExUnit.Case, async: false
+  use ExUnit.Case, async: true
   doctest Knot.Logic.State
-  require Logger
   alias Knot.{Block, Hash, Logic.State}
 
-  @genesis Block.genesis()
+  @genesis  Block.genesis()
+  @node_uri "tcp://localhost:4001"
 
   setup_all :state
 
@@ -25,8 +25,7 @@ defmodule Knot.Logic.StateTest do
   end
 
   describe "#ancestry" do
-    test "responds when parameters are valid " <>
-         "the results to 5 by default",
+    test "responds with the top blocks when parameters are valid",
          %{state: state, ancestry: ancestry} do
       [_, b6, b5, b4, b3, b2, b1, _] = ancestry
       {:ok, res} = state
@@ -65,7 +64,7 @@ defmodule Knot.Logic.StateTest do
       [block] ++ acc
     end
 
-    state = "tcp://localhost:4001"
+    state = @node_uri
       |> URI.parse
       |> State.new(@genesis)
       |> Map.put(:head, hd(ancestry))

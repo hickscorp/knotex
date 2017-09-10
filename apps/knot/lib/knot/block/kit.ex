@@ -6,9 +6,6 @@ defmodule Knot.Block.Kit do
   alias Knot.{Hash, Block}
   alias Knot.Block.{Store, Miner}
 
-  @zero_hash   :binary.copy <<0x00>>, 32
-  @sanity_hash "000096f0"
-
   @doc """
   Ensures that all prerequisites for handling blocks are met and standard.
 
@@ -27,8 +24,8 @@ defmodule Knot.Block.Kit do
     block = Enum.reduce 1..128, bg, &sanity_block_maker(&1, &2)
 
     case Hash.readable_short block.hash do
-      @sanity_hash -> Logger.info "All test passed."
-                 _ -> Logger.error "Unexpected hash."
+      "000096f0" -> Logger.info "All test passed."
+               _ -> Logger.error "Unexpected hash."
     end
 
     :ok
@@ -47,7 +44,7 @@ defmodule Knot.Block.Kit do
   end
 
   @spec ensure_valid!(Block.t) :: Block.t
-  defp ensure_valid!(%{height: h} = block) do
+  defp ensure_valid!(block) do
     Logger.info fn -> "Block: #{Hash.readable block.hash}@#{block.height}" end
     block
   end
