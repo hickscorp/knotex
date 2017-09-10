@@ -2,28 +2,45 @@ defmodule Knot.Block do
   @moduledoc """
   Models the functionality of a block.
 
-  A `Block` exposes a number of hashes that are computed based on
-  the block's underlying data.
+  The `Knot.Block` module exposes function to interact with blocks.
+  """
+  alias __MODULE__, as: Block
+  alias Knot.{Hash, Block.Store}
+
+  @zero_hash Hash.zero()
+  @genesis_data Application.get_env :knot, :genesis
+
+  @typedoc """
+  Represents a block identifier.
+
+  It could be either one of:
+    - A `String.t`, allowing special aliases like `"head"` and `"genesis"`.
+    - A `Knot.Hash.t`.
+  """
+  @type             id :: String.t | Hash.t
+  @typedoc "Represents a point in time."
+  @type      timestamp :: integer
+  @typedoc "Represents the height of a block within a chain."
+  @type         height :: non_neg_integer
+  @typedoc "Represents a mining difficulty level."
+  @type     difficulty :: non_neg_integer
+  @typedoc "Represents the adjustment to be made to a block for it to be mined."
+  @type          nonce :: non_neg_integer
+
+  @type mismatch_error :: :component_hash_mismatch | :hash_mismatch
+
+  @typedoc """
+  Carries data representing a block.
+
+  The `Knot.Block.t` data structure carries the important pieces of informations
+  about a single block entity, without its content. Instead it embeds a hash of
+  its content, allowing the block's content to be stored separately using an
+  appropriate back-end based on the type of application you're running.
 
   The block's height, timestamp, parent hash and content hash are user defined,
   while the component hash, the nonce and the hash should be computed by this
   module.
   """
-  alias __MODULE__, as: Block
-  alias Knot.Hash
-  alias Knot.Block.Store
-
-  @zero_hash Hash.zero()
-  @genesis_data Application.get_env :knot, :genesis
-
-  @type          id :: String.t | Hash.t
-  @type   timestamp :: non_neg_integer
-  @type      height :: non_neg_integer
-  @type  difficulty :: non_neg_integer
-  @type       nonce :: non_neg_integer
-
-  @type mismatch_error :: {:error, :component_hash_mismatch | :hash_mismatch}
-
   @type t :: %Block{
     # Variable fields, user-accessible.
                 height: height,
@@ -92,7 +109,7 @@ defmodule Knot.Block do
   - The content and component hash were properly sealed,
   - The block's hash and nonce are a solution.
   """
-  @spec ensure_final(Block.t) :: boolean | mismatch_error
+  @spec ensure_final(Block.t) :: boolean | {:error, mismatch_error}
   def ensure_final(block) do
     check = block
       |> strip
