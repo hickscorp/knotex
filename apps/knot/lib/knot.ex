@@ -35,16 +35,13 @@ defmodule Knot do
   # Public API.
 
   @spec start(URI.t | String.t) :: Handle.t
-  def start(%URI{} = uri) do
-    case Supervisor.start_child(Knot.Knots, [uri]) do
-      {:ok, _} -> make_handle uri
+  def start(uri_or_address) do
+    uri = URI.parse uri_or_address
+    case Supervisor.start_child Knot.Knots, [uri] do
+      {:ok, _}                        -> make_handle uri
       {:error, {:already_started, _}} -> make_handle uri
+                            otherwise -> otherwise
     end
-  end
-  def start(address) when is_binary address do
-    address
-      |> URI.parse
-      |> start
   end
 
   @spec stop(URI.t | String.t) :: :ok
