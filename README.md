@@ -11,6 +11,9 @@ Sanity tools:
 - Dialyzer for static analysis: `mix dialyzer`.
 - Credo for style: `mix credo`.
 
+You can also generate the docs by running `mix docs` and by then
+opening `docs/index.html`.
+
 To generate the documentation, simply run `mix docs` and `open doc/index.html`.
 
 ## Blocks
