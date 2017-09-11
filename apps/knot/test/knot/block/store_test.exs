@@ -19,23 +19,19 @@ defmodule Knot.Block.StoreTest do
     end
   end
 
-  describe "#count" do
-    setup :store_block
-
-    test "counts blocks" do
-      assert Store.count() == 1
-    end
-  end
-
   describe "#store" do
     setup :store_block
 
     test "stores blocks" do
       assert Store.count() == 1
     end
+  end
 
-    test "returns the block", %{stored_block: sb} do
-      assert sb == @block
+  describe "#count" do
+    setup :store_block
+
+    test "counts blocks" do
+      assert Store.count() == 1
     end
   end
 

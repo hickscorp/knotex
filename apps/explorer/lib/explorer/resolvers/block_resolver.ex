@@ -17,7 +17,6 @@ defmodule Explorer.BlockResolver do
     genesis = :knot
       |> Application.get_env(:genesis_data)
       |> Knot.Block.genesis
-
     "tcp://127.0.0.1:4001"
       |> Knot.start(genesis)
       |> Map.get(:logic)

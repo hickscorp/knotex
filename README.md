@@ -44,8 +44,20 @@ instance to be used to handle messages.
 To summarize:
 
 ```elixir
-pierre = Knot.start "tcp://0.0.0.0:4001"
-gina = Knot.start "tcp://0.0.0.0:4002"
+# Prepare the genesis block to start with.
+genesis = Knot.Block.genesis Application.get_env :knot, :genesis_data
+# Start the node.
+Knot.start "tcp://0.0.0.0:4001", genesis
+```
+
+Then from the same computer or another:
+```elixir
+# Make sure to use the same genesis block.
+genesis = Knot.Block.genesis Application.get_env :knot, :genesis_data
+# Start another node, on another port...
+gina = Knot.start "tcp://0.0.0.0:4002", genesis
+# Get a handle to the first node and connect to it.
+pierre = Knot.make_handle "tcp://0.0.0.0:4001"
 Knot.Client.Connector.start pierre.uri, gina.logic
 ```
 
@@ -167,7 +179,9 @@ To do so, issue the command `iex -S mix phx.server`. Once your server is up and
 running, you can seed your node with simple mining data by issuing:
 
 ```
-Knot.Logic.seed Knot.start("tcp://127.0.0.1:4001").logic
+genesis = Knot.Block.genesis Application.get_env :knot, :genesis_data
+handle  = Knot.start "tcp://127.0.0.1:4001", genesis
+Knot.Logic.seed handle.logic, 128
 ```
 
 

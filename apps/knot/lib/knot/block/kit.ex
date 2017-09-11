@@ -21,9 +21,8 @@ defmodule Knot.Block.Kit do
       |> Application.get_env(:genesis_data)
       |> Block.genesis
       |> Store.store
-      |> ensure_valid!
 
-    block = Enum.reduce 1..128, bg, &sanity_block_maker(&1, &2)
+    block = Enum.reduce 1..128, bg, &make_block(&1, &2)
 
     case Hash.readable_short block.hash do
       "000096f0" -> Logger.info "All test passed."
@@ -33,21 +32,15 @@ defmodule Knot.Block.Kit do
     :ok
   end
 
-  @spec sanity_block_maker(Block.timestamp, Block.t) :: Block.t
-  defp sanity_block_maker(offset, parent) do
-    "Block #{offset}"
+  @spec make_block(Block.timestamp, Block.t) :: Block.t
+  defp make_block(offset, parent) do
+    {:ok, block} = "Block #{offset}"
       |> Hash.perform
       |> Block.new(ref_timestamp(offset))
       |> Block.as_child_of(parent)
       |> Block.seal
       |> Miner.mine
       |> Store.store
-      |> ensure_valid!
-  end
-
-  @spec ensure_valid!(Block.t) :: Block.t
-  defp ensure_valid!(block) do
-    Logger.info fn -> "Block: #{Hash.readable block.hash}@#{block.height}" end
     block
   end
 

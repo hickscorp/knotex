@@ -28,7 +28,8 @@ defmodule Knot.Logic do
         |> Block.as_child_of(parent)
         |> Block.seal
         |> Miner.mine
-      Logic.push logic, block
+
+      :ok = Logic.push logic, block
       block
     end
   end
@@ -61,7 +62,7 @@ defmodule Knot.Logic do
       |> State.ancestry(hash, top)
   end
 
-  @spec push(Logic.t, Block.t) :: :ok
+  @spec push(Logic.t, Block.t) :: :ok | {:error, atom}
   def push(logic, block) do
     GenServer.call logic, {:push, block}
   end
@@ -96,6 +97,7 @@ defmodule Knot.Logic do
   @spec init({URI.t, Block.t}) :: {:ok, State.t}
   def init({uri, genesis}) do
     Logger.info fn -> "[#{Via.readable uri}] Starting logic." end
+    {:ok, ^genesis} = Block.Store.store genesis
     {:ok, State.new(uri, genesis)}
   end
 
@@ -112,12 +114,12 @@ defmodule Knot.Logic do
   @spec handle_call({:push, Block.t}, any, State.t)
                    :: {:reply, :ok | {:error, atom}, State.t}
   def handle_call({:push, block}, _from, state) do
-    case Block.mined? block do
-      true ->
-        Store.store block
-        {:reply, :ok, %{state | head: block}}
-      false ->
-        {:reply, {:error, :invalid_block}, state}
+    with :ok <- Block.ensure_mined(block),
+         {:ok, ^block} <- Store.store(block) do
+      {:reply, :ok, %{state | head: block}}
+    else
+      {:error, reason} -> {:reply, {:error, reason}, state}
+                     _ -> {:reply, {:error, :push_error}, state}
     end
   end
 

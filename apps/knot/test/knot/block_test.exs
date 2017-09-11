@@ -50,25 +50,25 @@ defmodule Knot.BlockTest do
     end
   end
 
-  describe "#mined?" do
+  describe "#ensure_mined" do
     setup :mined_block
 
     test "is true when a block was mined and its parent is known", ctx do
-      ctx.mined_block
-        |> Block.mined?
-        |> assert
+      ret = ctx.mined_block
+        |> Block.ensure_mined
+      assert ret == :ok
     end
 
     test "is false when the block's parent is unknown", ctx do
-      %{ctx.mined_block | parent_hash: nil}
-        |> Block.mined?
-        |> refute
+      ret = %{ctx.mined_block | parent_hash: nil}
+        |> Block.ensure_mined
+      assert ret == {:error, :unknown_parent}
     end
 
     test "is false when the block isn't finalized", ctx do
-      %{ctx.mined_block | nonce: 0}
-        |> Block.mined?
-        |> refute
+      ret = %{ctx.mined_block | nonce: 0}
+        |> Block.ensure_mined
+      assert ret == {:error, :hash_mismatch}
     end
   end
 

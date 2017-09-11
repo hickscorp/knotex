@@ -10,8 +10,8 @@ defmodule Knot.Application do
     children = [
       worker(Registry, [:unique, Knot.Via.registry()]),
       worker(Knot.Block.Store, []),
-      sofo(Knot.Knots, Knot),
-      sofo(Knot.Clients, Knot.Client),
+      sofo(Knot.Knots,      Knot),
+      sofo(Knot.Clients,    Knot.Client),
       sofo(Knot.Connectors, Knot.Client.Connector)
     ]
     Supervisor.start_link children, strategy: :one_for_one

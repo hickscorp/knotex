@@ -3,7 +3,7 @@ defmodule Knot do
   Supervises and manages a node.
 
   A node is composed of different parts:
-  - A logic GenServer which coordinates everything.
+  - A logic GenServer which coordinates everything (See `Knot.Logic`).
   - A listener which role is to handle incoming connections and be the
     acceptor (see `Knot.Listener`).
   - A supervisor in charge of the client processes (See `Knot.Client`).
@@ -45,23 +45,20 @@ defmodule Knot do
     end
   end
 
-  @spec stop(URI.t | String.t) :: :ok
-  def stop(%URI{} = uri) do
-    [{pid, _}] = Registry.lookup(Via.registry(), Via.id(uri, "node"))
-    Supervisor.terminate_child Knot.Knots, pid
-  end
+  @spec stop(URI.t | String.t | Handle.t) :: :ok
   def stop(%Handle{uri: uri}) do
     stop uri
   end
-  def stop(address) when is_binary address do
-    address
-      |> URI.parse
-      |> stop
+  def stop(uri_or_address) do
+    uri = URI.parse uri_or_address
+    [{pid, _}] = Registry.lookup(Via.registry(), Via.id(uri, "node"))
+    Supervisor.terminate_child Knot.Knots, pid
   end
 
-  @spec start_link(URI.t) :: {:ok, pid}
-  def start_link(uri) do
-    Supervisor.start_link Knot, uri, name: Via.node(uri)
+  @spec start_link(URI.t | String.t, Block.t) :: {:ok, pid}
+  def start_link(uri_or_address, block) do
+    uri = URI.parse uri_or_address
+    Supervisor.start_link Knot, {uri, block}, name: Via.node(uri)
   end
 
   # Supervisor callbacks.
@@ -76,8 +73,9 @@ defmodule Knot do
 
   # Implementation.
 
-  @spec make_handle(URI.t) :: Handle.t
-  defp make_handle(uri) do
+  @spec make_handle(URI.t | String.t) :: Handle.t
+  def make_handle(uri_or_address) do
+    uri = URI.parse uri_or_address
     %Handle{uri: uri,
            node: Via.node(uri),
           logic: Via.logic(uri),

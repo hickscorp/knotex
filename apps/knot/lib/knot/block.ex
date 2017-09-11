@@ -122,7 +122,7 @@ defmodule Knot.Block do
       check.hash != block.hash ->
         {:error, :hash_mismatch}
       true ->
-        Hash.ensure_hardness check.hash, Block.difficulty(check.height)
+        Hash.ensure_hardness(check.hash, Block.difficulty(check.height))
     end
   end
 
@@ -174,13 +174,13 @@ defmodule Knot.Block do
   - The block's ancestry is well known,
   - The block is final.
   """
-  @spec mined?(Block.t) :: boolean
-  def mined?(block) do
+  @spec ensure_mined(Block.t) :: :ok | {:error, :unmined_block}
+  def ensure_mined(block) do
     with :ok <- ensure_known_parent(block),
          :ok <- Block.ensure_final(block)
-      do true
+      do :ok
     else
-      _ -> false
+      _ -> {:error, :unmined_block}
     end
   end
 
