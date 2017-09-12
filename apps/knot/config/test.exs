@@ -3,8 +3,8 @@ use Mix.Config
 config :knot,
   block_store_backend: :ets,
   genesis_data: %{
-    timestamp: 1490926154,
-    nonce: 3492211,
+    timestamp: 1_490_926_154,
+    nonce: 3_492_211,
     parent_hash: Base.decode16!(
       "0000000000000000000000000000000000000000000000000000000000000000"
     ),

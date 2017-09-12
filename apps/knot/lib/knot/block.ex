@@ -98,7 +98,7 @@ defmodule Knot.Block do
       iex> genesis_data = Application.get_env :knot, :genesis_data
       iex> g = Knot.Block.genesis(genesis_data)
       iex> [g.height, g.nonce, g.timestamp]
-      [0, 3492211, 1490926154]
+      [0, 3_492_211, 14_90_926_154]
   """
   @spec genesis(map) :: Block.t
   def genesis(data), do: Map.merge %Block{}, data
@@ -111,18 +111,14 @@ defmodule Knot.Block do
   """
   @spec ensure_final(Block.t) :: boolean | {:error, mismatch_error}
   def ensure_final(block) do
-    check = block
-      |> strip
-      |> seal
-      |> hash
-
+    check = block |> strip |> seal |> hash
     cond do
       check.component_hash != block.component_hash ->
         {:error, :component_hash_mismatch}
       check.hash != block.hash ->
         {:error, :hash_mismatch}
       true ->
-        Hash.ensure_hardness(check.hash, Block.difficulty(check.height))
+        Hash.ensure_hardness check.hash, Block.difficulty(check.height)
     end
   end
 
@@ -177,10 +173,11 @@ defmodule Knot.Block do
   @spec ensure_mined(Block.t) :: :ok | {:error, :unmined_block}
   def ensure_mined(block) do
     with :ok <- ensure_known_parent(block),
-         :ok <- Block.ensure_final(block)
+         :ok <- ensure_final(block)
       do :ok
     else
-      _ -> {:error, :unmined_block}
+      {:error, reason} -> {:error, reason}
+                     _ -> {:error, :unmined_block}
     end
   end
 

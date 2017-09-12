@@ -19,20 +19,15 @@ defmodule Knot.Block.Miner do
   """
   @spec mine(Block.t) :: Block.t
   def mine(block) do
-    block
-      |> mining(block.component_hash, 0, Block.difficulty(block.height))
+    mining block, block.component_hash, 0, Block.difficulty(block.height)
   end
 
   @spec mining(Block.t, Hash.t, Block.nonce, Block.difficulty) :: Block.t
   defp mining(block, hash, nonce, diff) do
-    candidate = [hash, nonce]
-      |> Hash.perform
-
-    case Hash.ensure_hardness(candidate, diff) do
-      {:error, :unmet_difficulty} ->
-        mining block, hash, nonce + 1, diff
-      :ok ->
-        %{block | nonce: nonce, hash: candidate}
+    candidate = Hash.perform [hash, nonce]
+    case Hash.ensure_hardness candidate, diff do
+      {:error, :unmet_difficulty} -> mining block, hash, nonce + 1, diff
+                              :ok -> %{block | nonce: nonce, hash: candidate}
     end
   end
 end

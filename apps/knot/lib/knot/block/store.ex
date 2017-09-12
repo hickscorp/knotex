@@ -104,7 +104,8 @@ defmodule Knot.Block.Store do
 
   @spec handle_cast({:remove, Block.t}, state) :: {:noreply, state}
   def handle_cast({:remove, b}, {backend, table} = state) do
-    Kernel.apply backend, :match_delete, [table, {b.hash, b.height, b.parent_hash, b}]
+    args = [table, {b.hash, b.height, b.parent_hash, b}]
+    Kernel.apply backend, :match_delete, args
     {:noreply, state}
   end
 

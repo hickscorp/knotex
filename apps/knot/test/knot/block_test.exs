@@ -16,7 +16,7 @@ defmodule Knot.BlockTest do
     end
 
     test "sets the content hash", %{block: b} do
-      assert b.content_hash == Hash.perform(@content)
+      assert b.content_hash == Hash.perform @content
     end
   end
 
@@ -35,23 +35,22 @@ defmodule Knot.BlockTest do
   describe "#genesis" do
     setup :genesis
 
-    test "has its content hash set", ctx do
+    test "has its content hash set", %{genesis: genesis} do
       hash = Hash.perform "Unspendable block."
-      assert ctx.genesis.content_hash == hash
+      assert genesis.content_hash == hash
     end
 
-    test "has a nonce", ctx do
-      assert ctx.genesis.nonce == 3_492_211
+    test "has a nonce", %{genesis: genesis} do
+      assert genesis.nonce == 3_492_211
     end
 
-    test "has a correct hash et", ctx do
-      hash = "0000007b"
-      assert Hash.readable_short(ctx.genesis.hash) == hash
+    test "has a correct hash et", %{genesis: genesis} do
+      assert "0000007b" == Hash.readable_short genesis.hash
     end
   end
 
   describe "#ensure_mined" do
-    setup :mined_block
+    setup ~w(mined_block mined_block_with_invalid_parent)a
 
     test "is true when a block was mined and its parent is known", ctx do
       ret = ctx.mined_block
@@ -59,16 +58,16 @@ defmodule Knot.BlockTest do
       assert ret == :ok
     end
 
-    test "is false when the block's parent is unknown", ctx do
-      ret = %{ctx.mined_block | parent_hash: nil}
-        |> Block.ensure_mined
-      assert ret == {:error, :unknown_parent}
-    end
-
     test "is false when the block isn't finalized", ctx do
       ret = %{ctx.mined_block | nonce: 0}
         |> Block.ensure_mined
       assert ret == {:error, :hash_mismatch}
+    end
+
+    test "is false when the block's parent is unknown", ctx do
+      ret = ctx.mined_block_with_invalid_parent
+        |> Block.ensure_mined
+      assert ret == {:error, :unknown_parent}
     end
   end
 
@@ -92,7 +91,7 @@ defmodule Knot.BlockTest do
   end
 
   describe "#ensure_known_parent" do
-    setup ~w(mined_block)a
+    setup ~w(mined_block mined_block_with_invalid_parent)a
 
     test "succeeds for a block with a known parent", ctx do
       res = Block.ensure_known_parent ctx.mined_block
@@ -100,7 +99,8 @@ defmodule Knot.BlockTest do
     end
 
     test "fails for a block with an unknown parent", ctx do
-      res = Block.ensure_known_parent %{ctx.mined_block | parent_hash: "none"}
+      res = ctx.mined_block_with_invalid_parent
+        |> Block.ensure_known_parent
       assert res == {:error, :unknown_parent}
     end
   end
@@ -188,7 +188,7 @@ defmodule Knot.BlockTest do
   end
 
   defp mined_block(ctx) do
-    mined_block = %Block{
+    block = %Block{
       component_hash: Hash.from_string(
         "e18470da40760a375193f01c8e5212c9a7487505bef190b8623d73bff010fffa"),
       content_hash: Hash.from_string(
@@ -202,7 +202,17 @@ defmodule Knot.BlockTest do
       timestamp: 19_820_218
     }
 
-    {:ok, Map.put(ctx, :mined_block, mined_block)}
+    {:ok, Map.put(ctx, :mined_block, block)}
+  end
+
+  def mined_block_with_invalid_parent(ctx) do
+    block = %{ctx.mined_block |
+      parent_hash: Hash.invalid(),
+      hash: Hash.from_string(
+        "001c33c119a22722ffc4f814751761db5e9ab172ad883e3f4f34b827305aa87d"
+      )
+    }
+    {:ok, Map.put(ctx, :mined_block_with_invalid_parent, block)}
   end
 
   defp store_mined_block_and_mine_child(ctx) do
