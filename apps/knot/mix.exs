@@ -38,7 +38,9 @@ defmodule Knot.Mixfile do
   end
   defp deps(:prod) do
     [
-      {:bertex,   "~> 1.2"}
+      {:bertex,   "~> 1.2"},
+      {:postgrex, "~> 0.13"},
+      {:ecto,     "~> 2.2"}
     ]
   end
 end
