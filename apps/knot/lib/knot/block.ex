@@ -134,7 +134,7 @@ defmodule Knot.Block do
       iex> %Knot.Block{}
       iex>   |> Knot.Block.seal
       iex>   |> Map.get(:component_hash)
-      iex>   |> Knot.Hash.readable_short
+      iex>   |> Knot.Hash.to_string(short: true)
       "e3f001a9"
   """
   @spec seal(Block.t) :: Block.t

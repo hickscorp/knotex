@@ -21,11 +21,11 @@ defmodule Knot.Via do
 
       iex> "tcp://localhost:4001"
       iex>   |> URI.parse
-      iex>   |> Knot.Via.readable
+      iex>   |> Knot.Via.to_string
       "localhost:4001"
   """
-  @spec readable(URI.t) :: String.t
-  def readable(uri), do: "#{uri.host}:#{inspect uri.port}"
+  @spec to_string(URI.t) :: String.t
+  def to_string(uri), do: "#{uri.host}:#{inspect uri.port}"
 
   @doc """
   Builds a via-tuple for a node given an URI.

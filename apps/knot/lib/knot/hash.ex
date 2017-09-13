@@ -61,46 +61,31 @@ defmodule Knot.Hash do
   ## Examples
 
       iex> :binary.copy(<<0x0f>>, 32)
-      iex>   |> Knot.Hash.readable
+      iex>   |> Knot.Hash.to_string
       "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f"
 
       iex> :binary.copy(<<0x0f>>, 32)
-      iex>   |> Knot.Hash.readable(case: :upper)
+      iex>   |> Knot.Hash.to_string(case: :upper)
       "0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F"
-  """
-  @spec readable(t, keyword) :: String.t
-  def readable(hash, opts \\ [])
-  def readable(nil, _), do: "!NIL!"
-  def readable(hash, opts) do
-    case hash do
-      <<_::256>> ->
-        c = Keyword.get opts, :case, :lower
-        Base.encode16 hash, case: c
-      _ ->
-        "?"
-    end
-  end
-
-  @doc """
-  Transforms a hash into a short readable string form.
-
-  ## Examples
 
       iex> :binary.copy(<<0x0f>>, 32)
-      iex>   |> Knot.Hash.readable_short
+      iex>   |> Knot.Hash.to_string(short: true)
       "0f0f0f0f"
 
       iex> :binary.copy(<<0x0f>>, 32)
-      iex>   |> Knot.Hash.readable_short(case: :upper)
+      iex>   |> Knot.Hash.to_string(case: :upper, short: true)
       "0F0F0F0F"
   """
-  @spec readable_short(t, keyword) :: String.t
-  def readable_short(hash, opts \\ [])
-  def readable_short(nil, _), do: "!NIL!"
-  def readable_short(hash, opts) do
-    hash
-      |> readable(opts)
-      |> String.slice(0..7)
+  @spec to_string(t, keyword) :: String.t
+  def to_string(hash, opts \\ [])
+  def to_string(nil, _), do: "!NIL!"
+  def to_string(hash, opts) when is_binary(hash) and byte_size(hash) == 32 do
+    c = Keyword.get opts, :case, :lower
+    ret = Base.encode16 hash, case: c
+    case Keyword.get opts, :short, false do
+      false -> ret
+       true -> String.slice ret, 0..7
+    end
   end
 
   @doc """
@@ -110,7 +95,7 @@ defmodule Knot.Hash do
 
       iex> "e18470da40760a375193f01c8e5212c9a7487505bef190b8623d73bff010fffa"
       iex>   |> Knot.Hash.from_string
-      iex>   |> Knot.Hash.readable_short
+      iex>   |> Knot.Hash.to_string(short: true)
       "e18470da"
   """
   @spec from_string(String.t) :: Hash.t

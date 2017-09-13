@@ -6,7 +6,7 @@ defmodule Explorer.Schema.Types do
   @desc "A 32-bit hash"
   scalar :hash do
     parse     &Knot.Hash.from_string(&1)
-    serialize &Knot.Hash.readable(&1)
+    serialize &Knot.Hash.to_string(&1)
   end
 
   @desc "A block"

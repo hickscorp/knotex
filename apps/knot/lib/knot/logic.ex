@@ -96,7 +96,7 @@ defmodule Knot.Logic do
 
   @spec init({URI.t, Block.t}) :: {:ok, State.t}
   def init({uri, genesis}) do
-    Logger.info fn -> "[#{Via.readable uri}] Starting logic." end
+    Logger.info fn -> "[#{Via.to_string uri}] Starting logic." end
     {:ok, ^genesis} = Block.Store.store genesis
     {:ok, State.new(uri, genesis)}
   end
@@ -127,7 +127,7 @@ defmodule Knot.Logic do
                    :: {:reply, :ok, State.t}
   def handle_call({:on_listener_terminating, reason}, _from, state) do
     Logger.info fn ->
-      "[#{Via.readable state.uri}] Logic is terminating: #{reason}. " <>
+      "[#{Via.to_string state.uri}] Logic is terminating: #{reason}. " <>
       "Notifying #{inspect length state.clients} client(s)..."
     end
     for client <- state.clients, do: Client.close client
@@ -138,7 +138,7 @@ defmodule Knot.Logic do
                    :: {:noreply, State.t}
   def handle_cast({:on_client_socket, cli_socket, direction}, state) do
     Logger.info fn ->
-      "[#{Via.readable state.uri}] New #{direction} client socket."
+      "[#{Via.to_string state.uri}] New #{direction} client socket."
     end
     Client.start cli_socket, Via.logic(state.uri), direction
     {:noreply, state}
@@ -158,7 +158,7 @@ defmodule Knot.Logic do
     case deserialize data do
       {:ok, terms} -> process_client_data terms, state, client
       {:error, e} ->
-        Logger.error "[#{Via.readable uri}] Cannot decode message: #{inspect e}"
+        Logger.error "[#{Via.to_string uri}] Cannot decode message: #{inspect e}"
     end
     {:noreply, state}
   end
@@ -167,7 +167,7 @@ defmodule Knot.Logic do
                    :: {:noreply, State.t}
   def handle_cast({:on_client_closed, client}, state) do
     Logger.info fn ->
-      "[#{Via.readable state.uri}] Removing disconnected client."
+      "[#{Via.to_string state.uri}] Removing disconnected client."
     end
     {:noreply, State.remove_client(state, client)}
   end
@@ -184,13 +184,13 @@ defmodule Knot.Logic do
   @spec process_client_data(any, State.t, Knot.socket) :: any
   def process_client_data({:ping, ts}, %{uri: uri}, client) do
     Logger.info fn ->
-      "[#{Via.readable uri}] Received ping at #{ts} from #{inspect client}."
+      "[#{Via.to_string uri}] Received ping at #{ts} from #{inspect client}."
     end
     Client.send_data client, :pong
   end
   def process_client_data(:pong, %{uri: uri}, client) do
     Logger.info fn ->
-      "[#{Via.readable uri}] Received pong from #{inspect client}."
+      "[#{Via.to_string uri}] Received pong from #{inspect client}."
     end
   end
   def process_client_data({:query, q}, state, _client) do
@@ -202,7 +202,7 @@ defmodule Knot.Logic do
   end
   def process_client_data(cmd, %{uri: uri}, _) do
     Logger.warn fn ->
-      "[#{Via.readable uri}] Unknown command from client: #{inspect cmd}"
+      "[#{Via.to_string uri}] Unknown command from client: #{inspect cmd}"
     end
   end
 end

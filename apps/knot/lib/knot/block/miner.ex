@@ -14,7 +14,7 @@ defmodule Knot.Block.Miner do
   ## Examples
 
       iex> b = Knot.Block.Miner.mine %Knot.Block{}
-      iex> [b.height, b.nonce, Knot.Hash.readable_short(b.hash)]
+      iex> [b.height, b.nonce, Knot.Hash.to_string(b.hash, short: true)]
       [0, 224, "00551db3"]
   """
   @spec mine(Block.t) :: Block.t

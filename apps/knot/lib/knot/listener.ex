@@ -22,7 +22,7 @@ defmodule Knot.Listener do
   @spec init({URI.t, Via.t}) :: {:ok, State.t}
   def init({uri, handler}) do
     Process.flag :trap_exit, true
-    Logger.info fn -> "[#{Via.readable uri}] Starting listener." end
+    Logger.info fn -> "[#{Via.to_string uri}] Starting listener." end
 
     host = String.to_charlist uri.host
     {:ok, ip} = :inet.getaddr host, :inet
@@ -44,12 +44,12 @@ defmodule Knot.Listener do
         listen uri, handler, socket
       {:error, :closed} ->
         Logger.info fn ->
-          "[#{Via.readable uri}] Socket was closed."
+          "[#{Via.to_string uri}] Socket was closed."
         end
         :ok
       {:error, err} ->
         Logger.warn fn ->
-          "[#{Via.readable uri}] Unable to accept: #{inspect err}"
+          "[#{Via.to_string uri}] Unable to accept: #{inspect err}"
         end
         {:error, err}
     end
@@ -58,7 +58,7 @@ defmodule Knot.Listener do
   @spec terminate(any, {URI.t, Logic.t, Knot.socket}) :: :ok
   def terminate(reason, {uri, logic, socket}) do
     Logger.info fn ->
-      "[#{Via.readable uri}] Terminating listener: #{inspect reason}."
+      "[#{Via.to_string uri}] Terminating listener: #{inspect reason}."
     end
     Knot.Logic.on_listener_terminating logic, reason
     :gen_tcp.close socket

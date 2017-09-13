@@ -20,24 +20,22 @@ defmodule Knot.HashTest do
 
   describe "#readable" do
     test "downcases the result"do
-      hash_readable = Hash.readable @hash
+      hash_readable = Hash.to_string @hash
       assert hash_readable == @readable
     end
 
     test "allows option to change case" do
-      hash_readable = Hash.readable @hash, case: :upper
+      hash_readable = Hash.to_string @hash, case: :upper
       assert hash_readable == String.upcase(@readable)
     end
-  end
 
-  describe "#readable_short" do
-    test "cuts the result" do
-      hash_readable = Hash.readable_short @hash
+    test "allows short form" do
+      hash_readable = Hash.to_string @hash, short: true
       assert hash_readable == @short
     end
 
-    test "allows option to change case" do
-      hash_readable = Hash.readable_short @hash, case: :upper
+    test "allows option to change case and short form" do
+      hash_readable = Hash.to_string @hash, case: :upper, short: true
       assert hash_readable == String.upcase(@short)
     end
   end

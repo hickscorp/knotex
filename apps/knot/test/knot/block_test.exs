@@ -45,20 +45,20 @@ defmodule Knot.BlockTest do
     end
 
     test "has a correct hash et", %{genesis: genesis} do
-      assert "0000007b" == Hash.readable_short genesis.hash
+      assert "0000007b" == Hash.to_string(genesis.hash, short: true)
     end
   end
 
   describe "#ensure_mined" do
     setup ~w(mined_block mined_block_with_invalid_parent)a
 
-    test "is true when a block was mined and its parent is known", ctx do
+    test "is successful when a block was mined and its parent is known", ctx do
       ret = ctx.mined_block
         |> Block.ensure_mined
       assert ret == :ok
     end
 
-    test "is false when the block isn't finalized", ctx do
+    test "fails when the block isn't finalized", ctx do
       ret = %{ctx.mined_block | nonce: 0}
         |> Block.ensure_mined
       assert ret == {:error, :hash_mismatch}

@@ -46,12 +46,12 @@ defmodule Knot.Client.Connector do
     else
       {:error, :econnrefused} ->
         Logger.warn fn ->
-          "Cannot connect to #{Via.readable uri}: Connection refused."
+          "Cannot connect to #{Via.to_string uri}: Connection refused."
         end
         {:stop, :normal, state}
       err ->
         Logger.error fn ->
-          "An error occured while connecting to #{Via.readable uri}: " <>
+          "An error occured while connecting to #{Via.to_string uri}: " <>
           inspect(err)
         end
         {:stop, :error, state}

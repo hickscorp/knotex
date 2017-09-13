@@ -15,11 +15,11 @@ defmodule Explorer.BlockView do
     %{
               height: block.height,
            timestamp: block.timestamp,
-         parent_hash: Hash.readable(block.parent_hash),
-        content_hash: Hash.readable(block.content_hash),
-      component_hash: Hash.readable(block.component_hash),
+         parent_hash: Hash.to_string(block.parent_hash),
+        content_hash: Hash.to_string(block.content_hash),
+      component_hash: Hash.to_string(block.component_hash),
                nonce: block.nonce,
-                hash: Hash.readable(block.hash)
+                hash: Hash.to_string(block.hash)
     }
   end
 end

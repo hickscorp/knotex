@@ -24,7 +24,7 @@ defmodule Knot.Block.Kit do
 
     block = Enum.reduce 1..128, bg, &make_block(&1, &2)
 
-    case Hash.readable_short block.hash do
+    case Hash.to_string block.hash, short: true do
       "000096f0" -> Logger.info "All test passed."
                _ -> Logger.error "Unexpected hash."
     end
