@@ -1,5 +1,12 @@
 use Mix.Config
 
+config :knot, Knot.Repo,
+  adapter:  Ecto.Adapters.Postgres,
+  database: "knot_dev",
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost"
+
 config :knot,
   block_store_backend: :dets,
   genesis_data: %{

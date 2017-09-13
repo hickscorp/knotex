@@ -23,7 +23,7 @@ defmodule Knot.Mixfile do
   def application do
     [
       mod: {Knot.Application, []},
-      extra_applications: [:logger]
+      extra_applications: [:logger, :ecto]
     ]
   end
 

@@ -8,6 +8,7 @@ defmodule Knot.Application do
     import Knot.SofoSupervisor.Spec
 
     children = [
+      supervisor(Knot.Repo, []),
       worker(Registry, [:unique, Knot.Via.registry()]),
       worker(Knot.Block.Store, []),
       sofo(Knot.Knots,      Knot),
