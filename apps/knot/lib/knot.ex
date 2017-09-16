@@ -11,6 +11,7 @@ defmodule Knot do
   use Supervisor
   alias __MODULE__, as: Knot
   alias Knot.Via
+  import Knot.SofoSupervisor.Spec
 
   @type      t :: Via.t
   @type socket :: :gen_tcp.socket
@@ -20,16 +21,20 @@ defmodule Knot do
 
     @typedoc "Represent a running node handle."
     @type t :: %Handle{
-           uri: URI.t,
-          node: Knot.t,
-         logic: Logic.t,
-      listener: Listener.t
+             uri: URI.t,
+            node: Knot.t,
+         clients: Via.t,
+      connectors: Via.t,
+           logic: Logic.t,
+        listener: Listener.t
     }
     defstruct [
-           uri: nil,
-          node: nil,
-         logic: nil,
-      listener: nil
+             uri: nil,
+            node: nil,
+         clients: nil,
+      connectors: nil,
+           logic: nil,
+        listener: nil
     ]
   end
 
@@ -63,8 +68,11 @@ defmodule Knot do
 
   # Supervisor callbacks.
 
+  @spec init({URI.t, Block.t}) :: {:ok, {:supervisor.sup_flags, [:supervisor.child_spec]}}
   def init({uri, genesis}) do
     children = [
+      sofo(Via.clients(uri), Knot.Client),
+      sofo(Via.connectors(uri), Knot.Client.Connector),
       worker(Knot.Logic, [uri, genesis]),
       worker(Knot.Listener, [uri, Via.logic(uri)])
     ]
@@ -77,8 +85,10 @@ defmodule Knot do
   def make_handle(uri_or_address) do
     uri = URI.parse uri_or_address
     %Handle{uri: uri,
-           node: Via.node(uri),
-          logic: Via.logic(uri),
-       listener: Via.listener(uri)}
+            node: Via.node(uri),
+         clients: Via.clients(uri),
+      connectors: Via.connectors(uri),
+           logic: Via.logic(uri),
+        listener: Via.listener(uri)}
   end
 end
