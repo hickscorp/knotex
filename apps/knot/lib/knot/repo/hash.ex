@@ -1,4 +1,4 @@
-defmodule Ecto.Type.Hash do
+defmodule Knot.Repo.Type.Hash do
   @behaviour Ecto.Type
 
   @spec type :: :string

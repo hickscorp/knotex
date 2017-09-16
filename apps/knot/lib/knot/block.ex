@@ -6,7 +6,7 @@ defmodule Knot.Block do
   """
   alias __MODULE__, as: Block
   alias Knot.{Hash, Block.Store}
-  alias Ecto.Type
+  alias Knot.Repo.Type
 
   @zero_hash Hash.zero()
 
@@ -56,7 +56,7 @@ defmodule Knot.Block do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:hash, Ecto.Type.Hash, autogenerate: false}
+  @primary_key {:hash, Type.Hash, autogenerate: false}
   schema "blocks" do
     field :height,          Type.Height
     field :timestamp,       Type.Timestamp

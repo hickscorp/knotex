@@ -1,4 +1,4 @@
-defmodule Ecto.Type.Timestamp do
+defmodule Knot.Repo.Type.Timestamp do
   @behaviour Ecto.Type
 
   @spec type :: :integer
