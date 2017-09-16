@@ -2,6 +2,8 @@ defmodule Knot.Hash do
   @moduledoc """
   Defines helper functions around hashing.
   """
+  alias __MODULE__, as: Hash
+
   @type t :: binary
 
   @invalid  :binary.copy <<0xff>>, 32
@@ -79,6 +81,7 @@ defmodule Knot.Hash do
   @spec to_string(t, keyword) :: String.t
   def to_string(hash, opts \\ [])
   def to_string(nil, _), do: "!NIL!"
+  def to_string(hash, _) when is_binary(hash) and byte_size(hash) == 64, do: hash
   def to_string(hash, opts) when is_binary(hash) and byte_size(hash) == 32 do
     c = Keyword.get opts, :case, :lower
     ret = Base.encode16 hash, case: c
@@ -99,7 +102,7 @@ defmodule Knot.Hash do
       "e18470da"
   """
   @spec from_string(String.t) :: Hash.t
-  def from_string(str) do
+  def from_string(str) when is_binary(str) and byte_size(str) == 64 do
     str
       |> String.downcase
       |> Base.decode16!(case: :lower)

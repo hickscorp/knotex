@@ -6,6 +6,7 @@ defmodule Knot.Block do
   """
   alias __MODULE__, as: Block
   alias Knot.{Hash, Block.Store}
+  alias Ecto.Type
 
   @zero_hash Hash.zero()
 
@@ -39,35 +40,53 @@ defmodule Knot.Block do
   The block's height, timestamp, parent hash and content hash are user defined,
   while the component hash, the nonce and the hash should be computed by this
   module.
-  """
+
   @type t :: %Block{
-    # Variable fields, user-accessible.
+                  hash: Hash.t,
                 height: height,
              timestamp: Block.timestamp,
            parent_hash: Hash.t,
           content_hash: Hash.t,
-    # Those are automatically handled.
         component_hash: Hash.t,
-    # These are for the block hash.
-                 nonce: nonce,
-                  hash: Hash.t
+                 nonce: nonce
   }
+  """
+  @type t :: %Block{}
 
-  defstruct [
-    # Variable fields, user-accessible.
-                height: 0,
-             timestamp: nil,
-           parent_hash: Hash.invalid,
-          content_hash: Hash.invalid,
-    # Those are automatically handled.
-        component_hash: Hash.invalid,
-    # These are for the block hash.
-                 nonce: 0,
-                  hash: Hash.invalid
-  ]
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  @primary_key {:hash, Ecto.Type.Hash, autogenerate: false}
+  schema "blocks" do
+    field :height,          Type.Height
+    field :timestamp,       Type.Timestamp
+    field :parent_hash,     Type.Hash
+    field :content_hash,    Type.Hash
+    field :component_hash,  Type.Hash
+    field :nonce,           Type.Nonce
+  end
+
+  @fields ~w(hash height timestamp parent_hash content_hash component_hash nonce)a
+
+  def create(%Block{} = block) do
+    # Knot.Repo.delete_all Knot.Block; :knot |> Application.get_env(:genesis_data) |> Knot.Block.genesis |> Knot.Block.create
+
+    params = block
+      |> Map.from_struct
+
+    cs = %Block{}
+      |> cast(params, @fields)
+      |> validate_required(@fields)
+
+    if cs.valid? do
+      Knot.Repo.insert cs
+    else
+      cs
+    end
+  end
 
   @doc """
-  Creates a new block given a timestamp and a content hash.
+  Makes a new block given a timestamp and a content hash.
 
   ## Examples
 
@@ -101,7 +120,7 @@ defmodule Knot.Block do
       [0, 3_492_211, 14_90_926_154]
   """
   @spec genesis(map) :: Block.t
-  def genesis(data), do: Map.merge %Block{}, data
+  def genesis(data), do: Map.merge %Block{height: 0}, data
 
   @doc """
   Verifies the validity of a single block by checking that:
@@ -111,7 +130,10 @@ defmodule Knot.Block do
   """
   @spec ensure_final(Block.t) :: boolean | {:error, mismatch_error}
   def ensure_final(block) do
-    check = block |> strip |> seal |> hash
+    check = block
+      |> strip
+      |> seal
+      |> hash
     cond do
       check.component_hash != block.component_hash ->
         {:error, :component_hash_mismatch}

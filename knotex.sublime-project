@@ -13,7 +13,7 @@
 {
   "folders": [{
     "path": ".",
-    "folder_exclude_patterns": ["_build", "cover", "deps", "doc", "node_modules", "priv"]
+    "folder_exclude_patterns": ["_build", "cover", "deps", "doc", "node_modules"]
   }],
 
   "build_systems": [{
