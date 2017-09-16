@@ -7,78 +7,93 @@ defmodule Knot.Via do
 
   @registry Knot.Registry
 
-  @type id :: {String.t, pos_integer, String.t}
-  @type  t :: {:via, Registry, {Knot.Registry, Via.id}}
+  @type              t :: {:via, Registry, {Knot.Registry, Via.id}}
+  @type             id :: {String.t, pos_integer, String.t}
+  @type uri_or_address :: URI.t | String.t
 
-  def registry do
-    @registry
-  end
+  @spec registry :: Knot.Registry
+  def registry, do: @registry
 
   @doc """
   Transforms a URI into a displayable string.
 
   ## Examples
 
-      iex> "tcp://localhost:4001"
-      iex>   |> URI.parse
-      iex>   |> Knot.Via.to_string
+      iex> Knot.Via.to_string "tcp://localhost:4001"
       "localhost:4001"
   """
-  @spec to_string(URI.t) :: String.t
-  def to_string(uri), do: "#{uri.host}:#{inspect uri.port}"
+  @spec to_string(uri_or_address) :: String.t
+  def to_string(uri_or_address) do
+    uri = URI.parse uri_or_address
+    "#{uri.host}:#{inspect uri.port}"
+  end
 
   @doc """
   Builds a via-tuple for a node given an URI.
 
   ## Examples
 
-      iex> "tcp://localhost:4001"
-      iex>   |> URI.parse
-      iex>   |> Knot.Via.node
+      iex> Knot.Via.node "tcp://localhost:4001"
       {:via, Registry, {Knot.Registry, {"localhost", 4001, "node"}}}
   """
-  @spec node(URI.t) :: Knot.t
-  def node(uri), do: make uri, "node"
+  @spec node(uri_or_address) :: Knot.t
+  def node(uri_or_address), do: make uri_or_address, "node"
+
+  @doc """
+  Builds a via-tuple for a node clients supervisor given an URI.
+
+  ## Examples
+
+      iex> Knot.Via.clients "tcp://localhost:4001"
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, "clients"}}}
+  """
+  @spec clients(uri_or_address) :: Via.t
+  def clients(uri_or_address), do: make uri_or_address, "clients"
+
+  @doc """
+  Builds a via-tuple for a node connectors supervisor given an URI.
+
+  ## Examples
+
+      iex> Knot.Via.logic "tcp://localhost:4001"
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, "connectors"}}}
+  """
+  @spec connectors(uri_or_address) :: Via.t
+  def connectors(uri_or_address), do: make uri_or_address, "connectors"
 
   @doc """
   Builds a via-tuple for a node logic given an URI.
 
   ## Examples
 
-      iex> "tcp://localhost:4001"
-      iex>   |> URI.parse
-      iex>   |> Knot.Via.logic
+      iex> Knot.Via.logic "tcp://localhost:4001"
       {:via, Registry, {Knot.Registry, {"localhost", 4001, "logic"}}}
   """
-  @spec logic(URI.t) :: Logic.t
-  def logic(uri), do: make uri, "logic"
+  @spec logic(uri_or_address) :: Logic.t
+  def logic(uri_or_address), do: make uri_or_address, "logic"
 
   @doc """
   Builds a via-tuple for a node listener given an URI.
 
   ## Examples
 
-      iex> "tcp://localhost:4001"
-      iex>   |> URI.parse
-      iex>   |> Knot.Via.listener
+      iex> Knot.Via.listener "tcp://localhost:4001"
       {:via, Registry, {Knot.Registry, {"localhost", 4001, "listener"}}}
   """
-  @spec listener(URI.t) :: Listener.t
-  def listener(uri), do: make uri, "listener"
+  @spec listener(uri_or_address) :: Listener.t
+  def listener(uri_or_address), do: make uri_or_address, "listener"
 
   @doc """
   Given an URI and a suffix, returns a via-tuple compatible with `Registry`.
 
   ## Examples
 
-      iex> "tcp://localhost:4001"
-      iex>   |> URI.parse
-      iex>   |> Knot.Via.make("sup")
+      iex> Knot.Via.make "tcp://localhost:4001", "sup"
       {:via, Registry, {Knot.Registry, {"localhost", 4001, "sup"}}}
   """
-  @spec make(URI.t, String.t) :: Via.t
-  def make(uri, suffix) do
-    uuid = id uri, suffix
+  @spec make(uri_or_address, String.t) :: Via.t
+  def make(uri_or_address, suffix) do
+    uuid = id uri_or_address, suffix
     {:via, Registry, {@registry, uuid}}
   end
 
@@ -87,13 +102,12 @@ defmodule Knot.Via do
 
   ## Examples
 
-      iex> "tcp://localhost:4001"
-      iex>   |> URI.parse
-      iex>   |> Knot.Via.id("node")
+      iex> Knot.Via.id "tcp://localhost:4001", "node"
       {"localhost", 4001, "node"}
   """
-  @spec id(URI.t, String.t) :: id
-  def id(uri, suffix) do
+  @spec id(uri_or_address, String.t) :: id
+  def id(uri_or_address, suffix) do
+    uri = URI.parse uri_or_address
     {uri.host, uri.port, suffix}
   end
 end
