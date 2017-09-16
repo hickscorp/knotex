@@ -18,4 +18,6 @@ config/*.secret.exs
 block_store
 
 apps/explorer/assets/node_modules
+apps/explorer/cover
 apps/explorer/priv/static
+apps/knot/cover

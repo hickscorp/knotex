@@ -9,5 +9,5 @@ jobs:
           POSTGRES_USER: ubuntu
     steps:
       - checkout
-      - run: mix do deps.get, compile, ecto.create
-      - run: mix test
+      - run: MIX_ENV=test mix do deps.get, compile, ecto.create, ecto.migrate
+      - run: MIX_ENV=test mix coveralls.circle
