@@ -24,10 +24,14 @@ defmodule Knot.Block.Store do
   @doc "Adds a block to the store."
   @spec store(Block.t) :: :ok | {:error, insert_error}
   def store(block) do
-    case GenServer.call Store, {:store, block} do
-      val when val == true or val == :ok -> {:ok, block}
-                                       _ -> {:error, :insert_error}
+    case Block.insert_or_update block do
+       {:ok, block} -> {:ok, block}
+                  _ -> {:error, :insert_error}
     end
+    # case GenServer.call Store, {:store, block} do
+    #   val when val == true or val == :ok -> {:ok, block}
+    #                                    _ -> {:error, :insert_error}
+    # end
   end
 
   @doc "Counts the blocks in the store."
