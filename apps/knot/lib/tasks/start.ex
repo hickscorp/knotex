@@ -16,8 +16,8 @@ defmodule Mix.Tasks.Knot.Start do
       |> Application.get_env(:genesis_data)
       |> Knot.Block.genesis
 
-    %{logic: logic} = Knot.start bind, genesis
-    Enum.each peers, &Knot.Client.Connector.start(&1, logic)
+    handle = Knot.start bind, genesis
+    Enum.each peers, &Knot.Client.Connector.start(handle, &1)
 
     :ok
   end

@@ -69,7 +69,7 @@ defmodule Knot.Logic do
 
   @spec on_listener_terminating(Logic.t, any) :: :ok
   def on_listener_terminating(logic, reason) do
-    GenServer.cast logic, {:on_listener_terminating, reason}
+    GenServer.call logic, {:on_listener_terminating, reason}
   end
 
   @spec on_client_socket(Logic.t, Socket.t, Client.direction) :: :ok
@@ -136,11 +136,13 @@ defmodule Knot.Logic do
 
   @spec handle_cast({:on_client_socket, Knot.socket, Client.direction}, State.t)
                    :: {:noreply, State.t}
-  def handle_cast({:on_client_socket, cli_socket, direction}, state) do
+  def handle_cast({:on_client_socket, cli_socket, direction}, %{uri: uri} = state) do
     Logger.info fn ->
       "[#{Via.to_string state.uri}] New #{direction} client socket."
     end
-    Client.start cli_socket, Via.logic(state.uri), direction
+    clients = Via.clients uri
+    logic   = Via.logic uri
+    Client.start clients, cli_socket, logic, direction
     {:noreply, state}
   end
 

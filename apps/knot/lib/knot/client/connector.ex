@@ -14,32 +14,31 @@ defmodule Knot.Client.Connector do
 
   @type t :: Via.t | pid
 
-  @spec start(URI.t | String.t, Via.t) :: Connector.t
-  def start(%URI{} = uri, handler) do
-    {:ok, pid} = Supervisor.start_child Knot.Connectors, [uri, handler]
+  @spec start(Knot.Handle.t, Via.uri_or_address) :: Connector.t
+  def start(%{connectors: connectors, logic: logic}, uri_or_address) do
+    {:ok, pid} = connectors
+      |> Supervisor.start_child([uri_or_address, logic])
     pid
-  end
-  def start(uri, handler) when is_binary uri do
-    start URI.parse(uri), handler
   end
 
   # Supervisor callbacks.
 
-  @spec start_link(URI.t, Via.t) :: {:ok, Connector.t}
-  def start_link(uri, handler) do
-    {:ok, _} = GenServer.start_link Connector, {uri, handler}
+  @spec start_link(Via.uri_or_address, Via.t) :: {:ok, Connector.t}
+  def start_link(uri_or_address, handler) do
+    {:ok, _} = GenServer.start_link Connector, {uri_or_address, handler}
   end
 
   # GenServer callbacks.
 
-  @spec init({URI.t, Via.t}) :: {:ok, {URI.t, Via.t}}
-  def init({uri, handler}) do
+  @spec init({Via.uri_or_address, Via.t}) :: {:ok, {URI.t, Via.t}}
+  def init({uri_or_address, handler}) do
     GenServer.cast self(), :connect
-    {:ok, {uri, handler}}
+    {:ok, {URI.parse(uri_or_address), handler}}
   end
 
   @spec handle_cast(:connect, State.t) :: {:stop, :normal, State.t}
   def handle_cast(:connect, {uri, handler} = state) do
+    IO.puts "Connecting to #{Via.to_string uri}"
     with {:ok, socket} <- gen_tcp_connect(uri),
          reason <- transfer_socket_notify(socket, handler) do
       {:stop, reason, state}

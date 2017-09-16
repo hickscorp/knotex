@@ -53,15 +53,16 @@ genesis = Knot.Block.genesis Application.get_env :knot, :genesis_data
 Knot.start "tcp://0.0.0.0:4001", genesis
 ```
 
-Then from the same computer or another:
+At this point, a node is running on port 4001. Then from whenever you want, even
+in another BEAM VM, or on another computer if you adjust the endpoint addresses:
+
 ```elixir
 # Make sure to use the same genesis block.
 genesis = Knot.Block.genesis Application.get_env :knot, :genesis_data
 # Start another node, on another port...
 gina = Knot.start "tcp://0.0.0.0:4002", genesis
-# Get a handle to the first node and connect to it.
-pierre = Knot.make_handle "tcp://0.0.0.0:4001"
-Knot.Client.Connector.start pierre.uri, gina.logic
+# Connect to the first node we started and start chatting.
+Knot.Client.Connector.start gina, "tcp://0.0.0.0:4001"
 ```
 
 A `mix` task has been put together within the `Knot` application, and will do

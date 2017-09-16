@@ -27,20 +27,19 @@ defmodule Knot.Client do
     ]
   end
 
-  @spec start(Knot.socket, Via.t, Client.direction) :: Client.t
-  def start(socket, handler, :inbound) do
-    socket
-      |> connect(handler)
+  @spec start(Via.t, Knot.socket, Via.t, Client.direction) :: Client.t
+  def start(clients, socket, handler, :inbound) do
+    connect clients, socket, handler
   end
-  def start(socket, handler, :outbound) do
-    socket
-      |> connect(handler)
+  def start(clients, socket, handler, :outbound) do
+    clients
+      |> connect(socket, handler)
       |> schedule_tick(@ping_interval)
   end
 
-  @spec connect(Knot.socket, Via.t) :: Client.t
-  defp connect(socket, handler) do
-    {:ok, pid} = Supervisor.start_child Knot.Clients, [socket, handler]
+  @spec connect(Via.t, Knot.socket, Via.t) :: Client.t
+  defp connect(clients, socket, handler) do
+    {:ok, pid} = Supervisor.start_child clients, [socket, handler]
     pid
   end
 
