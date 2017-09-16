@@ -1,5 +1,8 @@
 # Knotex
 
+Docs on Github Pages can be found
+[here](https://hickscorp.github.io/knotex/api-reference.html).
+
 ## Tooling
 
 - To fetch the project dependencies, run `mix deps.get`.
