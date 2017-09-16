@@ -46,6 +46,11 @@ defmodule Knot.Hash do
       iex>   |> Knot.Hash.perform
       iex>   |> Base.encode16(case: :lower)
       "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
+
+      iex> [<<1, 2, 3>>, "a"]
+      iex>   |> Knot.Hash.perform
+      iex>   |> Base.encode16(case: :lower)
+      "c56daa10e6df2f901b1f47af30f33ed2a23b938f710bc76c4976f00cdce8ff67"
   """
   @spec perform(binary | list) :: t
   def perform(data) when is_binary data do
