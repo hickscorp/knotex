@@ -68,20 +68,22 @@ defmodule Knot.Block do
 
   @fields ~w(hash height timestamp parent_hash content_hash component_hash nonce)a
 
-  def create(%Block{} = block) do
-    # Knot.Repo.delete_all Knot.Block; :knot |> Application.get_env(:genesis_data) |> Knot.Block.genesis |> Knot.Block.create
+  @spec insert_or_update(Block.t) :: {:ok, Block.t} | {:error, Ecto.Changeset.t}
+  def insert_or_update(block) do
+    # Knot.Repo.delete_all Knot.Block; :knot |> Application.get_env(:genesis_data) |> Knot.Block.genesis |> Knot.Block.Store.store
 
     params = block
       |> Map.from_struct
 
-    cs = %Block{}
+    cs = block
       |> cast(params, @fields)
       |> validate_required(@fields)
 
     if cs.valid? do
-      Knot.Repo.insert cs
+      Knot.Repo.insert cs, on_conflict: :nothing,
+                           conflict_target: [:hash]
     else
-      cs
+      {:error, cs}
     end
   end
 

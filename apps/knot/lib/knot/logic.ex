@@ -97,7 +97,7 @@ defmodule Knot.Logic do
   @spec init({URI.t, Block.t}) :: {:ok, State.t}
   def init({uri, genesis}) do
     Logger.info fn -> "[#{Via.to_string uri}] Starting logic." end
-    {:ok, ^genesis} = Block.Store.store genesis
+    {:ok, _} = Block.Store.store genesis
     {:ok, State.new(uri, genesis)}
   end
 
