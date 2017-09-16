@@ -55,7 +55,7 @@ defmodule Knot.Via do
 
   ## Examples
 
-      iex> Knot.Via.logic "tcp://localhost:4001"
+      iex> Knot.Via.connectors "tcp://localhost:4001"
       {:via, Registry, {Knot.Registry, {"localhost", 4001, "connectors"}}}
   """
   @spec connectors(uri_or_address) :: Via.t
