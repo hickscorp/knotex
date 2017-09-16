@@ -5,7 +5,7 @@ defmodule Knot.Block do
   The `Knot.Block` module exposes function to interact with blocks.
   """
   alias __MODULE__, as: Block
-  alias Knot.{Hash, Block.Store}
+  alias Knot.{Hash, Block, Repo}
   alias Knot.Repo.Type
 
   @zero_hash Hash.zero()
@@ -27,6 +27,9 @@ defmodule Knot.Block do
   @typedoc "Represents the adjustment to be made to a block for it to be mined."
   @type          nonce :: non_neg_integer
 
+  @type   finder_error :: :not_found | :badarg
+  @type  finder_result :: {:ok, Block.t} | {:error, finder_error}
+  @type   insert_error :: :insert_error
   @type mismatch_error :: :component_hash_mismatch | :hash_mismatch
 
   @typedoc """
@@ -58,33 +61,75 @@ defmodule Knot.Block do
 
   @primary_key {:hash, Type.Hash, autogenerate: false}
   schema "blocks" do
-    field :height,          Type.Height
-    field :timestamp,       Type.Timestamp
-    field :parent_hash,     Type.Hash
-    field :content_hash,    Type.Hash
-    field :component_hash,  Type.Hash
-    field :nonce,           Type.Nonce
+    field :height,          Type.Height,    default: 0
+    field :timestamp,       Type.Timestamp, default: nil
+    field :parent_hash,     Type.Hash,      default: Hash.invalid
+    field :content_hash,    Type.Hash,      default: Hash.invalid
+    field :component_hash,  Type.Hash,      default: Hash.invalid
+    field :nonce,           Type.Nonce,     default: 0
   end
 
   @fields ~w(hash height timestamp parent_hash content_hash component_hash nonce)a
 
-  @spec insert_or_update(Block.t) :: {:ok, Block.t} | {:error, Ecto.Changeset.t}
-  def insert_or_update(block) do
-    # Knot.Repo.delete_all Knot.Block; :knot |> Application.get_env(:genesis_data) |> Knot.Block.genesis |> Knot.Block.Store.store
+  @spec count :: integer
+  def count do
+    Repo.aggregate Block, :count, :hash
+  end
 
-    params = block
-      |> Map.from_struct
-
-    cs = block
-      |> cast(params, @fields)
+  def changeset(block_params) do
+    %Block{}
+      |> cast(Map.from_struct(block_params), @fields)
       |> validate_required(@fields)
+  end
 
+  @doc "Adds a block to the store."
+  @spec store(Block.t) :: Block.t | {:error, insert_error}
+  def store(block) do
+    # Knot.Repo.delete_all Knot.Block; :knot |> Application.get_env(:genesis_data) |> Knot.Block.genesis |> Knot.Block.store
+    cs = changeset block
     if cs.valid? do
-      Knot.Repo.insert cs, on_conflict: :nothing,
-                           conflict_target: [:hash]
+      case Knot.Repo.insert cs, on_conflict: :nothing, conflict_target: [:hash] do
+        {:ok, block} -> {:ok, block}
+                   _ -> {:error, :insert_error}
+      end
     else
-      {:error, cs}
+      {:error, :insert_error}
     end
+  end
+
+  @doc "Finds a block by its hash."
+  @spec find(Hash.t) :: finder_result
+  def find(nil), do: {:error, :badarg}
+  def find(hash) do
+    case Repo.get Block, hash do
+        nil -> {:error, :not_found}
+      block -> {:ok, block}
+    end
+  end
+
+  @doc "Finds a block by its height and hash."
+  @spec find_by_hash_and_height(Hash.t, Block.height) :: finder_result
+  def find_by_hash_and_height(nil, _), do: {:error, :badarg}
+  def find_by_hash_and_height(_, nil), do: {:error, :badarg}
+  def find_by_hash_and_height(hash, height) do
+    case Repo.get_by Block, hash: hash, height: height do
+        nil -> {:error, :not_found}
+      block -> {:ok, block}
+    end
+  end
+
+  @doc "Removes a block from the store."
+  @spec remove(Block.t) :: :ok
+  def remove(block) do
+    Repo.delete block
+    :ok
+  end
+
+  @doc "Clears the store completely."
+  @spec clear :: :ok
+  def clear do
+    Repo.delete_all Block
+    :ok
   end
 
   @doc """
@@ -217,7 +262,7 @@ defmodule Knot.Block do
     {:ok, Enum.reverse ancestors}
   end
   def ancestry(%{parent_hash: p_hash}, n, ancestors) do
-    case Store.find_by_hash(p_hash) do
+    case Block.find p_hash do
       {:ok, parent} -> ancestry parent, n - 1, [parent] ++ ancestors
                 err -> err
     end
@@ -226,7 +271,7 @@ defmodule Knot.Block do
   @doc "Verifies all of a given `block`'s parents are well known."
   @spec ensure_known_parent(Block.t) :: :ok
   def ensure_known_parent(%{height: height, parent_hash: p_hash}) do
-    case Store.find_by_hash_and_height(p_hash, height - 1) do
+    case Block.find_by_hash_and_height p_hash, height - 1 do
       {:ok, _}    -> :ok
       {:error, _} -> {:error, :unknown_parent}
     end
@@ -238,7 +283,7 @@ defmodule Knot.Block do
   def ancestry_contains?(%{parent_hash: ph}, ph), do: true
   def ancestry_contains?(%{parent_hash: @zero_hash}, _), do: false
   def ancestry_contains?(%{parent_hash: p_hash}, hash) do
-    case Store.find_by_hash p_hash do
+    case Block.find p_hash do
       {:ok, parent} -> ancestry_contains? parent, hash
                 err -> err
     end

@@ -3,8 +3,7 @@ defmodule Knot.Block.Kit do
   Defines functions to help manage blocks manipulation.
   """
   require Logger
-  alias Knot.{Hash, Block}
-  alias Knot.Block.{Store, Miner}
+  alias Knot.{Hash, Block, Block.Miner}
 
   @doc """
   Ensures that all prerequisites for handling blocks are met and standard.
@@ -17,10 +16,10 @@ defmodule Knot.Block.Kit do
   def ensure_sanity! do
     Logger.info fn -> "Starting tests." end
 
-    bg = :knot
+    {:ok, bg} = :knot
       |> Application.get_env(:genesis_data)
       |> Block.genesis
-      |> Store.store
+      |> Block.store
 
     block = Enum.reduce 1..128, bg, &make_block(&1, &2)
 
@@ -40,7 +39,7 @@ defmodule Knot.Block.Kit do
       |> Block.as_child_of(parent)
       |> Block.seal
       |> Miner.mine
-      |> Store.store
+      |> Block.store
     block
   end
 

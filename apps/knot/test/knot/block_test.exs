@@ -1,7 +1,7 @@
 defmodule Knot.BlockTest do
   use ExUnit.Case, async: false
   doctest Knot.Block
-  alias Knot.{Block, Hash, Block.Store}
+  alias Knot.{Block, Hash}
 
   setup_all :genesis
   setup ~w(reset_store mined_block)a
@@ -81,12 +81,14 @@ defmodule Knot.BlockTest do
 
     test "returns an array containing all parents", ctx do
       {:ok, ancestry} = Block.ancestry ctx.mined_block
-      assert ancestry == [ctx.genesis]
+      ancestry_hashes = Enum.map ancestry, &(&1.hash)
+      assert ancestry_hashes == [ctx.genesis.hash]
     end
 
     test "returns the parents in the correct order", ctx do
       {:ok, ancestry} = Block.ancestry ctx.mined_child
-      assert ancestry == [ctx.mined_block, ctx.genesis]
+      ancestry_hashes = Enum.map ancestry, &(&1.hash)
+      assert ancestry_hashes == [ctx.mined_block.hash, ctx.genesis.hash]
     end
   end
 
@@ -182,8 +184,8 @@ defmodule Knot.BlockTest do
   end
 
   defp reset_store(%{genesis: genesis} = ctx) do
-    Store.clear
-    Store.store genesis
+    Block.clear
+    Block.store genesis
     {:ok, Map.put(ctx, :genesis, genesis)}
   end
 
@@ -216,7 +218,7 @@ defmodule Knot.BlockTest do
   end
 
   defp store_mined_block_and_mine_child(ctx) do
-    Store.store ctx.mined_block
+    Block.store ctx.mined_block
 
     mined_child = %Block{
       component_hash: Hash.from_string(

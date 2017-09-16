@@ -5,8 +5,7 @@ defmodule Knot.Logic do
   use GenServer
   require Logger
   alias __MODULE__, as: Logic
-  alias Knot.{Block, Block.Store, Block.Miner, Hash, Via, Client}
-  alias Knot.Logic.State, as: State
+  alias Knot.{Block, Hash, Via, Client, Logic.State}
 
   # Public API.
 
@@ -27,7 +26,7 @@ defmodule Knot.Logic do
         |> Block.new(:os.system_time(:millisecond))
         |> Block.as_child_of(parent)
         |> Block.seal
-        |> Miner.mine
+        |> Block.Miner.mine
 
       :ok = Logic.push logic, block
       block
@@ -97,7 +96,7 @@ defmodule Knot.Logic do
   @spec init({URI.t, Block.t}) :: {:ok, State.t}
   def init({uri, genesis}) do
     Logger.info fn -> "[#{Via.to_string uri}] Starting logic." end
-    {:ok, _} = Block.Store.store genesis
+    {:ok, _} = Block.store genesis
     {:ok, State.new(uri, genesis)}
   end
 
@@ -115,7 +114,7 @@ defmodule Knot.Logic do
                    :: {:reply, :ok | {:error, atom}, State.t}
   def handle_call({:push, block}, _from, state) do
     with :ok <- Block.ensure_mined(block),
-         {:ok, ^block} <- Store.store(block) do
+         {:ok, ^block} <- Block.store(block) do
       {:reply, :ok, %{state | head: block}}
     else
       {:error, reason} -> {:reply, {:error, reason}, state}

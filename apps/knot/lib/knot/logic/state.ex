@@ -1,7 +1,7 @@
 defmodule Knot.Logic.State do
   @moduledoc false
   alias __MODULE__, as: State
-  alias Knot.{Hash, Block, Block.Store}
+  alias Knot.{Hash, Block}
 
   @typep t :: %State{
     uri:            URI.t,
@@ -47,13 +47,13 @@ defmodule Knot.Logic.State do
     find state, Hash.from_string(hash)
   end
   def find(_, hash) do
-    Block.Store.find_by_hash hash
+    Block.find hash
   end
 
   @spec ancestry(State.t, Hash.t, integer)
                 :: {:ok, list(Block.t)} | {:error, atom}
   def ancestry(_, hash, top \\ 5) do
-    with {:ok, block} <- Store.find_by_hash(hash) do
+    with {:ok, block} <- Block.find(hash) do
       Block.ancestry block, top
     else
       err -> err
