@@ -1,7 +1,10 @@
 # Knotex
 
-Docs on Github Pages can be found
-[here](https://hickscorp.github.io/knotex/api-reference.html).
+## Statuses
+
+- [Docs as Github Pages](https://hickscorp.github.io/knotex/api-reference.html).
+- [![CircleCI Tests](https://circleci.com/gh/hickscorp/knotex.svg?style=svg&circle-token=bffe8f3aedce6ff2bb73a000894e2d7b8acc0109)](https://circleci.com/gh/hickscorp/knotex)
+- [![Coverage Status](https://coveralls.io/repos/github/hickscorp/knotex/badge.svg?branch=master)](https://coveralls.io/github/hickscorp/knotex?branch=master)
 
 ## Tooling
 

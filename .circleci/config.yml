@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/cci-knotex
+    docker:
+      - image: trenpixster/elixir:1.4.4
+      - image: postgres:9.6.4
+        environment:
+          POSTGRES_USER: ubuntu
+    steps:
+      - checkout
+      - run: mix do deps.get, compile, ecto.create
+      - run: mix test
