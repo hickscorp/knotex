@@ -27,8 +27,8 @@ defmodule Knot do
     @type t :: %Handle{
              uri: URI.t,
             node: Knot.t,
-         clients: Via.t,
-      connectors: Via.t,
+         clients: Knot.clients,
+      connectors: Knot.connectors,
            logic: Logic.t,
         listener: Listener.t
     }
@@ -69,8 +69,9 @@ defmodule Knot do
 
   # Supervisor callbacks.
 
-  @spec init({URI.t, Block.t}) :: {:ok, {:supervisor.sup_flags, [:supervisor.child_spec]}}
-  def init({uri, genesis}) do
+  @spec init({Via.uri_or_address, Block.t}) :: {:ok, {:supervisor.sup_flags, [:supervisor.child_spec]}}
+  def init({uri_or_address, genesis}) do
+    uri = URI.parse uri_or_address
     children = [
       sofo(Via.clients(uri), Knot.Client),
       sofo(Via.connectors(uri), Knot.Client.Connector),

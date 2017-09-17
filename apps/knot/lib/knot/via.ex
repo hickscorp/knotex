@@ -8,7 +8,8 @@ defmodule Knot.Via do
   @registry Knot.Registry
 
   @type              t :: {:via, Registry, {Knot.Registry, Via.id}}
-  @type             id :: {String.t, pos_integer, String.t}
+  @type   service_type :: :node | :clients | :connectors | :logic | :listener
+  @type             id :: {String.t, pos_integer, service_type}
   @type uri_or_address :: URI.t | String.t
 
   @spec registry :: Knot.Registry
@@ -97,7 +98,7 @@ defmodule Knot.Via do
       iex> "tcp://localhost:4001" |> URI.parse |> Knot.Via.make(:whatever)
       {:via, Registry, {Knot.Registry, {"localhost", 4001, :whatever}}}
   """
-  @spec make(uri_or_address, String.t) :: Via.t
+  @spec make(uri_or_address, service_type) :: Via.t
   def make(uri_or_address, suffix) do
     uuid = id uri_or_address, suffix
     {:via, Registry, {@registry, uuid}}
@@ -114,7 +115,7 @@ defmodule Knot.Via do
       iex> "tcp://localhost:4001" |> URI.parse |> Knot.Via.id(:whatever)
       {"localhost", 4001, :whatever}
   """
-  @spec id(uri_or_address, String.t) :: id
+  @spec id(uri_or_address, service_type) :: id
   def id(uri_or_address, suffix) do
     uri = URI.parse uri_or_address
     {uri.host, uri.port, suffix}

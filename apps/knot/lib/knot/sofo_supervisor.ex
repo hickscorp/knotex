@@ -33,7 +33,7 @@ defmodule Knot.SofoSupervisor do
     @moduledoc false
     import Supervisor.Spec
 
-    @spec sofo(atom, atom) :: Supervisor.Spec.t
+    @spec sofo(Via.t, atom) :: Supervisor.Spec.t
     def sofo(name, mod) do
       supervisor SofoSupervisor, [name, mod], id: name
     end
@@ -47,6 +47,7 @@ defmodule Knot.SofoSupervisor do
   # Supervisor callbacks.
 
   @doc "Initializes a new simple one for one unbranded supervisor."
+  @spec init(atom) :: {:ok, {:supervisor.sup_flags, [:supervisor.child_spec]}}
   def init(mod) do
     children = [worker(mod, [], restart: :transient)]
     supervise children, strategy: :simple_one_for_one
