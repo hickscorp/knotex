@@ -1,11 +1,13 @@
 defmodule Mix.Tasks.Docs.Ghpages do
-  use Mix.Task
-
   @moduledoc """
-  A task for uploading documentation to gh-pages.
+  A task for generating and uploading documentation to github pages.
+
+  Run it by issuing `mix docs.ghpages`.
   """
 
-  defp run!(command) do
+  use Mix.Task
+
+  defp exec!(command) do
     if Mix.shell.cmd(command) != 0 do
       raise Mix.Error, message: "command `#{command}` failed"
     end
@@ -13,20 +15,21 @@ defmodule Mix.Tasks.Docs.Ghpages do
   end
 
   def run(_) do
-    File.rm_rf "doc"
-    Mix.Task.run "docs"
     # First figure out the git remote to use based on the
     # git remote here.
-    git_remote = Map.get(
-        Regex.named_captures(~r/\: (?<git>.*)/,
-            to_string(:os.cmd 'git remote show -n upstream | grep "Push  URL"')),
-            "git")
-    Mix.shell.info "Git remote #{git_remote}"
+    remote = Map.get(
+        Regex.named_captures(
+          ~r/\: (?<git>.*)/,
+          to_string(:os.cmd 'git remote show -n upstream | grep "Push  URL"')
+        ),
+        "git"
+    )
+
+    File.rm_rf "doc"
+    Mix.Task.run "docs"
     File.cd! "doc"
-    run! "git init ."
-    run! "git add ."
-    run! "git commit -a -m \"Generates documentation.\""
-    run! "git remote add upstream #{git_remote}"
-    run! "git push upstream master:gh-pages --force"
+    exec! "git init .; git add .; git commit -a -m \"Generates documentation.\""
+    exec! "git remote add upstream #{remote}"
+    exec! "git push -f upstream master:gh-pages"
   end
 end
