@@ -14,13 +14,13 @@ defmodule Knotex.Mixfile do
       start_permanent:  Mix.env == :prod,
       deps:             [
         # Production dependencies.
-        {:distillery,     "~> 1.2",  only: :prod},
+        {:distillery,     "~> 1.5",  only: :prod},
         {:edeliver,       "~> 1.4",  only: :prod},
         # Dev / Tooling dependencies.
-        {:ex_doc,         "~> 0.14", only: :dev},
-        {:mix_test_watch, "~> 0.3",  only: :dev},
-        {:excoveralls,    "~> 0.5",  only: [:dev, :test]},
-        {:credo,          "~> 0.4",  only: :dev},
+        {:ex_doc,         "~> 0.16", only: :dev},
+        {:mix_test_watch, "~> 0.5",  only: :dev},
+        {:excoveralls,    "~> 0.7",  only: [:dev, :test]},
+        {:credo,          "~> 0.8",  only: :dev},
         {:dialyxir,       "~> 0.5",  only: :dev}
       ],
       test_coverage:    [tool: ExCoveralls],
