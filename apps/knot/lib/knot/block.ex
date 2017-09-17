@@ -7,7 +7,7 @@ defmodule Knot.Block do
   use Ecto.Schema
   import Ecto.Changeset
   alias __MODULE__, as: Block
-  alias Knot.{Hash, Block, Repo}
+  alias Knot.{Hash, Repo}
   alias Knot.Repo.Type
 
   @zero_hash Hash.zero()
