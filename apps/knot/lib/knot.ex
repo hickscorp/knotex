@@ -3,7 +3,9 @@ defmodule Knot do
   Supervises and manages a node.
 
   A node is composed of different parts:
-  - A logic GenServer which coordinates everything (See `Knot.Logic`).
+  - Two simple one-for-one supervisors. One for the connectors and one for
+    the clients.
+  - A logic process which coordinates everything (See `Knot.Logic`).
   - A listener which role is to handle incoming connections and be the
     acceptor (see `Knot.Listener`).
   - A supervisor in charge of the client processes (See `Knot.Client`).
