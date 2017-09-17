@@ -4,6 +4,8 @@ defmodule Knot.Block do
 
   The `Knot.Block` module exposes function to interact with blocks.
   """
+  use Ecto.Schema
+  import Ecto.Changeset
   alias __MODULE__, as: Block
   alias Knot.{Hash, Block, Repo}
   alias Knot.Repo.Type
@@ -56,9 +58,6 @@ defmodule Knot.Block do
   """
   @type t :: %Block{}
 
-  use Ecto.Schema
-  import Ecto.Changeset
-
   @primary_key {:hash, Hash, autogenerate: false}
   schema "blocks" do
     field :height,          Type.Height,    default: 0
@@ -69,6 +68,7 @@ defmodule Knot.Block do
     field :nonce,           Type.Nonce,     default: 0
   end
 
+  @hash_fields ~w(hash parent_hash content_hash component_hash)a
   @fields ~w(hash height timestamp parent_hash content_hash component_hash nonce)a
 
   @spec count :: integer
@@ -76,13 +76,10 @@ defmodule Knot.Block do
     Repo.aggregate Block, :count, :hash
   end
 
-  def to_map(block) do
-    Enum.map_reduce @fields, %{}, &(Map.put(&2, &1, Map.get(block, &1)))
-  end
-
-  def changeset(block_params) do
+  @spec changeset(Block.t) :: Ecto.Changeset.t
+  def changeset(block) do
     %Block{}
-      |> cast(Map.from_struct(block_params), @fields)
+      |> cast(Map.from_struct(block), @fields)
       |> validate_required(@fields)
   end
 
@@ -93,7 +90,7 @@ defmodule Knot.Block do
     cs = changeset block
     if cs.valid? do
       case Knot.Repo.insert cs, on_conflict: :nothing, conflict_target: [:hash] do
-        {:ok, block} -> {:ok, block}
+        {:ok, block} -> {:ok, binarize(block)}
                    _ -> {:error, :insert_error}
       end
     else
@@ -135,6 +132,15 @@ defmodule Knot.Block do
     Repo.delete_all Block
     :ok
   end
+
+  @spec binarize(Block.t) :: Block.t
+  def binarize(block) do
+    Enum.reduce @hash_fields, block, fn (field, acc) ->
+      Map.put acc, field, Hash.from_string(Map.get(acc, field))
+    end
+  end
+
+  # ====================================================================== #
 
   @doc """
   Makes a new block given a timestamp and a content hash.
