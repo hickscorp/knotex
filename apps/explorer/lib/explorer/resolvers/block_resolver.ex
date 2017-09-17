@@ -1,5 +1,6 @@
 defmodule Explorer.BlockResolver do
   @moduledoc false
+
   @spec ancestry(%{block: Block.t, top: integer}, any)
                 :: {:ok, list(Block.t)} | {:error, atom}
   def ancestry(%{block: block, top: top}, _info) do
