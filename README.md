@@ -190,7 +190,6 @@ handle  = Knot.start "tcp://127.0.0.1:4001", Knot.Block.application_genesis()
 Knot.Logic.seed handle.logic, 128
 ```
 
-
 ## GraphQL API
 
 A GraphQL is available and the Graphiql tool can
