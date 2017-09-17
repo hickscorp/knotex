@@ -11,6 +11,7 @@ config :knot,
   block_store_backend: :dets,
   genesis_data: %{
     timestamp: 1_490_926_154,
+    height: 0,
     nonce: 3_492_211,
     parent_hash: Base.decode16!(
       "0000000000000000000000000000000000000000000000000000000000000000"
