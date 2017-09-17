@@ -42,30 +42,27 @@ defmodule Knot do
 
   # Public API.
 
-  @spec start(URI.t | String.t, Block.t) :: Handle.t
+  @spec start(Via.uri_or_address, Block.t) :: Handle.t
   def start(uri_or_address, block) do
-    uri = URI.parse uri_or_address
-    case Supervisor.start_child Knot.Knots, [uri, block] do
-      {:ok, _}                        -> make_handle uri
-      {:error, {:already_started, _}} -> make_handle uri
+    case Supervisor.start_child Knot.Knots, [uri_or_address, block] do
+      {:ok, _}                        -> make_handle uri_or_address
+      {:error, {:already_started, _}} -> make_handle uri_or_address
                             otherwise -> otherwise
     end
   end
 
-  @spec stop(URI.t | String.t | Handle.t) :: :ok
+  @spec stop(Via.uri_or_address | Handle.t) :: :ok
   def stop(%Handle{uri: uri}) do
     stop uri
   end
   def stop(uri_or_address) do
-    uri = URI.parse uri_or_address
-    [{pid, _}] = Registry.lookup(Via.registry(), Via.id(uri, "node"))
+    [{pid, _}] = Registry.lookup Via.registry(), Via.node(uri_or_address)
     Supervisor.terminate_child Knot.Knots, pid
   end
 
-  @spec start_link(URI.t | String.t, Block.t) :: {:ok, pid}
+  @spec start_link(Via.uri_or_address, Block.t) :: {:ok, pid}
   def start_link(uri_or_address, block) do
-    uri = URI.parse uri_or_address
-    Supervisor.start_link Knot, {uri, block}, name: Via.node(uri)
+    Supervisor.start_link Knot, {uri_or_address, block}, name: Via.node(uri_or_address)
   end
 
   # Supervisor callbacks.
@@ -76,14 +73,14 @@ defmodule Knot do
       sofo(Via.clients(uri), Knot.Client),
       sofo(Via.connectors(uri), Knot.Client.Connector),
       worker(Knot.Logic, [uri, genesis]),
-      worker(Knot.Listener, [uri, Via.logic(uri)])
+      worker(Knot.Listener, [uri])
     ]
     supervise children, strategy: :one_for_one
   end
 
   # Implementation.
 
-  @spec make_handle(URI.t | String.t) :: Handle.t
+  @spec make_handle(Via.uri_or_address) :: Handle.t
   def make_handle(uri_or_address) do
     uri = URI.parse uri_or_address
     %Handle{uri: uri,

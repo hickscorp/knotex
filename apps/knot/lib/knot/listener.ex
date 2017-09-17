@@ -11,16 +11,17 @@ defmodule Knot.Listener do
 
   @type t :: Via.t | pid
 
-  @spec start_link(URI.t, Via.t | pid) :: {:ok, Listener.t}
-  def start_link(uri, handler) do
-    ref = Via.listener uri
-    GenServer.start_link Listener, {uri, handler}, name: ref
+  @spec start_link(Via.uri_or_address) :: {:ok, Listener.t}
+  def start_link(uri_or_address) do
+    ref = Via.listener uri_or_address
+    GenServer.start_link Listener, uri_or_address, name: ref
   end
 
   # GenServer handlers.
 
-  @spec init({URI.t, Via.t}) :: {:ok, State.t}
-  def init({uri, handler}) do
+  @spec init(Via.uri_or_address) :: {:ok, State.t}
+  def init(uri_or_address) do
+    uri = URI.parse uri_or_address
     Process.flag :trap_exit, true
     Logger.info fn -> "[#{Via.to_string uri}] Starting listener." end
 
@@ -29,19 +30,21 @@ defmodule Knot.Listener do
 
     opts = [:binary, ip: ip, packet: 0, active: false]
     {:ok, socket} = :gen_tcp.listen uri.port, opts
-    spawn_link fn -> listen uri, handler, socket end
+    spawn_link fn -> listen uri, socket end
 
-    {:ok, {uri, handler, socket}}
+    {:ok, {uri, socket}}
   end
 
   # Implementation.
 
-  @spec listen(URI.t, Via.t, Knot.socket) :: any
-  defp listen(uri, handler, socket) do
+  @spec listen(URI.t, Knot.socket) :: any
+  defp listen(uri, socket) do
     case :gen_tcp.accept socket do
       {:ok, cli_socket} ->
-        Knot.Logic.on_client_socket handler, cli_socket, :inbound
-        listen uri, handler, socket
+        uri
+          |> Via.logic
+          |> Knot.Logic.on_client_socket(cli_socket, :inbound)
+        listen uri, socket
       {:error, :closed} ->
         Logger.info fn ->
           "[#{Via.to_string uri}] Socket was closed."
@@ -55,12 +58,15 @@ defmodule Knot.Listener do
     end
   end
 
-  @spec terminate(any, {URI.t, Logic.t, Knot.socket}) :: :ok
-  def terminate(reason, {uri, logic, socket}) do
+  @spec terminate(any, {Via.uri_or_address, Knot.socket}) :: :ok
+  def terminate(reason, {uri_or_address, socket}) do
+    uri = URI.parse uri_or_address
     Logger.info fn ->
       "[#{Via.to_string uri}] Terminating listener: #{inspect reason}."
     end
-    Knot.Logic.on_listener_terminating logic, reason
+    uri
+      |> Via.logic
+      |> Knot.Logic.on_listener_terminating(reason)
     :gen_tcp.close socket
   end
 end
