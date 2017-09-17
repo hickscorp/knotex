@@ -114,7 +114,7 @@ defmodule Knot.Logic do
                    :: {:reply, :ok | {:error, atom}, State.t}
   def handle_call({:push, block}, _from, state) do
     with :ok <- Block.ensure_mined(block),
-         {:ok, ^block} <- Block.store(block) do
+         {:ok, _} <- Block.store(block) do
       {:reply, :ok, %{state | head: block}}
     else
       {:error, reason} -> {:reply, {:error, reason}, state}

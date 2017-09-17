@@ -49,7 +49,6 @@ defmodule Knot do
     case Supervisor.start_child Knot.Knots, [uri_or_address, block] do
       {:ok, _}                        -> make_handle uri_or_address
       {:error, {:already_started, _}} -> make_handle uri_or_address
-                            otherwise -> otherwise
     end
   end
 
