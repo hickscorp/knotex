@@ -16,10 +16,7 @@ defmodule Knot.Block.Kit do
   def ensure_sanity! do
     Logger.info fn -> "Starting tests." end
 
-    {:ok, bg} = :knot
-      |> Application.get_env(:genesis_data)
-      |> Block.genesis
-      |> Block.store
+    {:ok, bg} = Block.store Knot.Block.application_genesis()
 
     block = Enum.reduce 1..128, bg, &make_block(&1, &2)
 

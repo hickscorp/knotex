@@ -12,11 +12,7 @@ defmodule Mix.Tasks.Knot.Start do
       |> OptionParser.parse(strict: [bind: :string, connect: :keep])
       |> parse_options
 
-    genesis = :knot
-      |> Application.get_env(:genesis_data)
-      |> Knot.Block.genesis
-
-    handle = Knot.start bind, genesis
+    handle = Knot.start bind, Knot.Block.application_genesis()
     Enum.each peers, &Knot.Client.Connector.start(handle, &1)
 
     :ok

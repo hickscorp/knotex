@@ -177,9 +177,7 @@ defmodule Knot.BlockTest do
   end
 
   defp genesis(ctx) do
-    block = :knot
-      |> Application.get_env(:genesis_data)
-      |> Block.genesis
+    block = Knot.Block.application_genesis()
     {:ok, Map.put(ctx, :genesis, block)}
   end
 

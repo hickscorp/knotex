@@ -11,12 +11,9 @@ defmodule Mix.Tasks.Knot.AssertComs do
   def run(_args) do
     Application.ensure_all_started :knot
 
-    genesis = :knot
-      |> Application.get_env(:genesis_data)
-      |> Knot.Block.genesis
-
-    with %Knot.Handle{} = _node1 <- Knot.start(@node1_uri, genesis),
-         %Knot.Handle{} = node2  <- Knot.start(@node2_uri, genesis),
+    with %Knot.Block{} = gen <- Knot.Block.application_genesis(),
+         %Knot.Handle{} = _node1 <- Knot.start(@node1_uri, gen),
+         %Knot.Handle{} = node2  <- Knot.start(@node2_uri, gen),
          _ <- Knot.Client.Connector.start(node2, @node1_uri) do
       :ok
     else

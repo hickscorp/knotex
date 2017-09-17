@@ -49,11 +49,7 @@ defmodule Knot.Logic.StateTest do
   end
 
   defp state(ctx) do
-    {:ok, genesis} = :knot
-      |> Application.get_env(:genesis_data)
-      |> Block.genesis
-      |> Block.store
-
+    {:ok, genesis} = Block.store Knot.Block.application_genesis()
     ancestry = Enum.reduce 1..7, [genesis], fn (_, [parent | _] = acc) ->
       height = parent.height + 1
       hash = Hash.perform to_string height

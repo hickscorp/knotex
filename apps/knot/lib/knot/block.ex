@@ -76,6 +76,10 @@ defmodule Knot.Block do
     Repo.aggregate Block, :count, :hash
   end
 
+  def to_map(block) do
+    Enum.map_reduce @fields, %{}, &(Map.put(&2, &1, Map.get(block, &1)))
+  end
+
   def changeset(block_params) do
     %Block{}
       |> cast(Map.from_struct(block_params), @fields)
@@ -85,7 +89,7 @@ defmodule Knot.Block do
   @doc "Adds a block to the store."
   @spec store(Block.t) :: Block.t | {:error, insert_error}
   def store(block) do
-    # Knot.Repo.delete_all Knot.Block; :knot |> Application.get_env(:genesis_data) |> Knot.Block.genesis |> Knot.Block.store
+    # Knot.Repo.delete_all Knot.Block; :knot |> Application.get_env(:genesis_data) |> Knot.Block.from_map |> Knot.Block.store
     cs = changeset block
     if cs.valid? do
       case Knot.Repo.insert cs, on_conflict: :nothing, conflict_target: [:hash] do
@@ -161,13 +165,28 @@ defmodule Knot.Block do
 
   ## Example
 
-      iex> genesis_data = Application.get_env :knot, :genesis_data
-      iex> g = Knot.Block.genesis(genesis_data)
+      iex> g = Knot.Block.from_map Application.get_env(:knot, :genesis_data)
       iex> [g.height, g.nonce, g.timestamp]
       [0, 3_492_211, 14_90_926_154]
   """
-  @spec genesis(map) :: Block.t
-  def genesis(data), do: Map.merge %Block{height: 0}, data
+  @spec from_map(map) :: Block.t
+  def from_map(map), do: Map.merge %Block{height: 0}, map
+
+  @doc """
+  Builds the genesis block using the application configuration data.
+
+  ## Example
+
+      iex> g = Knot.Block.application_genesis()
+      iex> [g.height, g.nonce, g.timestamp]
+      [0, 3_492_211, 14_90_926_154]
+  """
+  @spec application_genesis :: Block.t
+  def application_genesis do
+    :knot
+      |> Application.get_env(:genesis_data)
+      |> Block.from_map
+  end
 
   @doc """
   Verifies the validity of a single block by checking that:

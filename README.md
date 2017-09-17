@@ -53,10 +53,8 @@ instance to be used to handle messages.
 To summarize:
 
 ```elixir
-# Prepare the genesis block to start with.
-genesis = Knot.Block.genesis Application.get_env :knot, :genesis_data
 # Start the node.
-Knot.start "tcp://0.0.0.0:4001", genesis
+Knot.start "tcp://0.0.0.0:4001", Knot.Block.application_genesis()
 ```
 
 At this point, a node is running on port 4001. Then from whenever you want, even
@@ -64,9 +62,8 @@ in another BEAM VM, or on another computer if you adjust the endpoint addresses:
 
 ```elixir
 # Make sure to use the same genesis block.
-genesis = Knot.Block.genesis Application.get_env :knot, :genesis_data
 # Start another node, on another port...
-gina = Knot.start "tcp://0.0.0.0:4002", genesis
+gina = Knot.start "tcp://0.0.0.0:4002", Knot.Block.application_genesis()
 # Connect to the first node we started and start chatting.
 Knot.Client.Connector.start gina, "tcp://0.0.0.0:4001"
 ```
@@ -189,8 +186,7 @@ To do so, issue the command `iex -S mix phx.server`. Once your server is up and
 running, you can seed your node with simple mining data by issuing:
 
 ```
-genesis = Knot.Block.genesis Application.get_env :knot, :genesis_data
-handle  = Knot.start "tcp://127.0.0.1:4001", genesis
+handle  = Knot.start "tcp://127.0.0.1:4001", Knot.Block.application_genesis()
 Knot.Logic.seed handle.logic, 128
 ```
 
