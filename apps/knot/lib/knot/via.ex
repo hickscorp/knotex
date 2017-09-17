@@ -21,6 +21,9 @@ defmodule Knot.Via do
 
       iex> Knot.Via.to_string "tcp://localhost:4001"
       "localhost:4001"
+
+      iex> "tcp://localhost:4001" |> URI.parse |> Knot.Via.to_string
+      "localhost:4001"
   """
   @spec to_string(uri_or_address) :: String.t
   def to_string(uri_or_address) do
@@ -34,10 +37,10 @@ defmodule Knot.Via do
   ## Examples
 
       iex> Knot.Via.node "tcp://localhost:4001"
-      {:via, Registry, {Knot.Registry, {"localhost", 4001, "node"}}}
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, :node}}}
   """
   @spec node(uri_or_address) :: Knot.t
-  def node(uri_or_address), do: make uri_or_address, "node"
+  def node(uri_or_address), do: make uri_or_address, :node
 
   @doc """
   Builds a via-tuple for a node clients supervisor given an URI.
@@ -67,10 +70,10 @@ defmodule Knot.Via do
   ## Examples
 
       iex> Knot.Via.logic "tcp://localhost:4001"
-      {:via, Registry, {Knot.Registry, {"localhost", 4001, "logic"}}}
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, :logic}}}
   """
   @spec logic(uri_or_address) :: Logic.t
-  def logic(uri_or_address), do: make uri_or_address, "logic"
+  def logic(uri_or_address), do: make uri_or_address, :logic
 
   @doc """
   Builds a via-tuple for a node listener given an URI.
@@ -78,18 +81,21 @@ defmodule Knot.Via do
   ## Examples
 
       iex> Knot.Via.listener "tcp://localhost:4001"
-      {:via, Registry, {Knot.Registry, {"localhost", 4001, "listener"}}}
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, :listener}}}
   """
   @spec listener(uri_or_address) :: Listener.t
-  def listener(uri_or_address), do: make uri_or_address, "listener"
+  def listener(uri_or_address), do: make uri_or_address, :listener
 
   @doc """
   Given an URI and a suffix, returns a via-tuple compatible with `Registry`.
 
   ## Examples
 
-      iex> Knot.Via.make "tcp://localhost:4001", "sup"
-      {:via, Registry, {Knot.Registry, {"localhost", 4001, "sup"}}}
+      iex> Knot.Via.make "tcp://localhost:4001", :whatever
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, :whatever}}}
+
+      iex> "tcp://localhost:4001" |> URI.parse |> Knot.Via.make(:whatever)
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, :whatever}}}
   """
   @spec make(uri_or_address, String.t) :: Via.t
   def make(uri_or_address, suffix) do
@@ -102,8 +108,11 @@ defmodule Knot.Via do
 
   ## Examples
 
-      iex> Knot.Via.id "tcp://localhost:4001", "node"
-      {"localhost", 4001, "node"}
+      iex> Knot.Via.id "tcp://localhost:4001", :whatever
+      {"localhost", 4001, :whatever}
+
+      iex> "tcp://localhost:4001" |> URI.parse |> Knot.Via.id(:whatever)
+      {"localhost", 4001, :whatever}
   """
   @spec id(uri_or_address, String.t) :: id
   def id(uri_or_address, suffix) do
