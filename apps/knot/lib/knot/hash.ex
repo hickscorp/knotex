@@ -2,9 +2,11 @@ defmodule Knot.Hash do
   @moduledoc """
   Defines helper functions around hashing.
   """
+
   alias __MODULE__, as: Hash
 
-  @type t :: binary
+  @type          t :: <<_::256>>
+  @type readable_t :: <<_::512>>
 
   @invalid  :binary.copy <<0xff>>, 32
   @zero     :binary.copy <<0x00>>, 32
@@ -83,11 +85,11 @@ defmodule Knot.Hash do
       iex>   |> Knot.Hash.to_string(case: :upper, short: true)
       "0F0F0F0F"
   """
-  @spec to_string(t, keyword) :: String.t
+  @spec to_string(t | readable_t, keyword) :: readable_t
   def to_string(hash, opts \\ [])
   def to_string(nil, _), do: "!NIL!"
-  def to_string(hash, _) when is_binary(hash) and byte_size(hash) == 64, do: hash
-  def to_string(hash, opts) when is_binary(hash) and byte_size(hash) == 32 do
+  def to_string(<<_::size(512)>> = hash, _), do: hash
+  def to_string(<<_::size(256)>> = hash, opts) do
     c = Keyword.get opts, :case, :lower
     ret = Base.encode16 hash, case: c
     case Keyword.get opts, :short, false do
@@ -106,9 +108,9 @@ defmodule Knot.Hash do
       iex>   |> Knot.Hash.to_string(short: true)
       "e18470da"
   """
-  @spec from_string(String.t) :: Hash.t
-  def from_string(str) when is_binary(str) and byte_size(str) == 64 do
-    str
+  @spec from_string(readable_t) :: t
+  def from_string(<<_::size(512)>> = hash) do
+    hash
       |> String.downcase
       |> Base.decode16!(case: :lower)
   end
@@ -126,8 +128,7 @@ defmodule Knot.Hash do
       iex> Knot.Hash.ensure_hardness <<0x00, 0x01>>, 1
       :ok
   """
-  @spec ensure_hardness(t, Block.difficulty)
-                       :: :ok | {:error, :unmet_difficulty}
+  @spec ensure_hardness(t, Block.difficulty) :: :ok | {:error, :unmet_difficulty}
   def ensure_hardness(_, 0), do: :ok
   def ensure_hardness(<<f::size(8), _::binary>>, _) when f != 0 do
     {:error, :unmet_difficulty}
@@ -143,21 +144,14 @@ defmodule Knot.Hash do
   @spec type :: :string
   def type, do: :string
 
-  @spec cast(binary) :: {:ok, String.t}
-  def cast(val) when is_binary(val) and byte_size(val) == 32 do
-    {:ok, Knot.Hash.to_string val}
-  end
+  @spec cast(t) :: {:ok, binary}
+  def cast(<<_::size(256)>> = val), do: {:ok, val}
 
-  @spec load(String.t) :: {:ok, binary}
-  def load(val) when is_binary(val) and byte_size(val) == 64 do
-    {:ok, Knot.Hash.from_string val}
-  end
+  @spec load(t | readable_t) :: {:ok, binary}
+  def load(<<_::size(512)>> = val), do: {:ok, Hash.from_string val}
+  def load(<<_::size(256)>> = val), do: {:ok, val}
 
-  @spec dump(String.t) :: {:ok, binary}
-  def dump(val) when is_binary(val) and byte_size(val) == 64 do
-    {:ok, Knot.Hash.to_string val}
-  end
-  def dump(val) when is_binary(val) and byte_size(val) == 32 do
-    {:ok, val}
-  end
+  @spec dump(t | readable_t) :: {:ok, binary}
+  def dump(<<_::size(512)>> = val), do: {:ok, val}
+  def dump(<<_::size(256)>> = val), do: {:ok, Hash.to_string val}
 end

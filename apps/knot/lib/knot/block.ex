@@ -58,7 +58,6 @@ defmodule Knot.Block do
     field :nonce,           Type.Nonce,     default: 0
   end
 
-  @hash_fields ~w(hash parent_hash content_hash component_hash)a
   @fields ~w(hash height timestamp parent_hash content_hash component_hash nonce)a
 
   @spec count :: integer
@@ -74,13 +73,13 @@ defmodule Knot.Block do
   end
 
   @doc "Adds a block to the store."
-  @spec store(Block.t) :: Block.t | {:error, insert_error}
+  @spec store(Block.t) :: {:ok, Block.t} | {:error, insert_error}
   def store(block) do
-    # Knot.Repo.delete_all Knot.Block; :knot |> Application.get_env(:genesis_data) |> Knot.Block.from_map |> Knot.Block.store
+    # Knot.Repo.delete_all Knot.Block; Knot.Block.application_genesis() |> Knot.Block.store
     cs = changeset block
     if cs.valid? do
       case Knot.Repo.insert cs, on_conflict: :nothing, conflict_target: [:hash] do
-        {:ok, block} -> {:ok, binarize(block)}
+        {:ok, block} -> {:ok, block}
                    _ -> {:error, :insert_error}
       end
     else
@@ -123,13 +122,6 @@ defmodule Knot.Block do
     :ok
   end
 
-  @spec binarize(Block.t) :: Block.t
-  def binarize(block) do
-    Enum.reduce @hash_fields, block, fn (field, acc) ->
-      Map.put acc, field, Hash.from_string(Map.get(acc, field))
-    end
-  end
-
   # ====================================================================== #
 
   @doc """
@@ -166,7 +158,11 @@ defmodule Knot.Block do
       [0, 3_492_211, 14_90_926_154]
   """
   @spec from_map(map) :: Block.t
-  def from_map(map), do: Map.merge %Block{height: 0}, map
+  def from_map(map) do
+    Enum.reduce @fields, %Block{}, fn (field, block)->
+      Map.put block, field, Map.get(map, field)
+    end
+  end
 
   @doc """
   Builds the genesis block using the application configuration data.
