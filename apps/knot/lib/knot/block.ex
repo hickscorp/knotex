@@ -45,16 +45,6 @@ defmodule Knot.Block do
   The block's height, timestamp, parent hash and content hash are user defined,
   while the component hash, the nonce and the hash should be computed by this
   module.
-
-  @type t :: %Block{
-                  hash: Hash.t,
-                height: height,
-             timestamp: Block.timestamp,
-           parent_hash: Hash.t,
-          content_hash: Hash.t,
-        component_hash: Hash.t,
-                 nonce: nonce
-  }
   """
   @type t :: %Block{}
 
