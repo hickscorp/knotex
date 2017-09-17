@@ -59,13 +59,13 @@ defmodule Knot.Block do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @primary_key {:hash, Type.Hash, autogenerate: false}
+  @primary_key {:hash, Hash, autogenerate: false}
   schema "blocks" do
     field :height,          Type.Height,    default: 0
     field :timestamp,       Type.Timestamp, default: nil
-    field :parent_hash,     Type.Hash,      default: Hash.invalid
-    field :content_hash,    Type.Hash,      default: Hash.invalid
-    field :component_hash,  Type.Hash,      default: Hash.invalid
+    field :parent_hash,     Hash,           default: Hash.invalid
+    field :content_hash,    Hash,           default: Hash.invalid
+    field :component_hash,  Hash,           default: Hash.invalid
     field :nonce,           Type.Nonce,     default: 0
   end
 

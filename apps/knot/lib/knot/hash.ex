@@ -135,4 +135,29 @@ defmodule Knot.Hash do
   def ensure_hardness(<<0::size(8), rest::binary>>, r) when r > 0 do
     ensure_hardness rest, r - 1
   end
+
+  # ====================================================================== #
+
+  @behaviour Ecto.Type
+
+  @spec type :: :string
+  def type, do: :string
+
+  @spec cast(binary) :: {:ok, String.t}
+  def cast(val) when is_binary(val) and byte_size(val) == 32 do
+    {:ok, Knot.Hash.to_string val}
+  end
+
+  @spec load(String.t) :: {:ok, binary}
+  def load(val) when is_binary(val) and byte_size(val) == 64 do
+    {:ok, Knot.Hash.from_string val}
+  end
+
+  @spec dump(String.t) :: {:ok, binary}
+  def dump(val) when is_binary(val) and byte_size(val) == 64 do
+    {:ok, Knot.Hash.to_string val}
+  end
+  def dump(val) when is_binary(val) and byte_size(val) == 32 do
+    {:ok, val}
+  end
 end
