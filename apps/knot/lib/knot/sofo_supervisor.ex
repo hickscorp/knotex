@@ -9,8 +9,9 @@ defmodule Knot.SofoSupervisor do
 
         def start(_type, _args) do
           children = [
+            ...
             sofo(MyApp.WorkersSup, MyApp.Worker),
-            sofo(MyApp.MailerSup, MyApp.Mailer)
+            ...
           ]
           Supervisor.start_link children, strategy: :one_for_one
         end
@@ -19,7 +20,7 @@ defmodule Knot.SofoSupervisor do
   different modules and registered under different names. Later on, you could
   spawn children on either one of these two supervisors, eg:
 
-        Supervisor.start_child Knot.Knots, [arg1, arg2]
+        Supervisor.start_child MyApp.WorkersSup, [arg1, arg2]
   """
 
   use Supervisor
