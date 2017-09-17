@@ -1,9 +1,20 @@
 defmodule Mix.Tasks.Knot.AssertComs do
-  @moduledoc false
+  @moduledoc """
+  A task used to verify the runtime connectivity and abilities to open ports.
+
+  Use it like this:
+
+      mix knot.assert_coms
+
+  You should then see messages every 5 seconds or so. If you don't, it means
+  that the nodes cannot connect to one another.
+
+  To terminate the task, please issue `:init.stop()`
+  """
+
   use Mix.Task
   require Logger
 
-  @shortdoc "Starts two nodes and makes sure they can communicate."
   @node1_uri "tcp://0.0.0.0:4001"
   @node2_uri "tcp://0.0.0.0:4002"
 

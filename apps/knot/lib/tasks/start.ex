@@ -1,8 +1,15 @@
 defmodule Mix.Tasks.Knot.Start do
-  @moduledoc false
-  use Mix.Task
+  @moduledoc """
+  A task used to start a node.
 
-  @shortdoc "Starts a node given a binding URI and an optional peer list."
+  Use it like this:
+
+      mix knot.start --bind "tcp://0.0.0.0:4001" \\
+                     --connect "tcp://10.0.0.1:4001" \\
+                     --connect "tcp://10.0.0.2:4001"
+  """
+
+  use Mix.Task
 
   @spec run(list(String.t)) :: :ok
   def run(args) do
