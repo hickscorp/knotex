@@ -14,8 +14,10 @@ defmodule Knot do
   alias Knot.Via
   import Knot.SofoSupervisor.Spec
 
-  @type      t :: Via.t
-  @type socket :: :gen_tcp.socket
+  @type          t :: Via.t
+  @type     socket :: :gen_tcp.socket
+  @type    clients :: Via.t | pid
+  @type connectors :: Via.t | pid
 
   defmodule Handle do
     @moduledoc false

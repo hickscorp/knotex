@@ -45,10 +45,10 @@ defmodule Knot.Via do
   ## Examples
 
       iex> Knot.Via.clients "tcp://localhost:4001"
-      {:via, Registry, {Knot.Registry, {"localhost", 4001, "clients"}}}
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, :clients}}}
   """
-  @spec clients(uri_or_address) :: Via.t
-  def clients(uri_or_address), do: make uri_or_address, "clients"
+  @spec clients(uri_or_address) :: Knot.clients
+  def clients(uri_or_address), do: make uri_or_address, :clients
 
   @doc """
   Builds a via-tuple for a node connectors supervisor given an URI.
@@ -56,10 +56,10 @@ defmodule Knot.Via do
   ## Examples
 
       iex> Knot.Via.connectors "tcp://localhost:4001"
-      {:via, Registry, {Knot.Registry, {"localhost", 4001, "connectors"}}}
+      {:via, Registry, {Knot.Registry, {"localhost", 4001, :connectors}}}
   """
-  @spec connectors(uri_or_address) :: Via.t
-  def connectors(uri_or_address), do: make uri_or_address, "connectors"
+  @spec connectors(uri_or_address) :: Knot.connectors
+  def connectors(uri_or_address), do: make uri_or_address, :connectors
 
   @doc """
   Builds a via-tuple for a node logic given an URI.
