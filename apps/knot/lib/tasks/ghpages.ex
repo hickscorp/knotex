@@ -27,7 +27,9 @@ defmodule Mix.Tasks.Docs.Ghpages do
 
     File.rm_rf "doc"
     Mix.Task.run "docs"
+    File.cp "circle.yml", "doc/circle.yml"
     File.cd! "doc"
+
     exec! "git init .; git add .; git commit -a -m \"Generates documentation.\""
     exec! "git remote add upstream #{remote}"
     exec! "git push -f upstream master:gh-pages"
