@@ -1,6 +1,5 @@
 defmodule Explorer.Schema do
   @moduledoc false
-
   use Absinthe.Schema
   import_types Explorer.Schema.Types
 

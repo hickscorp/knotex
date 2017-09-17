@@ -8,6 +8,7 @@ defmodule Knot do
     acceptor (see `Knot.Listener`).
   - A supervisor in charge of the client processes (See `Knot.Client`).
   """
+
   use Supervisor
   alias __MODULE__, as: Knot
   alias Knot.Via
@@ -18,7 +19,6 @@ defmodule Knot do
 
   defmodule Handle do
     @moduledoc false
-
     @typedoc "Represent a running node handle."
     @type t :: %Handle{
              uri: URI.t,
