@@ -13,4 +13,4 @@ jobs:
     steps:
       - checkout
       - run: MIX_ENV=test mix do deps.get, compile, ecto.create, ecto.migrate
-      - run: MIX_ENV=test mix coveralls.circle --umbrella
+      - run: MIX_ENV=test mix test
