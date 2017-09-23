@@ -52,15 +52,6 @@ defmodule Knot do
     end
   end
 
-  @spec stop(Via.uri_or_address | Handle.t) :: :ok
-  def stop(%Handle{uri: uri}) do
-    stop uri
-  end
-  def stop(uri_or_address) do
-    [{pid, _}] = Registry.lookup Via.registry(), Via.node(uri_or_address)
-    Supervisor.terminate_child Knot.Knots, pid
-  end
-
   @spec start_link(Via.uri_or_address, Block.t) :: {:ok, pid}
   def start_link(uri_or_address, block) do
     Supervisor.start_link Knot, {uri_or_address, block}, name: Via.node(uri_or_address)
