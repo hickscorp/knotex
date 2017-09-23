@@ -47,7 +47,7 @@ defmodule Knot do
   @spec start(Via.uri_or_address, Block.t) :: Handle.t
   def start(uri_or_address, block) do
     case Supervisor.start_child Knot.Knots, [uri_or_address, block] do
-      {:ok, _}                        -> make_handle uri_or_address
+                             {:ok, _} -> make_handle uri_or_address
       {:error, {:already_started, _}} -> make_handle uri_or_address
     end
   end
@@ -68,7 +68,8 @@ defmodule Knot do
 
   # Supervisor callbacks.
 
-  @spec init({Via.uri_or_address, Block.t}) :: {:ok, {:supervisor.sup_flags, [:supervisor.child_spec]}}
+  @spec init({Via.uri_or_address, Block.t})
+            :: {:ok, {:supervisor.sup_flags, [:supervisor.child_spec]}}
   def init({uri_or_address, genesis}) do
     uri = URI.parse uri_or_address
     children = [
