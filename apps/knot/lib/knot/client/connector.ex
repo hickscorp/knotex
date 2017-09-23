@@ -38,7 +38,6 @@ defmodule Knot.Client.Connector do
 
   @spec handle_cast(:connect, State.t) :: {:stop, :normal, State.t}
   def handle_cast(:connect, {uri, handler} = state) do
-    IO.puts "Connecting to #{Via.to_string uri}"
     with {:ok, socket} <- gen_tcp_connect(uri),
          reason <- transfer_socket_notify(socket, handler) do
       {:stop, reason, state}
