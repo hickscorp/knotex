@@ -224,25 +224,6 @@ defmodule Knot.Block do
       |> hash_into(block, :component_hash)
   end
 
-  @spec strip(Block.t) :: Block.t
-  defp strip(
-    %{height: h, timestamp: t, parent_hash: p, content_hash: c, nonce: n}
-  ) do
-    %Block{height: h, timestamp: t, parent_hash: p, content_hash: c, nonce: n}
-  end
-
-  @spec hash(Block.t) :: Block.t
-  defp hash(%{component_hash: h, nonce: n} = block) do
-    %{block | hash: Hash.perform([h, n])}
-  end
-
-  @spec hash_into(String.t, Block.t, atom) :: Block.t
-  defp hash_into(value, block, key) do
-    %{block | key => Hash.perform(value)}
-  end
-
-  # ====================================================================== #
-
   @doc """
   Verifies whether a given `block` was properly mined or not.
 
@@ -309,5 +290,22 @@ defmodule Knot.Block do
       |> Float.floor
       |> round
       |> Kernel.+(1)
+  end
+
+  @spec strip(Block.t) :: Block.t
+  defp strip(
+    %{height: h, timestamp: t, parent_hash: p, content_hash: c, nonce: n}
+  ) do
+    %Block{height: h, timestamp: t, parent_hash: p, content_hash: c, nonce: n}
+  end
+
+  @spec hash(Block.t) :: Block.t
+  defp hash(%{component_hash: h, nonce: n} = block) do
+    %{block | hash: Hash.perform([h, n])}
+  end
+
+  @spec hash_into(String.t, Block.t, atom) :: Block.t
+  defp hash_into(value, block, key) do
+    %{block | key => Hash.perform(value)}
   end
 end
