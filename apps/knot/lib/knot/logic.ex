@@ -11,9 +11,10 @@ defmodule Knot.Logic do
 
   @type t :: Via.t | pid
 
-  @spec start_link(URI.t, Block.t) :: {:ok, Logic.t}
-  def start_link(uri, genesis) do
-    GenServer.start_link Logic, {uri, genesis}, name: Via.logic(uri)
+  @spec start_link(Via.uri_or_address, Block.t) :: {:ok, Logic.t}
+  def start_link(uri_or_address, genesis) do
+    uri = URI.parse uri_or_address
+    GenServer.start_link Logic, {uri_or_address, genesis}, name: Via.logic(uri)
   end
 
   @spec seed(Logic.t, integer) :: Block.t
@@ -93,8 +94,9 @@ defmodule Knot.Logic do
 
   # GenServer handlers.
 
-  @spec init({URI.t, Block.t}) :: {:ok, State.t}
-  def init({uri, genesis}) do
+  @spec init({Via.uri_or_address, Block.t}) :: {:ok, State.t}
+  def init({uri_or_address, genesis}) do
+    uri = URI.parse uri_or_address
     Logger.info fn -> "[#{Via.to_string uri}] Starting logic." end
     {:ok, _} = Block.store genesis
     {:ok, State.new(uri, genesis)}
