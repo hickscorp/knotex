@@ -32,7 +32,11 @@ defmodule Knot.BlockTest do
     end
   end
 
-  describe "#genesis" do
+  describe "#from_map" do
+    # Covered by doctest.
+  end
+
+  describe "#application_genesis" do
     setup :genesis
 
     test "has its content hash set", %{genesis: genesis} do
@@ -47,6 +51,14 @@ defmodule Knot.BlockTest do
     test "has a correct hash et", %{genesis: genesis} do
       assert "0000007b" == Hash.to_string(genesis.hash, short: true)
     end
+  end
+
+  describe "#ensure_final" do
+    # TODO.
+  end
+
+  describe "#seal" do
+    # Covered by doctest.
   end
 
   describe "#ensure_mined" do
