@@ -8,6 +8,42 @@ defmodule Knot.BlockTest do
 
   @content "Main test block."
 
+  describe "#changeset" do
+    test "should validate required fields"
+  end
+
+  describe "#count" do
+    test "should count unique blocks"
+  end
+
+  describe "#store" do
+    test "should insert block when its hash doesn't already exist"
+    test "should fail when the block's parent doesn't exist"
+    test "should not fail on conflict"
+  end
+
+  describe "#find" do
+    test "returns a block given its hash"
+    test "returns a proper error when the block isn't found"
+  end
+
+  describe "#find_by_hash_and_height" do
+    test "returns a block given its hash and height"
+    test "returns a proper error if the height isn't matched"
+    test "returns a proper error if the hash isn't matched"
+  end
+
+  describe "#remove" do
+    test "destroys a block"
+    test "doesn't destroy any other block"
+  end
+
+  describe "#clear" do
+    test "completely empties the datastore"
+  end
+
+  # ====================================================================== #
+
   describe "#new" do
     setup :new_block
 

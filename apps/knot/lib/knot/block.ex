@@ -7,8 +7,7 @@ defmodule Knot.Block do
   use Ecto.Schema
   import Ecto.Changeset
   alias __MODULE__, as: Block
-  alias Knot.{Hash, Repo}
-  alias Knot.Repo.Type
+  alias Knot.{Hash, Repo, Repo.Type}
 
   @zero_hash Hash.zero()
 
@@ -60,11 +59,7 @@ defmodule Knot.Block do
 
   @fields ~w(hash height timestamp parent_hash content_hash component_hash nonce)a
 
-  @spec count :: integer
-  def count do
-    Repo.aggregate Block, :count, :hash
-  end
-
+  @doc "Builds a changeset for a block."
   @spec changeset(Block.t) :: Ecto.Changeset.t
   def changeset(block) do
     %Block{}
@@ -72,10 +67,16 @@ defmodule Knot.Block do
       |> validate_required(@fields)
   end
 
+  @spec count :: integer
+  def count do
+    Repo.aggregate Block, :count, :hash
+  end
+
   @doc "Adds a block to the store."
   @spec store(Block.t) :: {:ok, Block.t} | {:error, insert_error}
   def store(block) do
     # Knot.Repo.delete_all Knot.Block; Knot.Block.application_genesis() |> Knot.Block.store
+    # TODO: Check that this block's parent exist within a transaction.
     cs = changeset block
     if cs.valid? do
       case Knot.Repo.insert cs, on_conflict: :nothing, conflict_target: [:hash] do
