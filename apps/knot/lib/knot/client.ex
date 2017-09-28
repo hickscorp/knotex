@@ -16,30 +16,30 @@ defmodule Knot.Client do
   defmodule State do
     @moduledoc false
     @type t :: %State{
-      handler:    Via.t,
+      logic:      Logic.t,
       socket:     Knot.socket,
       active_at:  integer
     }
     defstruct [
-      handler:    nil,
+      logic:      nil,
       socket:     nil,
       active_at:  0
     ]
   end
 
   @spec start(Via.t, Knot.socket, Via.t, Client.direction) :: Client.t
-  def start(clients, socket, handler, :inbound) do
-    connect clients, socket, handler
+  def start(clients, socket, logic, :inbound) do
+    connect clients, socket, logic
   end
-  def start(clients, socket, handler, :outbound) do
+  def start(clients, socket, logic, :outbound) do
     clients
-      |> connect(socket, handler)
+      |> connect(socket, logic)
       |> schedule_tick(@ping_interval)
   end
 
   @spec connect(Via.t, Knot.socket, Via.t) :: Client.t
-  defp connect(clients, socket, handler) do
-    {:ok, pid} = Supervisor.start_child clients, [socket, handler]
+  defp connect(clients, socket, logic) do
+    {:ok, pid} = Supervisor.start_child clients, [socket, logic]
     pid
   end
 
@@ -56,19 +56,19 @@ defmodule Knot.Client do
   # Supervisor callbacks.
 
   @spec start_link(Knot.socket, Via.t) :: {:ok, Client.t}
-  def start_link(socket, handler) do
-    GenServer.start_link Client, {socket, handler}
+  def start_link(socket, logic) do
+    GenServer.start_link Client, {socket, logic}
   end
 
   # GenServer callbacks.
 
   @spec init({Knot.socket, Via.t}) :: {:ok, State.t}
-  def init({socket, handler}) do
+  def init({socket, logic}) do
     me = self()
     spawn_link fn -> recv me, socket end
 
-    Knot.Logic.on_client_ready handler, me
-    state = %State{handler: handler, socket: socket}
+    Knot.Logic.on_client_ready logic, me
+    state = %State{logic: logic, socket: socket}
       |> mark_active
     {:ok, state}
   end
@@ -86,15 +86,15 @@ defmodule Knot.Client do
   end
 
   @spec handle_cast({:on_data, binary}, State.t) :: {:noreply, State.t}
-  def handle_cast({:on_data, data}, %{handler: handler} = state) do
-    Knot.Logic.on_client_data handler, self(), data
+  def handle_cast({:on_data, data}, %{logic: logic} = state) do
+    Knot.Logic.on_client_data logic, self(), data
     {:noreply, mark_active(state)}
   end
 
   @spec handle_cast(:on_close, State.t) :: {:noreply, State.t}
-  def handle_cast(:on_close, %{handler: handler} = state) do
+  def handle_cast(:on_close, %{logic: logic} = state) do
     me = self()
-    Knot.Logic.on_client_closed handler, me
+    Knot.Logic.on_client_closed logic, me
     {:stop, :normal, state}
   end
 

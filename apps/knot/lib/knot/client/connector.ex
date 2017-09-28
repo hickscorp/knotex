@@ -23,23 +23,23 @@ defmodule Knot.Client.Connector do
 
   # Supervisor callbacks.
 
-  @spec start_link(Via.uri_or_address, Via.t) :: {:ok, Connector.t}
-  def start_link(uri_or_address, handler) do
-    {:ok, _} = GenServer.start_link Connector, {uri_or_address, handler}
+  @spec start_link(Via.uri_or_address, Logic.t) :: {:ok, Connector.t}
+  def start_link(uri_or_address, logic) do
+    {:ok, _} = GenServer.start_link Connector, {uri_or_address, logic}
   end
 
   # GenServer callbacks.
 
-  @spec init({Via.uri_or_address, Via.t}) :: {:ok, {URI.t, Via.t}}
-  def init({uri_or_address, handler}) do
+  @spec init({Via.uri_or_address, Logic.t}) :: {:ok, {URI.t, Logic.t}}
+  def init({uri_or_address, logic}) do
     GenServer.cast self(), :connect
-    {:ok, {URI.parse(uri_or_address), handler}}
+    {:ok, {URI.parse(uri_or_address), logic}}
   end
 
   @spec handle_cast(:connect, State.t) :: {:stop, :normal, State.t}
-  def handle_cast(:connect, {uri, handler} = state) do
+  def handle_cast(:connect, {uri, logic} = state) do
     with {:ok, socket} <- gen_tcp_connect(uri),
-         reason <- transfer_socket_notify(socket, handler) do
+         reason <- transfer_socket_notify(socket, logic) do
       {:stop, reason, state}
     else
       {:error, :econnrefused} ->
@@ -61,11 +61,11 @@ defmodule Knot.Client.Connector do
     :gen_tcp.connect to_charlist(host), port, [:binary, active: false]
   end
 
-  @spec transfer_socket_notify(Knot.socket, Via.t) :: :normal | :error
-  defp transfer_socket_notify(socket, handler) do
-    with  handler_pid <- GenServer.call(handler, :pid),
-          :ok <- :gen_tcp.controlling_process(socket, handler_pid),
-          :ok <- Logic.on_client_socket(handler, socket, :outbound) do
+  @spec transfer_socket_notify(Knot.socket, Logic.t) :: :normal | :error
+  defp transfer_socket_notify(socket, logic) do
+    with  logic_pid <- GenServer.call(logic, :pid),
+          :ok <- :gen_tcp.controlling_process(socket, logic_pid),
+          :ok <- Logic.on_client_socket(logic, socket, :outbound) do
           :normal
     else
         _ ->
