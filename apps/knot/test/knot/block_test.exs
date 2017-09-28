@@ -73,8 +73,6 @@ defmodule Knot.BlockTest do
   end
 
   describe "#application_genesis" do
-    setup :genesis
-
     test "has its content hash set", %{genesis: genesis} do
       hash = Hash.perform "Unspendable block."
       assert genesis.content_hash == hash
