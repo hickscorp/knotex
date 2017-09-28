@@ -9,7 +9,24 @@ defmodule Knot.BlockTest do
   @content "Main test block."
 
   describe "#changeset" do
-    test "should validate required fields"
+    test "should return a valid changeset" do
+      cs = Block.new(Hash.invalid(), 123)
+        |> Block.seal
+        |> (&%Block{&1 | hash: Hash.invalid()}).()
+        |> Block.changeset
+      assert cs.valid?
+    end
+
+    @fields ~w(hash height timestamp parent_hash content_hash component_hash nonce)a
+    Enum.each @fields, fn (field) ->
+      test "should validate #{field}", ctx do
+        cs = ctx.genesis
+          |> (&%Block{&1 | unquote(field) => nil}).()
+          |> Block.changeset
+        refute cs.valid?
+        assert(cs.errors[unquote(field)] == {"can't be blank", [validation: :required]})
+      end
+    end
   end
 
   describe "#count" do
