@@ -11,14 +11,14 @@ defmodule Knot.HashTest do
   @short    "ca978112"
   @readable "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb"
 
-  describe "#hash" do
+  describe "#perform" do
     test "uses SHA-256" do
       hash_of_a = Hash.perform @hashable
       assert hash_of_a == @hash
     end
   end
 
-  describe "#readable" do
+  describe "#to_string" do
     test "downcases the result"do
       hash_readable = Hash.to_string @hash
       assert hash_readable == @readable
@@ -40,6 +40,10 @@ defmodule Knot.HashTest do
     end
   end
 
+  describe "#from_string" do
+    # TODO.
+  end
+
   describe "#ensure_hardness" do
     @bin_zer <<1, 1, 1, 1>>
     @bin_one <<0, 1, 1, 1>>
@@ -56,5 +60,21 @@ defmodule Knot.HashTest do
       assert Hash.ensure_hardness(@bin_one, 2) == {:error, :unmet_difficulty}
       assert Hash.ensure_hardness(@bin_two, 3) == {:error, :unmet_difficulty}
     end
+  end
+
+  describe "@behaviour Ecto.Type #type" do
+    # TODO.
+  end
+
+  describe "@behaviour Ecto.Type #cast" do
+    # TODO.
+  end
+
+  describe "@behaviour Ecto.Type #load" do
+    # TODO.
+  end
+
+  describe "@behaviour Ecto.Type #dump" do
+    # TODO.
   end
 end
