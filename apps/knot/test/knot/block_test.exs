@@ -30,33 +30,79 @@ defmodule Knot.BlockTest do
   end
 
   describe "#count" do
-    test "should count unique blocks"
+    test "should include the genesis block" do
+      assert Block.count == 1
+    end
+
+    test "should account for newly put blocks", ctx do
+      {:ok, _} = Hash.invalid
+        |> Block.new(123)
+        |> Block.as_child_of(ctx.genesis)
+        |> Block.seal
+        |> (&%Block{&1 | hash: Hash.invalid()}).()
+        |> Block.store
+      assert Block.count == 2
+    end
   end
 
   describe "#store" do
-    test "should insert block when its hash doesn't already exist"
-    test "should fail when the block's parent doesn't exist"
-    test "should not fail on conflict"
+    test "should not insert a block that already exists", %{genesis: genesis} do
+      Block.store genesis
+      Block.store genesis
+      assert Block.count == 1
+    end
   end
 
   describe "#find" do
-    test "returns a block given its hash"
-    test "returns a proper error when the block isn't found"
+    test "returns a block given its hash", %{genesis: genesis} do
+      {:ok, found} = Block.find genesis.hash
+      assert found.hash == genesis.hash
+    end
+
+    test "returns a proper error when the block isn't found" do
+      assert Block.find(Hash.invalid) == {:error, :not_found}
+    end
   end
 
   describe "#find_by_hash_and_height" do
-    test "returns a block given its hash and height"
-    test "returns a proper error if the height isn't matched"
-    test "returns a proper error if the hash isn't matched"
+    test "returns a block given its hash and height", %{genesis: genesis} do
+      {:ok, found} = Block.find_by_hash_and_height genesis.hash, genesis.height
+      assert found.hash == genesis.hash
+      assert found.height == genesis.height
+    end
+
+    test "returns a proper error if the height isn't matched", %{genesis: genesis} do
+      ret = Block.find_by_hash_and_height genesis.hash, genesis.height + 1
+      assert ret == {:error, :not_found}
+    end
+
+    test "returns a proper error if the hash isn't matched", %{genesis: genesis} do
+      ret = Block.find_by_hash_and_height Hash.invalid(), genesis.height
+      assert ret == {:error, :not_found}
+    end
   end
 
   describe "#remove" do
-    test "destroys a block"
-    test "doesn't destroy any other block"
+    test "destroys a block", %{genesis: genesis} do
+      {:ok, block} = Hash.invalid
+        |> Block.new(123)
+        |> Block.as_child_of(genesis)
+        |> Block.seal
+        |> (&%Block{&1 | hash: Hash.invalid()}).()
+        |> Block.store
+      assert Block.count == 2
+
+      Block.remove block
+      assert Block.count == 1
+    end
   end
 
   describe "#clear" do
-    test "completely empties the datastore"
+    test "completely empties the datastore" do
+      Block.clear
+
+      assert Block.count == 0
+    end
   end
 
   # ====================================================================== #
