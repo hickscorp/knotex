@@ -1,0 +1,638 @@
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.16.4">
+    <title>Knot.Via –  vdev</title>
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
+    
+    
+    <script src="dist/sidebar_items-20f30a2a71.js"></script>
+    
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        vdev
+      </h2>
+    </div>
+    
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+
+    
+      <li><a id="tasks-list" href="#full-list">Mix Tasks</a></li>
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs"> vdev</small>
+        Knot.Via
+        
+      </h1>
+
+      
+        <section id="moduledoc">
+          <p>Helps building <a href="https://hexdocs.pm/elixir/Registry.html"><code class="inline">Registry</code></a> based process names.</p>
+
+        </section>
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+          
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:id/0">id()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:service_type/0">service_type()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:t/0">t()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:uri_or_address/0">uri_or_address()</a>
+  </div>
+  
+</div>
+
+  </div>
+
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#clients/1">clients(uri_or_address)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Builds a via-tuple for a node clients supervisor given an URI</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#connectors/1">connectors(uri_or_address)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Builds a via-tuple for a node connectors supervisor given an URI</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#id/2">id(uri_or_address, suffix)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Generates a per-uri unique ID that is suitable for via-tuple generation</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#listener/1">listener(uri_or_address)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Builds a via-tuple for a node listener given an URI</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#logic/1">logic(uri_or_address)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Builds a via-tuple for a node logic given an URI</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#make/2">make(uri_or_address, suffix)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Given an URI and a suffix, returns a via-tuple compatible with <a href="https://hexdocs.pm/elixir/Registry.html"><code class="inline">Registry</code></a></p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#node/1">node(uri_or_address)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Builds a via-tuple for a node given an URI</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#registry/0">registry()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#to_string/1">to_string(uri_or_address)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Transforms a URI into a displayable string</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+
+        </section>
+      
+
+      
+        <section id="types" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Types
+          </h1>
+          <div class="types-list">
+            <div class="detail" id="t:id/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:id/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">id()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>id() :: {<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>, pos_integer, <a href="#t:service_type/0">service_type</a>}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="t:service_type/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:service_type/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">service_type()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>service_type() :: :node | :clients | :connectors | :logic | :listener</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="t:t/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">t()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>t() :: {:via, Registry, {Knot.Registry, <a href="Knot.Via.html#t:id/0">Knot.Via.id</a>}}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="t:uri_or_address/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:uri_or_address/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">uri_or_address()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>uri_or_address() :: <a href="https://hexdocs.pm/elixir/URI.html#t:t/0">URI.t</a> | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+
+          </div>
+        </section>
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="clients/1">
+  
+  
+  <div class="detail-header">
+    <a href="#clients/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">clients(uri_or_address)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>clients(<a href="#t:uri_or_address/0">uri_or_address</a>) :: <a href="Knot.html#t:clients/0">Knot.clients</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Builds a via-tuple for a node clients supervisor given an URI.</p>
+<h2 id="clients/1-examples" class="section-heading">
+  <a href="#clients/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Via.clients &quot;tcp://localhost:4001&quot;
+{:via, Registry, {Knot.Registry, {&quot;localhost&quot;, 4001, :clients}}}</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="connectors/1">
+  
+  
+  <div class="detail-header">
+    <a href="#connectors/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">connectors(uri_or_address)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>connectors(<a href="#t:uri_or_address/0">uri_or_address</a>) :: <a href="Knot.html#t:connectors/0">Knot.connectors</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Builds a via-tuple for a node connectors supervisor given an URI.</p>
+<h2 id="connectors/1-examples" class="section-heading">
+  <a href="#connectors/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Via.connectors &quot;tcp://localhost:4001&quot;
+{:via, Registry, {Knot.Registry, {&quot;localhost&quot;, 4001, :connectors}}}</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="id/2">
+  
+  
+  <div class="detail-header">
+    <a href="#id/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">id(uri_or_address, suffix)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>id(<a href="#t:uri_or_address/0">uri_or_address</a>, <a href="#t:service_type/0">service_type</a>) :: <a href="#t:id/0">id</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Generates a per-uri unique ID that is suitable for via-tuple generation.</p>
+<h2 id="id/2-examples" class="section-heading">
+  <a href="#id/2-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Via.id &quot;tcp://localhost:4001&quot;, :whatever
+{&quot;localhost&quot;, 4001, :whatever}
+
+iex&gt; &quot;tcp://localhost:4001&quot; |&gt; URI.parse |&gt; Knot.Via.id(:whatever)
+{&quot;localhost&quot;, 4001, :whatever}</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="listener/1">
+  
+  
+  <div class="detail-header">
+    <a href="#listener/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">listener(uri_or_address)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>listener(<a href="#t:uri_or_address/0">uri_or_address</a>) :: <a href="Knot.Listener.html#t:t/0">Knot.Listener.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Builds a via-tuple for a node listener given an URI.</p>
+<h2 id="listener/1-examples" class="section-heading">
+  <a href="#listener/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Via.listener &quot;tcp://localhost:4001&quot;
+{:via, Registry, {Knot.Registry, {&quot;localhost&quot;, 4001, :listener}}}</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="logic/1">
+  
+  
+  <div class="detail-header">
+    <a href="#logic/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">logic(uri_or_address)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>logic(<a href="#t:uri_or_address/0">uri_or_address</a>) :: <a href="Knot.Logic.html#t:t/0">Knot.Logic.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Builds a via-tuple for a node logic given an URI.</p>
+<h2 id="logic/1-examples" class="section-heading">
+  <a href="#logic/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Via.logic &quot;tcp://localhost:4001&quot;
+{:via, Registry, {Knot.Registry, {&quot;localhost&quot;, 4001, :logic}}}</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="make/2">
+  
+  
+  <div class="detail-header">
+    <a href="#make/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">make(uri_or_address, suffix)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>make(<a href="#t:uri_or_address/0">uri_or_address</a>, <a href="#t:service_type/0">service_type</a>) :: <a href="Knot.Via.html#t:t/0">Knot.Via.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Given an URI and a suffix, returns a via-tuple compatible with <a href="https://hexdocs.pm/elixir/Registry.html"><code class="inline">Registry</code></a>.</p>
+<h2 id="make/2-examples" class="section-heading">
+  <a href="#make/2-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Via.make &quot;tcp://localhost:4001&quot;, :whatever
+{:via, Registry, {Knot.Registry, {&quot;localhost&quot;, 4001, :whatever}}}
+
+iex&gt; &quot;tcp://localhost:4001&quot; |&gt; URI.parse |&gt; Knot.Via.make(:whatever)
+{:via, Registry, {Knot.Registry, {&quot;localhost&quot;, 4001, :whatever}}}</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="node/1">
+  
+  
+  <div class="detail-header">
+    <a href="#node/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">node(uri_or_address)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>node(<a href="#t:uri_or_address/0">uri_or_address</a>) :: <a href="Knot.html#t:t/0">Knot.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Builds a via-tuple for a node given an URI.</p>
+<h2 id="node/1-examples" class="section-heading">
+  <a href="#node/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Via.node &quot;tcp://localhost:4001&quot;
+{:via, Registry, {Knot.Registry, {&quot;localhost&quot;, 4001, :node}}}</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="registry/0">
+  
+  
+  <div class="detail-header">
+    <a href="#registry/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">registry()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>registry() :: Knot.Registry</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="to_string/1">
+  
+  
+  <div class="detail-header">
+    <a href="#to_string/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">to_string(uri_or_address)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>to_string(<a href="#t:uri_or_address/0">uri_or_address</a>) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Transforms a URI into a displayable string.</p>
+<h2 id="to_string/1-examples" class="section-heading">
+  <a href="#to_string/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Via.to_string &quot;tcp://localhost:4001&quot;
+&quot;localhost:4001&quot;
+
+iex&gt; &quot;tcp://localhost:4001&quot; |&gt; URI.parse |&gt; Knot.Via.to_string
+&quot;localhost:4001&quot;</code></pre>
+
+  </section>
+</div>
+
+        </section>
+      
+
+      
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle"><span class="sr-only">Switch theme</span></button>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
+  </body>
+</html>
+

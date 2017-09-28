@@ -1,0 +1,271 @@
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.16.4">
+    <title>Knot.SofoSupervisor –  vdev</title>
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
+    
+    
+    <script src="dist/sidebar_items-20f30a2a71.js"></script>
+    
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        vdev
+      </h2>
+    </div>
+    
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+
+    
+      <li><a id="tasks-list" href="#full-list">Mix Tasks</a></li>
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs"> vdev</small>
+        Knot.SofoSupervisor
+        
+      </h1>
+
+      
+        <section id="moduledoc">
+          <p>Defines a simple one-for-one generic supervisor.</p>
+<p>Using <code class="inline">SofoSupervisor</code> is usually done by importing its <code class="inline">SofoSupervisor.Spec</code>
+submodule, and using it like so (eg. from your <a href="https://hexdocs.pm/elixir/Application.html"><code class="inline">Application</code></a> definition file):</p>
+<pre><code class="elixir">  import SofoSupervisor.Spec
+
+  def start(_type, _args) do
+    children = [
+      ...
+      sofo(MyApp.WorkersSup, MyApp.Worker),
+      ...
+    ]
+    Supervisor.start_link children, strategy: :one_for_one
+  end</code></pre>
+<p>This block would have started two simple one-for-one supervisor, each spawning
+different modules and registered under different names. Later on, you could
+spawn children on either one of these two supervisors, eg:</p>
+<pre><code class="elixir">  Supervisor.start_child MyApp.WorkersSup, [arg1, arg2]</code></pre>
+
+        </section>
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+          
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:t/0">t()</a>
+  </div>
+  
+</div>
+
+  </div>
+
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#init/1">init(arg)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Initializes a new simple one for one unbranded supervisor</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#start_link/2">start_link(ref, mod)</a>
+  </div>
+  
+</div>
+
+  </div>
+
+
+          
+
+        </section>
+      
+
+      
+        <section id="types" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Types
+          </h1>
+          <div class="types-list">
+            <div class="detail" id="t:t/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">t()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>t() :: pid</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+
+          </div>
+        </section>
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="init/1">
+  
+  
+  <div class="detail-header">
+    <a href="#init/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">init(arg)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>init(atom) :: {:ok, {:supervisor.sup_flags, [:supervisor.child_spec]}}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Initializes a new simple one for one unbranded supervisor.</p>
+
+  </section>
+</div>
+<div class="detail" id="start_link/2">
+  
+  
+  <div class="detail-header">
+    <a href="#start_link/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">start_link(ref, mod)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>start_link(Via.t, atom) :: {:ok, <a href="Knot.SofoSupervisor.html#t:t/0">Knot.SofoSupervisor.t</a>}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+
+        </section>
+      
+
+      
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle"><span class="sr-only">Switch theme</span></button>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
+  </body>
+</html>
+

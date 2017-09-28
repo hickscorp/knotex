@@ -1,0 +1,1154 @@
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.16.4">
+    <title>Knot.Block –  vdev</title>
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
+    
+    
+    <script src="dist/sidebar_items-20f30a2a71.js"></script>
+    
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        vdev
+      </h2>
+    </div>
+    
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+
+    
+      <li><a id="tasks-list" href="#full-list">Mix Tasks</a></li>
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs"> vdev</small>
+        Knot.Block
+        
+      </h1>
+
+      
+        <section id="moduledoc">
+          <p>Models the functionality of a block.</p>
+<p>The <a href="Knot.Block.html#content"><code class="inline">Knot.Block</code></a> module exposes function to interact with blocks.</p>
+
+        </section>
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+          
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:difficulty/0">difficulty()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Represents a mining difficulty level</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:finder_error/0">finder_error()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:finder_result/0">finder_result()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:height/0">height()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Represents the height of a block within a chain</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:id/0">id()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Represents a block identifier</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:insert_error/0">insert_error()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:mismatch_error/0">mismatch_error()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:nonce/0">nonce()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Represents the adjustment to be made to a block for it to be mined</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:t/0">t()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Carries data representing a block</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:timestamp/0">timestamp()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Represents a point in time</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#ancestry/3">ancestry(block, n \\ -1, ancestors \\ [])</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Retrieves a block’s ancestry</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#ancestry_contains?/2">ancestry_contains?(b, a)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Checks whether a given <code class="inline">block</code>’s ancestry contains a <code class="inline">block</code> or not</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#application_genesis/0">application_genesis()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Builds the genesis block using the application configuration data</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#as_child_of/2">as_child_of(block, map)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Assigns a parent block to a given block, and sets the hashes and height
+accordingly</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#changeset/1">changeset(block)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Builds a changeset for a block</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#clear/0">clear()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Clears the store completely</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#count/0">count()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#difficulty/1">difficulty(height)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Given a block’s <code class="inline">height</code>, computes its required difficulty</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#ensure_final/1">ensure_final(block)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Verifies the validity of a single block by checking that:</p>
+<ul>
+<li><code class="inline">parent_hash</code>, <code class="inline">content_hash</code>, <code class="inline">component_hash</code> or <code class="inline">hash</code> are valid,
+</li>
+<li>The content and component hash were properly sealed,
+</li>
+<li>The block’s hash and nonce are a solution
+</li>
+</ul>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#ensure_known_parent/1">ensure_known_parent(map)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Verifies all of a given <code class="inline">block</code>’s parents are well known</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#ensure_mined/1">ensure_mined(block)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Verifies whether a given <code class="inline">block</code> was properly mined or not</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#find/1">find(hash)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Finds a block by its hash</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#find_by_hash_and_height/2">find_by_hash_and_height(hash, height)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Finds a block by its height and hash</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#from_map/1">from_map(map)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns the genesis block. A genesis block should have its parent hash set to
+a 32 bytes zero’ed binary and have a height of 0</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#new/2">new(content_hash, timestamp)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Makes a new block given a timestamp and a content hash</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#remove/1">remove(block)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Removes a block from the store</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#seal/1">seal(block)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Hashes the block components to prevent any further modification</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#store/1">store(block)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Adds a block to the store</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+
+        </section>
+      
+
+      
+        <section id="types" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Types
+          </h1>
+          <div class="types-list">
+            <div class="detail" id="t:difficulty/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:difficulty/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">difficulty()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>difficulty() :: non_neg_integer</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Represents a mining difficulty level.</p>
+
+  </section>
+</div>
+<div class="detail" id="t:finder_error/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:finder_error/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">finder_error()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>finder_error() :: :not_found | :badarg</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="t:finder_result/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:finder_result/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">finder_result()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>finder_result() :: {:ok, <a href="Knot.Block.html#t:t/0">Knot.Block.t</a>} | {:error, <a href="#t:finder_error/0">finder_error</a>}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="t:height/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:height/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">height()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>height() :: non_neg_integer</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Represents the height of a block within a chain.</p>
+
+  </section>
+</div>
+<div class="detail" id="t:id/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:id/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">id()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>id() :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a> | <a href="Knot.Hash.html#t:t/0">Knot.Hash.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Represents a block identifier.</p>
+<p>It could be either one of:</p>
+<ul>
+<li>A <code class="inline">String.t</code>, allowing special aliases like <code class="inline">&quot;head&quot;</code> and <code class="inline">&quot;genesis&quot;</code>.
+</li>
+<li>A <code class="inline">Knot.Hash.t</code>.
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="t:insert_error/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:insert_error/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">insert_error()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>insert_error() :: :insert_error</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="t:mismatch_error/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:mismatch_error/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">mismatch_error()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>mismatch_error() :: :component_hash_mismatch | :hash_mismatch</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="t:nonce/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:nonce/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">nonce()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>nonce() :: non_neg_integer</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Represents the adjustment to be made to a block for it to be mined.</p>
+
+  </section>
+</div>
+<div class="detail" id="t:t/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">t()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>t() :: %Knot.Block{__meta__: term, component_hash: term, content_hash: term, hash: term, height: term, nonce: term, parent_hash: term, timestamp: term}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Carries data representing a block.</p>
+<p>The <code class="inline">Knot.Block.t</code> data structure carries the important pieces of informations
+about a single block entity, without its content. Instead it embeds a hash of
+its content, allowing the block’s content to be stored separately using an
+appropriate back-end based on the type of application you’re running.</p>
+<p>The block’s height, timestamp, parent hash and content hash are user defined,
+while the component hash, the nonce and the hash should be computed by this
+module.</p>
+
+  </section>
+</div>
+<div class="detail" id="t:timestamp/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:timestamp/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">timestamp()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>timestamp() :: integer</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Represents a point in time.</p>
+
+  </section>
+</div>
+
+          </div>
+        </section>
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="ancestry/3">
+  
+  
+    <span id="ancestry/1"></span>
+  
+    <span id="ancestry/2"></span>
+  
+  <div class="detail-header">
+    <a href="#ancestry/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">ancestry(block, n \\ -1, ancestors \\ [])</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>ancestry(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>, integer, [<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>]) ::
+  {:ok, [<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>]} |
+  {:error, atom}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Retrieves a block’s ancestry.</p>
+
+  </section>
+</div>
+<div class="detail" id="ancestry_contains?/2">
+  
+  
+  <div class="detail-header">
+    <a href="#ancestry_contains?/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">ancestry_contains?(b, a)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>ancestry_contains?(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>, <a href="Knot.Block.html#t:t/0">Knot.Block.t</a> | <a href="Knot.Hash.html#t:t/0">Knot.Hash.t</a>) :: boolean</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Checks whether a given <code class="inline">block</code>’s ancestry contains a <code class="inline">block</code> or not.</p>
+
+  </section>
+</div>
+<div class="detail" id="application_genesis/0">
+  
+  
+  <div class="detail-header">
+    <a href="#application_genesis/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">application_genesis()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>application_genesis() :: <a href="Knot.Block.html#t:t/0">Knot.Block.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Builds the genesis block using the application configuration data.</p>
+<h2 id="application_genesis/0-example" class="section-heading">
+  <a href="#application_genesis/0-example" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Example
+</h2>
+
+<pre><code class="iex elixir">iex&gt; g = Knot.Block.application_genesis()
+iex&gt; [g.height, g.nonce, g.timestamp]
+[0, 3_492_211, 14_90_926_154]</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="as_child_of/2">
+  
+  
+  <div class="detail-header">
+    <a href="#as_child_of/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">as_child_of(block, map)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>as_child_of(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>, <a href="Knot.Block.html#t:t/0">Knot.Block.t</a>) :: <a href="Knot.Block.html#t:t/0">Knot.Block.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Assigns a parent block to a given block, and sets the hashes and height
+accordingly.</p>
+
+  </section>
+</div>
+<div class="detail" id="changeset/1">
+  
+  
+  <div class="detail-header">
+    <a href="#changeset/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">changeset(block)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>changeset(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>) :: <a href="https://hexdocs.pm/ecto/2.2.4/Ecto.Changeset.html#t:t/0">Ecto.Changeset.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Builds a changeset for a block.</p>
+
+  </section>
+</div>
+<div class="detail" id="clear/0">
+  
+  
+  <div class="detail-header">
+    <a href="#clear/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">clear()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>clear() :: :ok</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Clears the store completely.</p>
+
+  </section>
+</div>
+<div class="detail" id="count/0">
+  
+  
+  <div class="detail-header">
+    <a href="#count/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">count()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>count() :: integer</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="difficulty/1">
+  
+  
+  <div class="detail-header">
+    <a href="#difficulty/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">difficulty(height)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>difficulty(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a> | <a href="Knot.Block.html#t:height/0">Knot.Block.height</a>) :: <a href="#t:difficulty/0">difficulty</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Given a block’s <code class="inline">height</code>, computes its required difficulty.</p>
+
+  </section>
+</div>
+<div class="detail" id="ensure_final/1">
+  
+  
+  <div class="detail-header">
+    <a href="#ensure_final/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">ensure_final(block)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>ensure_final(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>) :: boolean | {:error, <a href="#t:mismatch_error/0">mismatch_error</a>}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Verifies the validity of a single block by checking that:</p>
+<ul>
+<li><code class="inline">parent_hash</code>, <code class="inline">content_hash</code>, <code class="inline">component_hash</code> or <code class="inline">hash</code> are valid,
+</li>
+<li>The content and component hash were properly sealed,
+</li>
+<li>The block’s hash and nonce are a solution.
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="ensure_known_parent/1">
+  
+  
+  <div class="detail-header">
+    <a href="#ensure_known_parent/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">ensure_known_parent(map)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>ensure_known_parent(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>) :: :ok</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Verifies all of a given <code class="inline">block</code>’s parents are well known.</p>
+
+  </section>
+</div>
+<div class="detail" id="ensure_mined/1">
+  
+  
+  <div class="detail-header">
+    <a href="#ensure_mined/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">ensure_mined(block)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>ensure_mined(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>) :: :ok | {:error, :unmined_block}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Verifies whether a given <code class="inline">block</code> was properly mined or not.</p>
+<p>The checks ensure that:</p>
+<ul>
+<li>The block’s ancestry is well known,
+</li>
+<li>The block is final.
+</li>
+</ul>
+
+  </section>
+</div>
+<div class="detail" id="find/1">
+  
+  
+  <div class="detail-header">
+    <a href="#find/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">find(hash)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>find(<a href="Knot.Hash.html#t:t/0">Knot.Hash.t</a>) :: <a href="#t:finder_result/0">finder_result</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Finds a block by its hash.</p>
+
+  </section>
+</div>
+<div class="detail" id="find_by_hash_and_height/2">
+  
+  
+  <div class="detail-header">
+    <a href="#find_by_hash_and_height/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">find_by_hash_and_height(hash, height)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>find_by_hash_and_height(<a href="Knot.Hash.html#t:t/0">Knot.Hash.t</a>, <a href="Knot.Block.html#t:height/0">Knot.Block.height</a>) :: <a href="#t:finder_result/0">finder_result</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Finds a block by its height and hash.</p>
+
+  </section>
+</div>
+<div class="detail" id="from_map/1">
+  
+  
+  <div class="detail-header">
+    <a href="#from_map/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">from_map(map)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>from_map(map) :: <a href="Knot.Block.html#t:t/0">Knot.Block.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Returns the genesis block. A genesis block should have its parent hash set to
+a 32 bytes zero’ed binary and have a height of 0.</p>
+<h2 id="from_map/1-example" class="section-heading">
+  <a href="#from_map/1-example" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Example
+</h2>
+
+<pre><code class="iex elixir">iex&gt; g = Knot.Block.from_map Application.get_env(:knot, :genesis_data)
+iex&gt; [g.height, g.nonce, g.timestamp]
+[0, 3_492_211, 14_90_926_154]</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="new/2">
+  
+  
+  <div class="detail-header">
+    <a href="#new/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">new(content_hash, timestamp)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>new(<a href="Knot.Hash.html#t:t/0">Knot.Hash.t</a>, <a href="Knot.Block.html#t:timestamp/0">Knot.Block.timestamp</a>) :: <a href="Knot.Block.html#t:t/0">Knot.Block.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Makes a new block given a timestamp and a content hash.</p>
+<h2 id="new/2-examples" class="section-heading">
+  <a href="#new/2-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Block.new &lt;&lt;1&gt;&gt;, 382_921_200
+%Knot.Block{content_hash: &lt;&lt;1&gt;&gt;, timestamp: 382_921_200}</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="remove/1">
+  
+  
+  <div class="detail-header">
+    <a href="#remove/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">remove(block)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>remove(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>) :: :ok</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Removes a block from the store.</p>
+
+  </section>
+</div>
+<div class="detail" id="seal/1">
+  
+  
+  <div class="detail-header">
+    <a href="#seal/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">seal(block)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>seal(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>) :: <a href="Knot.Block.html#t:t/0">Knot.Block.t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Hashes the block components to prevent any further modification.</p>
+<p>Once a block is sealed, it can safelly be mined. Sealing a block that was
+already sealed is acceptable, and often performed to verify whether the new
+seal matches the previous one, ensuring that the previous seal was correct.</p>
+<h2 id="seal/1-examples" class="section-heading">
+  <a href="#seal/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; %Knot.Block{}
+iex&gt;   |&gt; Knot.Block.seal
+iex&gt;   |&gt; Map.get(:component_hash)
+iex&gt;   |&gt; Knot.Hash.to_string(short: true)
+&quot;e3f001a9&quot;</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="store/1">
+  
+  
+  <div class="detail-header">
+    <a href="#store/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">store(block)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>store(<a href="Knot.Block.html#t:t/0">Knot.Block.t</a>) ::
+  {:ok, <a href="Knot.Block.html#t:t/0">Knot.Block.t</a>} |
+  {:error, <a href="#t:insert_error/0">insert_error</a>}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Adds a block to the store.</p>
+
+  </section>
+</div>
+
+        </section>
+      
+
+      
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle"><span class="sr-only">Switch theme</span></button>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
+  </body>
+</html>
+

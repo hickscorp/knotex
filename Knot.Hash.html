@@ -1,0 +1,654 @@
+    <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.16.4">
+    <title>Knot.Hash –  vdev</title>
+    <link rel="stylesheet" href="dist/app-5b9e160cec.css" />
+    
+    
+    <script src="dist/sidebar_items-20f30a2a71.js"></script>
+    
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<section class="sidebar">
+
+  
+  <a href="api-reference.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        vdev
+      </h2>
+    </div>
+    
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+
+    
+      <li><a id="tasks-list" href="#full-list">Mix Tasks</a></li>
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs"> vdev</small>
+        Knot.Hash
+        
+      </h1>
+
+      
+        <section id="moduledoc">
+          <p>Defines helper functions around hashing.</p>
+
+        </section>
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+          
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:readable_t/0">readable_t()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:t/0">t()</a>
+  </div>
+  
+</div>
+
+  </div>
+
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#cast/1">cast(val)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Casts the given input to the custom type</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#dump/1">dump(val)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Dumps the given term into an Ecto native type</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#ensure_hardness/2">ensure_hardness(arg1, r)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Checks whether a hash matches a given difficulty or not</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#from_string/1">from_string(hash)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Transforms a string into a hash by first downcasing it</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#invalid/0">invalid()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Represents an invalid hash that can be used for temporary constructs</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#load/1">load(val)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Loads the given term into a custom type</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#perform/1">perform(data)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Performs hashing on a given binary using the SHA-256 algorithm</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#to_string/2">to_string(hash, opts \\ [])</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Transforms a hash into a readable string form</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#type/0">type()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Returns the underlying schema type for the custom type</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#zero/0">zero()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Represents a completelly zero-filled hash</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+
+        </section>
+      
+
+      
+        <section id="types" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Types
+          </h1>
+          <div class="types-list">
+            <div class="detail" id="t:readable_t/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:readable_t/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">readable_t()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>readable_t() :: <<_::512>></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="t:t/0">
+  
+  
+  <div class="detail-header">
+    <a href="#t:t/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <span class="signature">t()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>t() :: <<_::256>></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+
+          </div>
+        </section>
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="cast/1">
+  
+  
+  <div class="detail-header">
+    <a href="#cast/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">cast(val)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>cast(<a href="#t:t/0">t</a>) :: {:ok, binary}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Casts the given input to the custom type.</p>
+<p>This callback is called on external input and can return any type,
+as long as the <a href="#dump/1"><code class="inline">dump/1</code></a> function is able to convert the returned
+value back into an Ecto native type. There are two situations where
+this callback is called:</p>
+<ol>
+<li>When casting values by <a href="https://hexdocs.pm/ecto/2.2.4/Ecto.Changeset.html"><code class="inline">Ecto.Changeset</code></a>
+</li>
+<li>When passing arguments to <a href="https://hexdocs.pm/ecto/2.2.4/Ecto.Query.html"><code class="inline">Ecto.Query</code></a>
+</li>
+</ol>
+<p>Callback implementation for <a href="https://hexdocs.pm/ecto/2.2.4/Ecto.Type.html#c:cast/1"><code class="inline">Ecto.Type.cast/1</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="dump/1">
+  
+  
+  <div class="detail-header">
+    <a href="#dump/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">dump(val)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>dump(<a href="#t:t/0">t</a> | <a href="#t:readable_t/0">readable_t</a>) :: {:ok, binary}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Dumps the given term into an Ecto native type.</p>
+<p>This callback is called with any term that was stored in the struct
+and it needs to validate them and convert it to an Ecto native type.</p>
+<p>Callback implementation for <a href="https://hexdocs.pm/ecto/2.2.4/Ecto.Type.html#c:dump/1"><code class="inline">Ecto.Type.dump/1</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="ensure_hardness/2">
+  
+  
+  <div class="detail-header">
+    <a href="#ensure_hardness/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">ensure_hardness(arg1, r)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>ensure_hardness(<a href="#t:t/0">t</a>, Block.difficulty) ::
+  :ok |
+  {:error, :unmet_difficulty}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Checks whether a hash matches a given difficulty or not.</p>
+<h2 id="ensure_hardness/2-examples" class="section-heading">
+  <a href="#ensure_hardness/2-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="elixir"># A difficulty of 1 requires at least 1 leading zero.
+iex&gt; Knot.Hash.ensure_hardness &lt;&lt;0x01, 0x01&gt;&gt;, 1
+{:error, :unmet_difficulty}
+
+# A difficulty of 1 requires at least 1 leading zero.
+iex&gt; Knot.Hash.ensure_hardness &lt;&lt;0x00, 0x01&gt;&gt;, 1
+:ok</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="from_string/1">
+  
+  
+  <div class="detail-header">
+    <a href="#from_string/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">from_string(hash)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>from_string(<a href="#t:readable_t/0">readable_t</a>) :: <a href="#t:t/0">t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Transforms a string into a hash by first downcasing it.</p>
+<h2 id="from_string/1-examples" class="section-heading">
+  <a href="#from_string/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; &quot;e18470da40760a375193f01c8e5212c9a7487505bef190b8623d73bff010fffa&quot;
+iex&gt;   |&gt; Knot.Hash.from_string
+iex&gt;   |&gt; Knot.Hash.to_string(short: true)
+&quot;e18470da&quot;</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="invalid/0">
+  
+  
+  <div class="detail-header">
+    <a href="#invalid/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">invalid()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>invalid() :: <a href="#t:t/0">t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Represents an invalid hash that can be used for temporary constructs.</p>
+<h2 id="invalid/0-examples" class="section-heading">
+  <a href="#invalid/0-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Hash.invalid
+iex&gt;   |&gt; Base.encode16(case: :lower)
+&quot;ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff&quot;</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="load/1">
+  
+  
+  <div class="detail-header">
+    <a href="#load/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">load(val)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>load(<a href="#t:t/0">t</a> | <a href="#t:readable_t/0">readable_t</a>) :: {:ok, binary}</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Loads the given term into a custom type.</p>
+<p>This callback is called when loading data from the database and
+receive an Ecto native type. It can return any type, as long as
+the <a href="#dump/1"><code class="inline">dump/1</code></a> function is able to convert the returned value back
+into an Ecto native type.</p>
+<p>Callback implementation for <a href="https://hexdocs.pm/ecto/2.2.4/Ecto.Type.html#c:load/1"><code class="inline">Ecto.Type.load/1</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="perform/1">
+  
+  
+  <div class="detail-header">
+    <a href="#perform/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">perform(data)</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>perform(binary | list) :: <a href="#t:t/0">t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Performs hashing on a given binary using the SHA-256 algorithm.</p>
+<h2 id="perform/1-examples" class="section-heading">
+  <a href="#perform/1-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; &quot;a&quot;
+iex&gt;   |&gt; Knot.Hash.perform
+iex&gt;   |&gt; Base.encode16(case: :lower)
+&quot;ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb&quot;
+
+iex&gt; [&lt;&lt;1, 2, 3&gt;&gt;, &quot;a&quot;]
+iex&gt;   |&gt; Knot.Hash.perform
+iex&gt;   |&gt; Base.encode16(case: :lower)
+&quot;c56daa10e6df2f901b1f47af30f33ed2a23b938f710bc76c4976f00cdce8ff67&quot;</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="to_string/2">
+  
+  
+    <span id="to_string/1"></span>
+  
+  <div class="detail-header">
+    <a href="#to_string/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">to_string(hash, opts \\ [])</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>to_string(<a href="#t:t/0">t</a> | <a href="#t:readable_t/0">readable_t</a>, keyword) :: <a href="#t:readable_t/0">readable_t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Transforms a hash into a readable string form.</p>
+<h2 id="to_string/2-examples" class="section-heading">
+  <a href="#to_string/2-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; :binary.copy(&lt;&lt;0x0f&gt;&gt;, 32)
+iex&gt;   |&gt; Knot.Hash.to_string
+&quot;0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f&quot;
+
+iex&gt; :binary.copy(&lt;&lt;0x0f&gt;&gt;, 32)
+iex&gt;   |&gt; Knot.Hash.to_string(case: :upper)
+&quot;0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F&quot;
+
+iex&gt; :binary.copy(&lt;&lt;0x0f&gt;&gt;, 32)
+iex&gt;   |&gt; Knot.Hash.to_string(short: true)
+&quot;0f0f0f0f&quot;
+
+iex&gt; :binary.copy(&lt;&lt;0x0f&gt;&gt;, 32)
+iex&gt;   |&gt; Knot.Hash.to_string(case: :upper, short: true)
+&quot;0F0F0F0F&quot;</code></pre>
+
+  </section>
+</div>
+<div class="detail" id="type/0">
+  
+  
+  <div class="detail-header">
+    <a href="#type/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">type()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>type() :: :string</pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Returns the underlying schema type for the custom type.</p>
+<p>For example, if you want to provide your own date
+structures, the type function should return <code class="inline">:date</code>.</p>
+<p>Note this function is not required to return Ecto primitive
+types, the type is only required to be known by the adapter.</p>
+<p>Callback implementation for <a href="https://hexdocs.pm/ecto/2.2.4/Ecto.Type.html#c:type/0"><code class="inline">Ecto.Type.type/0</code></a>.</p>
+
+  </section>
+</div>
+<div class="detail" id="zero/0">
+  
+  
+  <div class="detail-header">
+    <a href="#zero/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">zero()</span>
+    
+    
+    
+      <div class="specs">
+        
+          <pre>zero() :: <a href="#t:t/0">t</a></pre>
+        
+      </div>
+    
+  </div>
+  <section class="docstring">
+    <p>Represents a completelly zero-filled hash.</p>
+<p>As this hash is very unlikelly to
+ever be found under current computational power availabilities, the zero-hash
+is often used as the top-level parent for any given chain.</p>
+<h2 id="zero/0-examples" class="section-heading">
+  <a href="#zero/0-examples" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Examples
+</h2>
+
+<pre><code class="iex elixir">iex&gt; Knot.Hash.zero
+iex&gt;   |&gt; Base.encode16(case: :lower)
+&quot;0000000000000000000000000000000000000000000000000000000000000000&quot;</code></pre>
+
+  </section>
+</div>
+
+        </section>
+      
+
+      
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.16.4),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle"><span class="sr-only">Switch theme</span></button>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-da04b39d0c.js"></script>
+  
+  </body>
+</html>
+
