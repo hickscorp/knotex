@@ -137,8 +137,6 @@ defmodule Knot.Hash do
     ensure_hardness rest, r - 1
   end
 
-  # ====================================================================== #
-
   @behaviour Ecto.Type
 
   @spec type :: :string
