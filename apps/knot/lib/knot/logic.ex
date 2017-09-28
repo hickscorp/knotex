@@ -13,36 +13,17 @@ defmodule Knot.Logic do
 
   @spec start_link(Via.uri_or_address, Block.t) :: {:ok, Logic.t}
   def start_link(uri_or_address, genesis) do
-    uri = URI.parse uri_or_address
-    GenServer.start_link Logic, {uri_or_address, genesis}, name: Via.logic(uri)
-  end
-
-  @spec seed(Logic.t, integer) :: Block.t
-  def seed(logic, count \\ 128) do
-    {:ok, head} = State.find state(logic), "head"
-    Enum.reduce 1..count, head, fn (offset, parent) ->
-      Logger.info fn -> "Seeding #{offset}." end
-      block = "A block at height #{parent.height + 1}"
-        |> Hash.perform
-        |> Block.new(:os.system_time(:millisecond))
-        |> Block.as_child_of(parent)
-        |> Block.seal
-        |> Block.Miner.mine
-
-      :ok = Logic.push logic, block
-      block
-    end
+    ref = uri_or_address
+      |> URI.parse
+      |> Via.logic
+    GenServer.start_link Logic, {uri_or_address, genesis}, name: ref
   end
 
   @spec pid(Logic.t) :: pid
-  def pid(logic) do
-    GenServer.call logic, :pid
-  end
+  def pid(logic), do: GenServer.call logic, :pid
 
   @spec state(Logic.t) :: State.t
-  def state(logic) do
-    GenServer.call logic, :state
-  end
+  def state(logic), do: GenServer.call logic, :state
 
   @spec find(Logic.t, Block.id) :: {:ok, Block.t} | {:error, atom}
   def find(logic, id) do
@@ -90,6 +71,23 @@ defmodule Knot.Logic do
   @spec on_client_closed(Logic.t, Client.t) :: :ok
   def on_client_closed(logic, client) do
     GenServer.cast logic, {:on_client_closed, client}
+  end
+
+  @spec seed(Logic.t, integer) :: Block.t
+  def seed(logic, count \\ 128) do
+    {:ok, head} = State.find state(logic), "head"
+    Enum.reduce 1..count, head, fn (offset, parent) ->
+      Logger.info fn -> "Seeding #{offset}." end
+      block = "A block at height #{parent.height + 1}"
+        |> Hash.perform
+        |> Block.new(:os.system_time(:millisecond))
+        |> Block.as_child_of(parent)
+        |> Block.seal
+        |> Block.Miner.mine
+
+      :ok = Logic.push logic, block
+      block
+    end
   end
 
   # GenServer handlers.
