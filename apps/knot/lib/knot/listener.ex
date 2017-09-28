@@ -13,8 +13,9 @@ defmodule Knot.Listener do
 
   @spec start_link(Via.uri_or_address) :: {:ok, Listener.t}
   def start_link(uri_or_address) do
-    ref = Via.listener uri_or_address
-    GenServer.start_link Listener, uri_or_address, name: ref
+    GenServer.start_link Listener,
+                         uri_or_address,
+                         name: Via.listener(uri_or_address)
   end
 
   # GenServer handlers.
@@ -45,11 +46,13 @@ defmodule Knot.Listener do
           |> Via.logic
           |> Knot.Logic.on_client_socket(cli_socket, :inbound)
         listen uri, socket
+
       {:error, :closed} ->
         Logger.info fn ->
           "[#{Via.to_string uri}] Socket was closed."
         end
         :ok
+
       {:error, err} ->
         Logger.warn fn ->
           "[#{Via.to_string uri}] Unable to accept: #{inspect err}"
@@ -64,9 +67,11 @@ defmodule Knot.Listener do
     Logger.info fn ->
       "[#{Via.to_string uri}] Terminating listener: #{inspect reason}."
     end
+
     uri
       |> Via.logic
       |> Knot.Logic.on_listener_terminating(reason)
+
     :gen_tcp.close socket
   end
 end
