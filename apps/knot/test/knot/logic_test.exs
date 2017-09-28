@@ -3,12 +3,15 @@ defmodule Knot.LogicTest do
   doctest Knot.Logic
   alias Knot.Logic
 
-  describe "for message handling" do
-    setup :logic
+  setup_all :logic
 
-    test "allows to query its pid", %{logic: logic} do
-      assert logic == GenServer.call(logic, :pid)
-    end
+  test "#pid returns the instance's pid", %{logic: logic} do
+    assert logic == Logic.pid(logic)
+  end
+
+  test "#state returns the instance's state", %{logic: logic} do
+    %Logic.State{genesis: genesis} = Logic.state(logic)
+    assert genesis == Knot.Block.application_genesis()
   end
 
   # TODO: Spec :on_listener_terminating, :on_client_socket message,
@@ -34,10 +37,8 @@ defmodule Knot.LogicTest do
   end
 
   defp logic(ctx) do
-    {:ok, logic} = "tcp://localhost:4001"
-      |> URI.parse
-      |> Logic.start_link(Knot.Block.application_genesis())
-
+    uri = URI.parse "tcp://localhost:4001"
+    {:ok, logic} = Logic.start_link(uri, Knot.Block.application_genesis())
     {:ok, Map.put(ctx, :logic, logic)}
   end
 end
