@@ -48,8 +48,10 @@
   }],
 
   "SublimeLinter": {
-     "linters": {
-        "elixirc": {"mix_project": true, "chdir": "${project_path}"
+    "linters": {
+      "elixirc": {
+        "mix_project": true,
+        "chdir": "${project_path}"
       }
     }
   }
