@@ -1,0 +1,38 @@
+matrix:
+  ELIXIR_VERSION:
+    - 1.6
+
+pipeline:
+  restore-cache:
+    image: drillster/drone-volume-cache
+    restore: true
+    mount: [/root/.mix, /root/.hex, ./deps, ./_build, ./.git]
+    volumes:
+      - /tmp/cache:/cache
+
+  build:
+    image: elixir:${ELIXIR_VERSION}
+    commands:
+      - mix do local.rebar --force, local.hex --force
+      - MIX_ENV=test mix do deps.get, compile, ecto.create, ecto.migrate, test
+      # - MIX_ENV=dev mix do deps.get, compile, dialyzer
+    environment:
+      - POSTGRES_HOST=database
+      - POSTGRES_DB=knotex_test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  rebuild-cache:
+    image: drillster/drone-volume-cache
+    rebuild: true
+    mount: [/root/.mix, /root/.hex, ./deps, ./_build, ./.git]
+    volumes:
+      - /tmp/cache:/cache
+
+services:
+  database:
+    image: postgres:9.6
+    environment:
+    - POSTGRES_DB=knot_test
+    - POSTGRES_USER=postgres
+    - POSTGRES_PASSWORD=postgres
